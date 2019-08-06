@@ -14,5 +14,8 @@ namespace Zigbee2MqttAssistant.Services
 		void SetBridgeState(bool isOnline);
 		void SetBridgeConfig(string configJson);
 		HomeAssistantEntity SetDeviceEntity(string zigbeeId, string entityClass, string component, string configPayload, Func<string, string> friendlyNameFromTopicDelegate);
+		ZigbeeDevice FindDeviceById(string deviceId, out Bridge state);
+		void UpdateDevices(string payload);
+		void UpdateNetworkMap(string payload);
 	}
 }

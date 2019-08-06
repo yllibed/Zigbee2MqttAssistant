@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Zigbee2MqttAssistant.Services;
+using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace Zigbee2MqttAssistant
 {
@@ -32,9 +34,12 @@ namespace Zigbee2MqttAssistant
 			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
 			services.AddSingleton<IBridgeStateService, BridgeStateService>();
+			services.AddSingleton<IBridgeOperationService, BrigeOperationService>();
 			services.AddSingleton<ISettingsService, SettingsService>();
 
-			services.AddHostedService<MqttConnectionService>();
+			services.AddSingleton<MqttConnectionService>();
+			services.AddSingleton<IHostedService, MqttConnectionService>(sp => sp.GetService<MqttConnectionService>());
+			//services.AddHostedService<MqttConnectionService>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -134,8 +134,6 @@ namespace Zigbee2MqttAssistant.Services
 			var entityId = json["unique_id"]?.Value<string>();
 			var deviceName = json["device"]["name"]?.Value<string>();
 			var deviceIds = json["device"]["identifiers"]?.Value<string>();
-			var deviceModel = json["device"]["model"]?.Value<string>();
-			var deviceManufacturer = json["device"]["manufacturer"]?.Value<string>();
 
 			Bridge Update(Bridge state)
 			{
@@ -173,8 +171,12 @@ namespace Zigbee2MqttAssistant.Services
 				if (device.ZigbeeId != zigbeeId)
 				{
 					ZigbeeDevice newDevice = device.WithUniqueId(zigbeeId);
-					state = state.WithDevices(devices => devices.Replace(device, newDevice));
-					device = newDevice;
+
+					if (newDevice != device)
+					{
+						state = state.WithDevices(devices => devices.Replace(device, newDevice));
+						device = newDevice;
+					}
 				}
 
 				entity = device.Entities.FirstOrDefault(e => e.Component.Equals(component));
@@ -188,19 +190,25 @@ namespace Zigbee2MqttAssistant.Services
 						DeviceClass = entityClass
 					};
 					ZigbeeDevice newDevice = device.WithEntities(entities => entities.Add(entity));
-					state = state.WithDevices(devices => devices.Replace(device, newDevice));
-					device = newDevice;
+
+					if (newDevice != device)
+					{
+						state = state.WithDevices(devices => devices.Replace(device, newDevice));
+						device = newDevice;
+					}
 				}
 
-				if (deviceName != null || deviceIds != null || deviceManufacturer != null)
+				if (deviceName != null || deviceIds != null)
 				{
 					ZigbeeDevice newDevice = device
 						.WithName(deviceName)
-						.WithUniqueId(deviceIds)
-						.WithManufacturer(deviceManufacturer)
-						.WithModel(deviceModel);
-					state = state.WithDevices(devices => devices.Replace(device, newDevice));
-					device = newDevice;
+						.WithUniqueId(deviceIds);
+
+					if (newDevice != device)
+					{
+						state = state.WithDevices(devices => devices.Replace(device, newDevice));
+						device = newDevice;
+					}
 				}
 
 				return state;
@@ -209,6 +217,101 @@ namespace Zigbee2MqttAssistant.Services
 			ImmutableInterlocked.Update(ref _currentState, Update);
 
 			return entity;
+		}
+
+		public ZigbeeDevice FindDeviceById(string deviceId, out Bridge state)
+		{
+			state = _currentState;
+
+			if (string.IsNullOrWhiteSpace(deviceId))
+			{
+				return null;
+			}
+
+			return state.Devices.FirstOrDefault(device =>
+				device.FriendlyName.Equals(deviceId) || (device.ZigbeeId?.Equals(deviceId) ?? false));
+		}
+
+		public void UpdateDevices(string payload)
+		{
+			var json = JArray.Parse(payload);
+
+			Bridge Update(Bridge state)
+			{
+				foreach (var deviceJson in json)
+				{
+					var friendlyName = deviceJson["friendly_name"]?.Value<string>();
+					if (string.IsNullOrWhiteSpace(friendlyName))
+					{
+						if (deviceJson["type"]?.Value<string>().Equals("Coordinator", StringComparison.InvariantCultureIgnoreCase) ?? false)
+						{
+							state = state.WithCoordinatorZigbeeId(deviceJson["ieeeAddr"]?.Value<string>());
+						}
+
+						continue;
+					}
+
+					var device = state.Devices.FirstOrDefault(d => d.FriendlyName.Equals(friendlyName));
+					var newDevice = (device ?? new ZigbeeDevice.Builder { FriendlyName = friendlyName })
+						.WithZigbeeId(deviceJson["ieeeAddr"]?.Value<string>())
+						.WithType(deviceJson["type"]?.Value<string>())
+						.WithModel(deviceJson["modelId"]?.Value<string>().Trim().Trim((char)0))
+						.WithModelId(deviceJson["model"]?.Value<string>().Trim().Trim((char)0))
+						.WithNetworkAddress(deviceJson["nwkAddr"]?.Value<uint>())
+						.WithHardwareVersion(deviceJson["hwVersion"]?.Value<long>())
+						.WithManufacturer(deviceJson["manufName"]?.Value<string>().Trim().Trim((char)0));
+
+					if (device != newDevice)
+					{
+						state = device == null
+							? state.WithDevices(devices => devices.Add(newDevice))
+							: state.WithDevices(devices => devices.Replace(device, newDevice));
+					}
+				}
+
+				return state;
+			}
+
+			ImmutableInterlocked.Update(ref _currentState, Update);
+		}
+
+		public void UpdateNetworkMap(string payload)
+		{
+			var json = JArray.Parse(payload);
+
+			Bridge Update(Bridge state)
+			{
+				foreach (var deviceJson in json)
+				{
+					var zigbeeId = deviceJson["ieeeAddr"]?.Value<string>();
+					if (string.IsNullOrWhiteSpace(zigbeeId))
+					{
+						continue;
+					}
+
+					var device = state.Devices.FirstOrDefault(d => d.ZigbeeId?.Equals(zigbeeId) ?? false);
+					if (device == null)
+					{
+						continue;
+					}
+
+					var parentZigbeeId = deviceJson["parent"]?.Value<string>();
+
+					var newDevice = device
+						.WithLinkQuality(deviceJson["lqi"]?.Value<ushort>())
+						.WithIsAvailable(deviceJson["status"]?.Value<string>().Equals("online"))
+						.WithParentZigbeeId(deviceJson["parent"]?.Value<string>());
+
+					if (device != newDevice)
+					{
+						state = state.WithDevices(devices => devices.Replace(device, newDevice));
+					}
+				}
+
+				return state;
+			}
+
+			ImmutableInterlocked.Update(ref _currentState, Update);
 		}
 	}
 }

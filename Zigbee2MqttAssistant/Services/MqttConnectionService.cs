@@ -26,6 +26,7 @@ namespace Zigbee2MqttAssistant.Services
 		private readonly IBridgeStateService _stateService;
 
 		private readonly SerialDisposable _connection = new SerialDisposable();
+		private readonly SerialDisposable _devicePolling = new SerialDisposable();
 		private readonly MqttFactory _mqttFactory;
 
 		private IManagedMqttClient _client;
@@ -93,6 +94,49 @@ namespace Zigbee2MqttAssistant.Services
 			await _client.StartAsync(managedOptions);
 		}
 
+		private void StartPolling()
+		{
+			var cancellableDisposable = new CancellationDisposable();
+			_devicePolling.Disposable = cancellableDisposable;
+
+			var ct = cancellableDisposable.Token;
+
+			var t = PollingTask(); // start it
+
+			async Task PollingTask()
+			{
+				var settings = _settings.CurrentSettings;
+
+				long count = 0;
+
+				while (!ct.IsCancellationRequested)
+				{
+					var msg = new MqttApplicationMessageBuilder()
+						.WithTopic($"{settings.BaseTopic}/bridge/config/devices/get")
+						.Build();
+
+					await _client.PublishAsync(msg);
+
+					if (count % 3 == 0)
+					{
+						var msg2 = new MqttApplicationMessageBuilder()
+							.WithTopic($"{settings.BaseTopic}/bridge/networkmap")
+							.WithPayload("raw")
+							.Build();
+
+						await _client.PublishAsync(msg2);
+					}
+
+					await Task.Delay(TimeSpan.FromMinutes(5), ct);
+				}
+			}
+		}
+
+		private void StopPolling()
+		{
+			_devicePolling.Disposable = null;
+		}
+
 		private void Disconnect()
 		{
 			_connection.Disposable = null;
@@ -107,6 +151,7 @@ namespace Zigbee2MqttAssistant.Services
 
 		public void Dispose()
 		{
+			_devicePolling.Dispose();
 			_connection.Dispose();
 		}
 
@@ -120,6 +165,11 @@ namespace Zigbee2MqttAssistant.Services
 			}
 
 			if (DispatchHassDiscoveryMessage(msg))
+			{
+				return;
+			}
+
+			if (DispatchDevicesMessage(msg))
 			{
 				return;
 			}
@@ -155,11 +205,16 @@ namespace Zigbee2MqttAssistant.Services
 					{
 						_stateService.SetBridgeConfig(configJson: payload);
 					}
+					return true;
 				}
-				return true;
+				return false;
 			}
 
-			if (match.Groups["state"].Success)
+			if (msg.Payload == null)
+			{
+				return true;
+			}
+			else if (match.Groups["state"].Success)
 			{
 				var payload = _utf8.GetString(msg.Payload);
 				_stateService.SetDeviceAvailability(friendlyName, payload.Equals("online"));
@@ -210,18 +265,43 @@ namespace Zigbee2MqttAssistant.Services
 			return true;
 		}
 
+		private bool DispatchDevicesMessage(MqttApplicationMessage msg)
+		{
+			var settings = _settings.CurrentSettings;
+			if (msg.Topic.Equals($"{settings.BaseTopic}/bridge/config/devices"))
+			{
+				var payload = _utf8.GetString(msg.Payload);
+				_stateService.UpdateDevices(payload);
+
+				return true;
+			}
+			if (msg.Topic.Equals($"{settings.BaseTopic}/bridge/networkmap/raw"))
+			{
+				var payload = _utf8.GetString(msg.Payload);
+				_stateService.UpdateNetworkMap(payload);
+
+				return true;
+			}
+
+			return false;
+		}
+
 		public async Task HandleConnectedAsync(MqttClientConnectedEventArgs eventArgs)
 		{
 			_logger.LogInformation($"Successfully connected to MQTT server {_settings.CurrentSettings.MqttServer}.");
 
 			_stateService.Clear();
 			disconnectWarned = false;
+
+			StartPolling();
 		}
 
 		private bool disconnectWarned = false;
 
 		public async Task HandleDisconnectedAsync(MqttClientDisconnectedEventArgs eventArgs)
 		{
+			StopPolling();
+
 			if (disconnectWarned)
 			{
 				_logger.LogDebug(eventArgs.Exception, $"Error connecting to MQTT server {_settings.CurrentSettings.MqttServer}.");

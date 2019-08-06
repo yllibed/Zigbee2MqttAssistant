@@ -1,0 +1,81 @@
+﻿@using Humanizer
+@using Zigbee2MqttAssistant.Models.Devices
+@model Zigbee2MqttAssistant.Controllers.DeviceDetailsViewModel
+
+@{
+    var device = Model.Device;
+    ViewData["Title"] = device.FriendlyName;
+}
+
+<h1 class="display-4">@device.FriendlyName</h1>
+
+@if (device.IsAvailable == false)
+{
+    <div class="alert alert-danger">
+        This device is considered as OFFLINE by Zigbee2Mqtt.
+        @if (device.GetUnresponsiveDelay(out var unresponsiveDelay) == true)
+        {
+            <span>
+                Last seen @unresponsiveDelay.Value.Humanize(2) (@device.LastSeen.Value.ToString("f")).
+            </span>
+        }
+    </div>
+}
+else
+{
+    switch (device.GetUnresponsiveDelay(out var unresponsiveDelay))
+    {
+        case null:
+            {
+                <div class="alert alert-primary">
+                    No "last_seen" information for this device: unable to check for responsiveness.
+                </div>
+            }
+            break;
+        case true:
+            {
+                <div class="alert alert-warning">
+                    This device is UNRESPONSIVE since @unresponsiveDelay.Value.Humanize(2) (@device.LastSeen.Value.ToString("f"))
+                </div>
+            }
+            break;
+        default:
+            {
+                <div class="alert alert-info">
+                    This device seems to work correctly. Last seen @unresponsiveDelay.Value.Humanize(2) ago.
+                </div>
+            }
+            break;
+    }
+}
+
+<p>
+    Zigbee Id is <span class="badge badge-secondary">@(device.ZigbeeId ?? "unknown yet (did you restart recently?)")</span>.
+    Address on Zigbee Network is <span class="badge badge-secondary">@("0x" + device.NetworkAddress?.ToString("X") ?? "unknown")</span>.
+    Link quality is <span class="badge badge-secondary">@(device.LinkQuality?.ToString() ?? "unknown")</span>/<code>255</code>.
+    <br />
+    Model is <span class="badge badge-primary">@(device.Model ?? "unknown")</span> by <span class="badge badge-secondary">@(device.Manufacturer ?? "unknown")</span>.
+    Hardware version is <code>@(device.HardwareVersion?.ToString() ?? "unknown")</code>.
+    <br />
+    This device type is <span class="badge badge-secondary">@(device.Type ?? "unknown")</span>
+</p>
+
+@if (device.ZigbeeId != null)
+{
+<p>
+    Route to coordinator...
+    <br />
+    @foreach (var parentDevice in Model.RouteToCoordinator)
+    {
+        <span class="badge badge-dark">@parentDevice.FriendlyName</span> @(" - " + parentDevice.LinkQuality+ " - ")
+    }
+    @if (Model.RouteReachCoordinator)
+    {
+        <span class="badge alert-primary">Coordinator</span>
+    }
+    else
+    {
+        <span class="badge alert-danger">NO KNOWN ROUTE TO COORDINATOR</span>
+    }
+</p>
+}

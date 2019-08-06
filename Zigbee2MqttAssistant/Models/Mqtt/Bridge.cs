@@ -14,6 +14,11 @@ namespace Zigbee2MqttAssistant.Models.Mqtt
 		public bool Online { get; } = false;
 
 		/// <summary>
+		/// The hardware address of the bridge
+		/// </summary>
+		public string CoordinatorZigbeeId { get; }
+
+		/// <summary>
 		/// Log level of the bridge
 		/// </summary>
 		public MqttLogLevel LogLevel { get; } = MqttLogLevel.Info;
@@ -24,5 +29,7 @@ namespace Zigbee2MqttAssistant.Models.Mqtt
 		public bool PermitJoin { get; } = false;
 
 		public ImmutableArray<ZigbeeDevice> Devices { get;  } = ImmutableArray<ZigbeeDevice>.Empty;
+
+		public ImmutableArray<LogEntry> Logs { get; } = ImmutableArray<LogEntry>.Empty;
 	}
 }

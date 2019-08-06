@@ -1,31 +1,70 @@
-﻿@model Zigbee2MqttAssistant.Models.Mqtt.Bridge
+﻿@using Humanizer
+@model Zigbee2MqttAssistant.Models.Mqtt.Bridge
 @{
     ViewData["Title"] = "Devices";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Devices</h1>
-    @foreach (var device in Model.Devices)
-    {
-        <div>
-            <strong>@device.FriendlyName</strong>
-            (@device.ZigbeeId) <br/>>
-            @device.Manufacturer @device.Model <br/>
-            Link: @device.LinkQuality
-            <br/>>
+<h1 class="display-4">Devices</h1>
 
-            @foreach (var entity in device.Entities)
-            {
-                <div>
-                    Entity: @entity.EntityId/@entity.Name (@entity.DeviceClass - @entity.Component)
-                </div>
-            }
-        </div>
-    }
-    
-    <p>
-        Bridge State: @(Model.Online ? "online" : "offline") <br/>
-        Log Level: @Model.LogLevel <br/>
-        Join: @(Model.PermitJoin ? "permitted" : "denied")
-    </p>
-</div>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scole="col">Name / Id</th>
+            <th scole="col">Components</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var device in Model.Devices.OrderBy(d => d.FriendlyName))
+        {
+            <tr>
+                <th scope="row">
+                    <a asp-action="Device" asp-route-deviceId="@device.FriendlyName"><strong>@device.FriendlyName</strong></a>
+                    <br /><code>@device.ZigbeeId</code> @device.Manufacturer
+
+                    @if (!device.Type?.Equals("EndDevice", StringComparison.CurrentCultureIgnoreCase) ?? false)
+                    {
+                        <span class="badge badge-dark">@device.Type</span>
+                    }
+                    @if (device.IsAvailable == false)
+                    {
+                        <span class="badge badge-danger">offline</span>
+                    }
+                    @if (device.GetUnresponsiveDelay(out var unresponsiveDelay) == true)
+                    {
+                        var unseenPeriod = unresponsiveDelay.Value.Humanize(1);
+                        <span class="badge badge-warning">unresponsive s. @unseenPeriod</span>
+                    }
+                    @if (device.LinkQuality.HasValue)
+                    {
+                        var value = device.LinkQuality.Value;
+                        if (value < 5)
+                        {
+                            <span class="badge badge-danger">very weak link</span>
+                        }
+                        else if (value < 15)
+                        {
+                            <span class="badge badge-warning">weak link</span>
+                        }
+                    }
+                </th>
+                <td>
+                    @foreach (var entity in device.Entities.OrderBy(e => e.Component))
+                    {
+                        <span class="badge badge-dark">@entity.Component</span>
+                    }
+                    @if (device.Entities.Length == 0)
+                    {
+                        <span class="badge badge-danger">NO COMPONENTS DEFINED</span>
+                        <span>Maybe this device is not known to Zigbee2Mqtt?</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<p>
+    Bridge State: @(Model.Online ? "online" : "offline") <br />
+    Log Level: @Model.LogLevel <br />
+    Join: @(Model.PermitJoin ? "permitted" : "denied")
+</p>
