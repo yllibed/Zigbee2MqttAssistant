@@ -40,28 +40,26 @@ namespace Zigbee2MqttAssistant.Services
 					device = new ZigbeeDevice.Builder
 					{
 						FriendlyName = friendlyName,
-						LinkQuality = linkQuality,
 						LastSeen = lastSeen
 					};
 
 					state = state.WithDevices(devices => devices.Add(device));
 				}
 
-				if (linkQuality.HasValue || lastSeen.HasValue)
+				if (lastSeen.HasValue)
 				{
 					var newDevice = device;
-					if (linkQuality.HasValue)
-					{
-						newDevice = newDevice.WithLinkQuality(linkQuality);
-					}
 
 					if (lastSeen.HasValue)
 					{
 						newDevice = newDevice.WithLastSeen(lastSeen);
 					}
 
-					state = state.WithDevices(devices => devices.Replace(device, newDevice));
-					device = newDevice;
+					if (newDevice != device)
+					{
+						state = state.WithDevices(devices => devices.Replace(device, newDevice));
+						device = newDevice;
+					}
 				}
 
 				return state;
@@ -133,7 +131,7 @@ namespace Zigbee2MqttAssistant.Services
 			var entityName = json["name"]?.Value<string>();
 			var entityId = json["unique_id"]?.Value<string>();
 			var deviceName = json["device"]["name"]?.Value<string>();
-			var deviceIds = json["device"]["identifiers"]?.Value<string>();
+			var deviceIds = json["device"]["identifiers"]?.FirstOrDefault()?.Value<string>();
 
 			Bridge Update(Bridge state)
 			{
@@ -277,34 +275,82 @@ namespace Zigbee2MqttAssistant.Services
 
 		public void UpdateNetworkMap(string payload)
 		{
-			var json = JArray.Parse(payload);
+			var json = JObject.Parse(payload);
+			var nodes = json["nodes"] as JArray;
+			var links = json["links"] as JArray;
 
 			Bridge Update(Bridge state)
 			{
-				foreach (var deviceJson in json)
+				if (nodes != null)
 				{
-					var zigbeeId = deviceJson["ieeeAddr"]?.Value<string>();
-					if (string.IsNullOrWhiteSpace(zigbeeId))
+					foreach (var node in nodes)
 					{
-						continue;
+						var zigbeeId = node["ieeeAddr"]?.Value<string>();
+						if (string.IsNullOrWhiteSpace(zigbeeId))
+						{
+							continue;
+						}
+
+						var device = state.Devices.FirstOrDefault(d => d.ZigbeeId?.Equals(zigbeeId) ?? false);
+						if (device == null)
+						{
+							continue;
+						}
+
+						var parentZigbeeId = node["parent"]?.Value<string>();
+
+						var newDevice = device
+							.WithIsAvailable(node["status"]?.Value<string>().Equals("online"));
+
+						if (device != newDevice)
+						{
+							state = state.WithDevices(devices => devices.Replace(device, newDevice));
+						}
 					}
+				}
 
-					var device = state.Devices.FirstOrDefault(d => d.ZigbeeId?.Equals(zigbeeId) ?? false);
-					if (device == null)
+				if (links != null)
+				{
+					foreach (var link in links)
 					{
-						continue;
-					}
+						var source = link["sourceIeeeAddr"]?.Value<string>();
+						if (string.IsNullOrWhiteSpace(source))
+						{
+							continue; // weird case (payload is invalid?)
+						}
 
-					var parentZigbeeId = deviceJson["parent"]?.Value<string>();
+						var device = state.Devices.FirstOrDefault(d => d.ZigbeeId?.Equals(source) ?? false);
+						if (device == null)
+						{
+							continue; // unknown device
+						}
 
-					var newDevice = device
-						.WithLinkQuality(deviceJson["lqi"]?.Value<ushort>())
-						.WithIsAvailable(deviceJson["status"]?.Value<string>().Equals("online"))
-						.WithParentZigbeeId(deviceJson["parent"]?.Value<string>());
+						var parent = link["targetIeeeAddr"]?.Value<string>();
+						var linkQuality = link["lqi"]?.Value<ushort>();
+						if (string.IsNullOrWhiteSpace(parent) || linkQuality == null)
+						{
+							continue; // weird case (payload is invalid?)
+						}
 
-					if (device != newDevice)
-					{
-						state = state.WithDevices(devices => devices.Replace(device, newDevice));
+						ZigbeeDevice newDevice;
+
+						var existingParent = device.Parents.FirstOrDefault(p => p.zigbeeId == parent);
+
+						if (existingParent != default)
+						{
+							newDevice = device
+								.WithParents(parents => parents.Replace(existingParent, (parent, linkQuality.Value)));
+						}
+						else
+						{
+							newDevice = device
+								.WithParents(parents => parents.Add((parent, linkQuality.Value)));
+						}
+
+						if (device != newDevice)
+						{
+							state = state.WithDevices(devices => devices.Replace(device, newDevice));
+						}
 					}
 				}
 

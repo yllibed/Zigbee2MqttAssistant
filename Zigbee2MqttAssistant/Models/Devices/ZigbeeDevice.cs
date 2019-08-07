@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Linq;
 using Microsoft.EntityFrameworkCore.Design;
 using Uno;
 
@@ -16,9 +17,12 @@ namespace Zigbee2MqttAssistant.Models.Devices
 		[EqualityHash]
 		public uint? NetworkAddress { get; }
 
-		public ushort? LinkQuality { get; }
+		public ushort? LinkQuality => Parents
+			.Select(p => (ushort?) p.linkQuality)
+			.DefaultIfEmpty()
+			.Max(); // This is a pattern for non-existent .MaxOrDefault()
 
-		public string ParentZigbeeId { get; }
+		public ImmutableArray<(string zigbeeId, ushort linkQuality)> Parents { get; } = ImmutableArray<(string zigbeeId, ushort linkQuality)>.Empty;
 
 		[EqualityKey]
 		public string FriendlyName { get; }

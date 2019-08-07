@@ -67,7 +67,7 @@ else
     <br />
     @foreach (var parentDevice in Model.RouteToCoordinator)
     {
-        <span class="badge badge-dark">@parentDevice.FriendlyName</span> @(" - " + parentDevice.LinkQuality+ " - ")
+        <span class="badge badge-dark">@parentDevice.FriendlyName</span> 
     }
     @if (Model.RouteReachCoordinator)
     {
