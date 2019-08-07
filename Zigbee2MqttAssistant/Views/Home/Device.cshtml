@@ -62,22 +62,22 @@ else
 
 @if (device.ZigbeeId != null)
 {
-<p>
-    Route to coordinator...
-    <br />
-    @foreach (var parentDevice in Model.RouteToCoordinator)
-    {
-        <span class="badge badge-dark">@parentDevice.FriendlyName</span> 
-    }
-    @if (Model.RouteReachCoordinator)
-    {
-        <span class="badge alert-primary">Coordinator</span>
-    }
-    else
-    {
-        <span class="badge alert-danger">NO KNOWN ROUTE TO COORDINATOR</span>
-    }
-</p>
+    <p>
+        Route to coordinator...
+        <br />
+        @foreach (var parentDevice in Model.RouteToCoordinator)
+        {
+            <span class="badge badge-dark">@parentDevice.FriendlyName</span>
+        }
+        @if (Model.RouteReachCoordinator)
+        {
+            <span class="badge alert-primary">Coordinator</span>
+        }
+        else
+        {
+            <span class="badge alert-danger">NO KNOWN ROUTE TO COORDINATOR</span>
+        }
+    </p>
 }
 
 <div class="card">
@@ -105,5 +105,21 @@ else
                 THIS OPERATION WON'T CHANGE IDS IN HOME-ASSISTANT! Only the display name will change.
             </p>
         }
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Delete</h5>
+        <form asp-action="RemoveDevice" method="post" asp-route-id="@device.FriendlyName">
+            <button class="btn bg-danger" type="submit">REMOVE THIS DEVICE</button>
+        </form>
+        <p>
+            This will remove the device from Zigbee2Mqtt. You may repair it if you need it again.
+            Removing a connected device will probably cause the re-creation of the device itself.
+            <br/>
+            TIP: removing a device could help solving connection issues by forcing Zigbee2Mqtt to
+            rediscover the device.
+        </p>
     </div>
 </div>

@@ -18,5 +18,6 @@ namespace Zigbee2MqttAssistant.Services
 		void UpdateDevices(string payload);
 		void UpdateNetworkMap(string payload);
 		void UpdateRenamedDevice(string @from, string to);
+		void RemoveDevice(string removedDeviceFriendlyName);
 	}
 }

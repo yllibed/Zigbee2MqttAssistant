@@ -321,6 +321,19 @@ namespace Zigbee2MqttAssistant.Services
 
 						break;
 					}
+
+					case "device_removed":
+					{
+						var removedDevice = message?.Value<string>();
+
+						_stateService.RemoveDevice(removedDevice);
+
+						if (ImmutableInterlocked.TryRemove(ref _removeWaitingList, removedDevice, out var tcs))
+						{
+							tcs.TrySetResult(null); // unblock waiting for rename
+						}
+						break;
+					}
 				}
 
 				return true;
@@ -382,7 +395,26 @@ namespace Zigbee2MqttAssistant.Services
 			await _client.PublishAsync(msg);
 
 			await tcs.Task;
+		}
 
+		private ImmutableDictionary<string, TaskCompletionSource<object>> _removeWaitingList = ImmutableDictionary<string, TaskCompletionSource<object>>.Empty;
+
+		public async Task RemoveDeviceAndWait(string deviceFriendlyName)
+		{
+			var tcs = new TaskCompletionSource<object>();
+			if (!ImmutableInterlocked.TryAdd(ref _removeWaitingList, deviceFriendlyName, tcs))
+			{
+				throw new InvalidOperationException("Another rename in progress for this device.");
+			}
+
+			var msg = new MqttApplicationMessageBuilder()
+				.WithTopic($"{_settings.CurrentSettings.BaseTopic}/bridge/config/remove")
+				.WithPayload(deviceFriendlyName)
+				.Build();
+
+			await _client.PublishAsync(msg);
+
+			await tcs.Task;
 		}
 	}
 }

@@ -16,7 +16,15 @@ namespace Zigbee2MqttAssistant.Services
 
 		public async Task<ZigbeeDevice> RemoveDeviceById(string deviceId)
 		{
-			throw new System.NotImplementedException();
+			var device = _stateService.FindDeviceById(deviceId, out _);
+			if (device == null)
+			{
+				return null;
+			}
+
+			await _mqtt.RemoveDeviceAndWait(device.FriendlyName);
+
+			return device;
 		}
 
 		public async Task<ZigbeeDevice> RenameDeviceById(string deviceId, string newName)

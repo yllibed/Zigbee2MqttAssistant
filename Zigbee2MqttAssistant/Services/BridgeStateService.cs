@@ -387,5 +387,23 @@ namespace Zigbee2MqttAssistant.Services
 
 			ImmutableInterlocked.Update(ref _currentState, Update);
 		}
+
+		public void RemoveDevice(string removedDeviceFriendlyName)
+		{
+			Bridge Update(Bridge state)
+			{
+				var device = state.Devices.FirstOrDefault(d => d.FriendlyName.Equals(removedDeviceFriendlyName));
+				if (device == null)
+				{
+					return state;
+				}
+
+				state = state.WithDevices(devices => devices.Remove(device));
+
+				return state;
+			}
+
+			ImmutableInterlocked.Update(ref _currentState, Update);
+		}
 	}
 }

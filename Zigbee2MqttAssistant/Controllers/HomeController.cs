@@ -94,7 +94,7 @@ namespace Zigbee2MqttAssistant.Controllers
 				return NotFound();
 			}
 
-			return View(device);
+			return RedirectToAction("Index");
 		}
 
 		public IActionResult Status()
