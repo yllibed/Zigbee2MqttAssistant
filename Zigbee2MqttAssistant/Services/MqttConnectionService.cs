@@ -210,6 +210,11 @@ namespace Zigbee2MqttAssistant.Services
 					{
 						var isOnline = payload.Equals("online");
 						_stateService.SetBridgeState(isOnline: isOnline);
+
+						if (isOnline)
+						{
+							StartPolling();
+						}
 					}
 					else if (value.Equals("config"))
 					{
