@@ -17,5 +17,6 @@ namespace Zigbee2MqttAssistant.Services
 		ZigbeeDevice FindDeviceById(string deviceId, out Bridge state);
 		void UpdateDevices(string payload);
 		void UpdateNetworkMap(string payload);
+		void UpdateRenamedDevice(string @from, string to);
 	}
 }

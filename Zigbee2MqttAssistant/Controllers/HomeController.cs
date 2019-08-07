@@ -29,9 +29,9 @@ namespace Zigbee2MqttAssistant.Controllers
 			return View(state);
 		}
 
-		public IActionResult Device(string deviceId)
+		public IActionResult Device(string id)
 		{
-			var device = _stateService.FindDeviceById(deviceId, out var state);
+			var device = _stateService.FindDeviceById(id, out var state);
 
 			if (device == null)
 			{
@@ -72,9 +72,22 @@ namespace Zigbee2MqttAssistant.Controllers
 			return View(vm);
 		}
 
-		public async Task<IActionResult> RemoveDevice(string deviceId)
+		[HttpPost]
+		public async Task<IActionResult> RenameDevice(string id, string newName)
 		{
-			var device = await _operationService.RemoveDeviceById(deviceId);
+			var device = await _operationService.RenameDeviceById(id, newName);
+
+			if (device == null)
+			{
+				return NotFound();
+			}
+
+			return RedirectToAction("Index");
+		}
+
+		public async Task<IActionResult> RemoveDevice(string id)
+		{
+			var device = await _operationService.RemoveDeviceById(id);
 
 			if (device == null)
 			{

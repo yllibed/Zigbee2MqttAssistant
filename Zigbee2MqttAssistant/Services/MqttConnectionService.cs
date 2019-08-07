@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Immutable;
 using System.Reactive.Disposables;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -15,6 +16,9 @@ using MQTTnet.Client.Options;
 using MQTTnet.Client.Receiving;
 using MQTTnet.Diagnostics;
 using MQTTnet.Extensions.ManagedClient;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Remotion.Linq.Parsing.Structure.IntermediateModel;
 using Zigbee2MqttAssistant.Models.Mqtt;
 
 namespace Zigbee2MqttAssistant.Services
@@ -174,6 +178,11 @@ namespace Zigbee2MqttAssistant.Services
 				return;
 			}
 
+			if (DispatchLogMessage(msg))
+			{
+				return;
+			}
+
 			_logger.LogWarning($"Unable to quality a message received on topic '{msg.Topic}'.");
 		}
 
@@ -199,7 +208,8 @@ namespace Zigbee2MqttAssistant.Services
 					var payload = _utf8.GetString(msg.Payload);
 					if (value.Equals("state"))
 					{
-						_stateService.SetBridgeState(isOnline: payload.Equals("online"));
+						var isOnline = payload.Equals("online");
+						_stateService.SetBridgeState(isOnline: isOnline);
 					}
 					else if (value.Equals("config"))
 					{
@@ -286,6 +296,39 @@ namespace Zigbee2MqttAssistant.Services
 			return false;
 		}
 
+		private bool DispatchLogMessage(MqttApplicationMessage msg)
+		{
+			var settings = _settings.CurrentSettings;
+			if (msg.Topic.Equals($"{settings.BaseTopic}/bridge/log") && msg.Payload != null)
+			{
+				var payload = _utf8.GetString(msg.Payload);
+				var json = JObject.Parse(payload);
+				var type = json["type"]?.Value<string>();
+				var message = json["message"];
+
+				switch (type)
+				{
+					case "device_renamed":
+					{
+						var from = message["from"]?.Value<string>();
+						var to = message["to"]?.Value<string>();
+						_stateService.UpdateRenamedDevice(from, to);
+
+						if (ImmutableInterlocked.TryRemove(ref _renameWaitingList, from, out var tcs))
+						{
+							tcs.TrySetResult(null); // unblock waiting for rename
+						}
+
+						break;
+					}
+				}
+
+				return true;
+			}
+
+			return false;
+		}
+
 		public async Task HandleConnectedAsync(MqttClientConnectedEventArgs eventArgs)
 		{
 			_logger.LogInformation($"Successfully connected to MQTT server {_settings.CurrentSettings.MqttServer}.");
@@ -317,6 +360,29 @@ namespace Zigbee2MqttAssistant.Services
 			{
 				_logger.LogWarning(eventArgs.Exception, $"Unable to connect to MQTT server {_settings.CurrentSettings.MqttServer}.");
 			}
+		}
+
+		private ImmutableDictionary<string, TaskCompletionSource<object>> _renameWaitingList = ImmutableDictionary<string, TaskCompletionSource<object>>.Empty;
+
+		public async Task RenameDeviceAndWait(string deviceFriendlyName, string newName)
+		{
+			var json = JsonConvert.SerializeObject(new { old = deviceFriendlyName, @new = newName });
+
+			var tcs = new TaskCompletionSource<object>();
+			if (!ImmutableInterlocked.TryAdd(ref _renameWaitingList, deviceFriendlyName, tcs))
+			{
+				throw new InvalidOperationException("Another rename in progress for this device.");
+			}
+
+			var msg = new MqttApplicationMessageBuilder()
+				.WithTopic($"{_settings.CurrentSettings.BaseTopic}/bridge/config/rename")
+				.WithPayload(json)
+				.Build();
+
+			await _client.PublishAsync(msg);
+
+			await tcs.Task;
+
 		}
 	}
 }

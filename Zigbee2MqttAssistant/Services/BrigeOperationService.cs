@@ -5,9 +5,31 @@ namespace Zigbee2MqttAssistant.Services
 {
 	public class BrigeOperationService : IBridgeOperationService
 	{
-		public Task<ZigbeeDevice> RemoveDeviceById(string deviceId)
+		private readonly MqttConnectionService _mqtt;
+		private readonly IBridgeStateService _stateService;
+
+		public BrigeOperationService(MqttConnectionService mqtt, IBridgeStateService stateService)
+		{
+			_mqtt = mqtt;
+			_stateService = stateService;
+		}
+
+		public async Task<ZigbeeDevice> RemoveDeviceById(string deviceId)
 		{
 			throw new System.NotImplementedException();
+		}
+
+		public async Task<ZigbeeDevice> RenameDeviceById(string deviceId, string newName)
+		{
+			var device = _stateService.FindDeviceById(deviceId, out _);
+			if (device == null)
+			{
+				return null;
+			}
+
+			await _mqtt.RenameDeviceAndWait(device.FriendlyName, newName);
+
+			return _stateService.FindDeviceById(newName, out _);
 		}
 	}
 }

@@ -99,6 +99,12 @@ namespace Zigbee2MqttAssistant.Services
 
 		public void SetBridgeState(bool isOnline)
 		{
+			if (!isOnline)
+			{
+				Clear();
+				return;
+			}
+
 			Bridge Update(Bridge state)
 			{
 				return state.WithOnline(isOnline);
@@ -352,6 +358,28 @@ namespace Zigbee2MqttAssistant.Services
 							state = state.WithDevices(devices => devices.Replace(device, newDevice));
 						}
 					}
+				}
+
+				return state;
+			}
+
+			ImmutableInterlocked.Update(ref _currentState, Update);
+		}
+
+		public void UpdateRenamedDevice(string from, string to)
+		{
+			Bridge Update(Bridge state)
+			{
+				var device = state.Devices.FirstOrDefault(d => d.FriendlyName.Equals(from));
+				if (device == null)
+				{
+					return state;
+				}
+
+				var newDevice = device.WithFriendlyName(to);
+				if (newDevice != device)
+				{
+					state = state.WithDevices(devices => devices.Replace(device, newDevice));
 				}
 
 				return state;

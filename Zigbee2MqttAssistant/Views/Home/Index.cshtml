@@ -18,7 +18,7 @@
         {
             <tr>
                 <th scope="row">
-                    <a asp-action="Device" asp-route-deviceId="@device.FriendlyName"><strong>@device.FriendlyName</strong></a>
+                    <a asp-action="Device" asp-route-id="@device.FriendlyName"><strong>@device.FriendlyName</strong></a>
                     <br /><code>@device.ZigbeeId</code> @device.Manufacturer
 
                     @if (!device.Type?.Equals("EndDevice", StringComparison.CurrentCultureIgnoreCase) ?? false)
