@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.Extensions.Logging;
@@ -48,12 +49,7 @@ namespace Zigbee2MqttAssistant.Services
 
 				if (lastSeen.HasValue)
 				{
-					var newDevice = device;
-
-					if (lastSeen.HasValue)
-					{
-						newDevice = newDevice.WithLastSeen(lastSeen);
-					}
+					var newDevice = device.WithLastSeen(lastSeen);
 
 					if (newDevice != device)
 					{
@@ -113,10 +109,25 @@ namespace Zigbee2MqttAssistant.Services
 			ImmutableInterlocked.Update(ref _currentState, Update);
 		}
 
-		public void SetBridgeConfig(string configJson)
+		public void SetBridgeConfig(string configJson, out bool isJoinAllowed)
 		{
+			var json = JObject.Parse(configJson);
+
+			var version = json["version"]?.Value<string>();
+			var coordinator = json["coordinator"]?.Value<string>();
+			var permitJoin = json["permit_join"]?.Value<bool>() ?? false;
+			var logLevel = json["log_level"]?.ToObject<MqttLogLevel>() ?? MqttLogLevel.Info;
+
+			isJoinAllowed = permitJoin;
+
 			Bridge Update(Bridge state)
 			{
+				state = state
+					.WithZigbee2MqttVersion(version)
+					.WithCoordinatorVersion(coordinator)
+					.WithPermitJoin(permitJoin)
+					.WithLogLevel(logLevel);
+
 				return state;
 			}
 
@@ -404,6 +415,23 @@ namespace Zigbee2MqttAssistant.Services
 			}
 
 			ImmutableInterlocked.Update(ref _currentState, Update);
+		}
+
+		public IReadOnlyCollection<IReadOnlyCollection<ZigbeeDevice>> GetRoutesToCoordinator(ZigbeeDevice forDevice)
+		{
+			var state = _currentState;
+
+			var processedDevices = new List<ZigbeeDevice>(state.Devices.Length -1);
+
+			IEnumerable<IReadOnlyCollection<ZigbeeDevice>> GetRoutes(ZigbeeDevice d)
+			{
+				if (processedDevices.Contains(d))
+				{
+					yield break; // already processed routed through this device
+				}
+			}
+
+			return GetRoutes(forDevice).ToImmutableArray();
 		}
 	}
 }

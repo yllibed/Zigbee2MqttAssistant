@@ -85,26 +85,23 @@ else
         <h5 class="card-title">Rename</h5>
         @if (device.IsAvailable != true)
         {
-            <p>
-                Only online devices can be renamed. Make it online and you'll be able to rename it.
-            </p>
+            <div class="alert-info">
+                Only online devices can be renamed. You may try anyway, at your risk...
+            </div>
         }
-        else
-        {
-            <form asp-action="RenameDevice" method="post" asp-route-id="@device.FriendlyName">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" value="@device.FriendlyName" name="newName">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="submit">Rename</button>
-                    </div>
+        <form asp-action="RenameDevice" method="post" asp-route-id="@device.FriendlyName">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" value="@device.FriendlyName" name="newName">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="submit">Rename</button>
                 </div>
-            </form>
-            <p>
-                Warning: After renaming devices, you should restart Zigbee2Mqtt to force it to
-                push new discovery entries. Renamed devices will appear "staled" until this reboot.
-                THIS OPERATION WON'T CHANGE IDS IN HOME-ASSISTANT! Only the display name will change.
-            </p>
-        }
+            </div>
+        </form>
+        <p>
+            Warning: After renaming devices, you should restart Zigbee2Mqtt to force it to
+            push new discovery entries. Renamed devices will appear "staled" until this reboot.
+            THIS OPERATION WON'T CHANGE IDS IN HOME-ASSISTANT! Only the display name will change.
+        </p>
     </div>
 </div>
 

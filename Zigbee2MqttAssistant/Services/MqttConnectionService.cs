@@ -53,7 +53,7 @@ namespace Zigbee2MqttAssistant.Services
 			var baseHassTopic = $"{settings.HomeAssistantDiscoveryBaseTopic}/";
 
 			var regexOptions = RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant;
-			FriendlyNameExtractor = new Regex($"{Regex.Escape(baseTopic)}(?<name>[^/]+)(?:/(?<state>(availability|state)))?", regexOptions);
+			FriendlyNameExtractor = new Regex($"{Regex.Escape(baseTopic)}(?<name>[^/]+)(?:/(?<state>(availability|state|config)))?$", regexOptions);
 			HassDiscoveryExtractor = new Regex($"{Regex.Escape(baseHassTopic)}(?<class>[^/]+)/(?<deviceId>[^/]+)/(?<component>[^/]+)/(?<config>config)?", regexOptions);
 		}
 
@@ -112,6 +112,8 @@ namespace Zigbee2MqttAssistant.Services
 				var settings = _settings.CurrentSettings;
 
 				long count = 0;
+
+				await Task.Delay(5000, ct);
 
 				while (!ct.IsCancellationRequested)
 				{
@@ -202,7 +204,7 @@ namespace Zigbee2MqttAssistant.Services
 			if (friendlyName.Equals("bridge"))
 			{
 				var stateGroup = match.Groups["state"];
-				if (stateGroup.Success)
+				if (stateGroup.Success && msg.Payload != null)
 				{
 					var value = stateGroup.Value;
 					var payload = _utf8.GetString(msg.Payload);
@@ -218,7 +220,12 @@ namespace Zigbee2MqttAssistant.Services
 					}
 					else if (value.Equals("config"))
 					{
-						_stateService.SetBridgeConfig(configJson: payload);
+						_stateService.SetBridgeConfig(configJson: payload, isJoinAllowed: out var isJoinAllowed);
+
+						if (ImmutableInterlocked.TryRemove(ref _allowJoinWaitingList, isJoinAllowed, out var tcs))
+						{
+							tcs.TrySetResult(null);
+						}
 					}
 					return true;
 				}
@@ -259,7 +266,7 @@ namespace Zigbee2MqttAssistant.Services
 			var component = match.Groups["component"];
 			var config = match.Groups["config"];
 
-			if (config.Success)
+			if (config.Success && msg.Payload != null)
 			{
 				var payload = _utf8.GetString(msg.Payload);
 				
@@ -353,8 +360,6 @@ namespace Zigbee2MqttAssistant.Services
 
 			_stateService.Clear();
 			disconnectWarned = false;
-
-			StartPolling();
 		}
 
 		private bool disconnectWarned = false;
@@ -409,12 +414,32 @@ namespace Zigbee2MqttAssistant.Services
 			var tcs = new TaskCompletionSource<object>();
 			if (!ImmutableInterlocked.TryAdd(ref _removeWaitingList, deviceFriendlyName, tcs))
 			{
-				throw new InvalidOperationException("Another rename in progress for this device.");
+				throw new InvalidOperationException("Another remove in progress for this device.");
 			}
 
 			var msg = new MqttApplicationMessageBuilder()
 				.WithTopic($"{_settings.CurrentSettings.BaseTopic}/bridge/config/remove")
 				.WithPayload(deviceFriendlyName)
+				.Build();
+
+			await _client.PublishAsync(msg);
+
+			await tcs.Task;
+		}
+
+		private ImmutableDictionary<bool, TaskCompletionSource<object>> _allowJoinWaitingList = ImmutableDictionary<bool, TaskCompletionSource<object>>.Empty;
+
+		public async Task AllowJoinAndWait(bool permitJoin)
+		{
+			var tcs = new TaskCompletionSource<object>();
+			if (!ImmutableInterlocked.TryAdd(ref _allowJoinWaitingList, permitJoin, tcs))
+			{
+				tcs = _allowJoinWaitingList[permitJoin];
+			}
+
+			var msg = new MqttApplicationMessageBuilder()
+				.WithTopic($"{_settings.CurrentSettings.BaseTopic}/bridge/config/permit_join")
+				.WithPayload(permitJoin ? "true" : "false")
 				.Build();
 
 			await _client.PublishAsync(msg);

@@ -99,13 +99,22 @@ namespace Zigbee2MqttAssistant.Controllers
 
 		public IActionResult Status()
 		{
-			return View();
+			return View(_stateService.CurrentState);
 		}
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 		public IActionResult Error()
 		{
 			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> AllowJoin(bool permitJoin)
+		{
+			await _operationService.AllowJoin(permitJoin);
+
+
+			return RedirectToAction("Status");
 		}
 	}
 }

@@ -6,6 +6,12 @@
 
 <h1 class="display-4">Devices</h1>
 
+@if (Model.PermitJoin)
+{
+    <span class="badge badge-danger">DEVICES ARE CURRENTLY ALLOWED TO JOIN NETWORK.</span>
+}
+
+
 <table class="table table-striped">
     <thead>
         <tr>
@@ -46,6 +52,9 @@
                             <span class="badge badge-warning">weak link</span>
                         }
                     }
+                    <i class="material-icons">
+                        signal_cellular_0_bar
+                    </i>
                 </th>
                 <td>
                     @foreach (var entity in device.Entities.OrderBy(e => e.Component))

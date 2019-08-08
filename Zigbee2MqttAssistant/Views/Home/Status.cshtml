@@ -1,7 +1,31 @@
-﻿
+﻿@model Zigbee2MqttAssistant.Models.Mqtt.Bridge
 @{
     ViewData["Title"] = "Status";
 }
 
 <h1>Status</h1>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Allow Join</h5>
+        @if (Model.PermitJoin)
+        {
+            <span class="badge badge-danger">DEVICES ARE CURRENTLY ALLOWED TO JOIN NETWORK.</span>
+        }
+        <form method="post">
+            @if (Model.PermitJoin)
+            {
+                <button class="btn" type="submit" asp-action="AllowJoin" asp-route-permitJoin="false">DENY NEW DEVICES TO JOIN NETWORK</button>
+            }
+            else
+            {
+                <button class="btn" type="submit" asp-action="AllowJoin" asp-route-permitJoin="true">ALLOW NEW DEVICES TO JOIN NETWORK</button>
+            }
+        </form>
+        <p>
+            Use this feature to allow new devices to join the network.
+        </p>
+    </div>
+</div>
+
 

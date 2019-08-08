@@ -39,5 +39,10 @@ namespace Zigbee2MqttAssistant.Services
 
 			return _stateService.FindDeviceById(newName, out _);
 		}
+
+		public Task AllowJoin(bool permitJoin)
+		{
+			return _mqtt.AllowJoinAndWait(permitJoin);
+		}
 	}
 }

@@ -14,6 +14,16 @@ namespace Zigbee2MqttAssistant.Models.Mqtt
 		public bool Online { get; } = false;
 
 		/// <summary>
+		/// Version of running Zigbee2Mqtt
+		/// </summary>
+		public string Zigbee2MqttVersion { get; }
+
+		/// <summary>
+		/// Version of running Zigbee2Mqtt
+		/// </summary>
+		public string CoordinatorVersion { get; }
+
+		/// <summary>
 		/// The hardware address of the bridge
 		/// </summary>
 		public string CoordinatorZigbeeId { get; }
