@@ -3,7 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.452
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zigbee2MqttAssistant", "Zigbee2MqttAssistant\Zigbee2MqttAssistant.csproj", "{3E37AA24-B4D0-4FA8-896D-8912F5D73F3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zigbee2MqttAssistant", "Zigbee2MqttAssistant\Zigbee2MqttAssistant.csproj", "{3E37AA24-B4D0-4FA8-896D-8912F5D73F3B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A7EAEBA6-16F0-4B41-B577-5DCCB3462A3B}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

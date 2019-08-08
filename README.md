@@ -1,5 +1,6 @@
 # Zibee2Mqtt Assistant
-This project is a _Web GUI_ for the very good [Zigbee2Mqtt system](https://www.zigbee2mqtt.io/) (Z2M).
+This project is a _Web GUI_ for the very good [Zigbee2Mqtt](https://www.zigbee2mqtt.io/) software
+([github sources](https://github.com/Koenkk/zigbee2mqtt)).
 
 3 ways to use it:
 1. From compiled sources (here)
@@ -8,6 +9,16 @@ This project is a _Web GUI_ for the very good [Zigbee2Mqtt system](https://www.z
 
 > # DISCLAIMER
 > This is a VERY VERY draf project. There's absolutely no garantee, use it at your own risk.
+
+## Installation
+
+1. Compile the solution file
+2. Adjust settings in `appsettings.json` for your MQTT connection
+
+## Settings
+
+You can refer to [`Settings.cs` file](Zigbee2MqttAssistant/Models/Settings.cs) for more information
+on allowed settings.
 
 ## Features
 * Display all joined devices, event those unsupported by Zigbee2Mqtt
@@ -29,5 +40,6 @@ This project is a _Web GUI_ for the very good [Zigbee2Mqtt system](https://www.z
   * Home Assistant Discovery **MUST** be activated - event if you're not using it.
     This shouldn't have any side effect to your installation.
 
-    `homeassistant: true` in Z2M configuration
-  * MQTT 
+    To activate: `homeassistant: true` in Z2M configuration
+  * `last_seen` should be activated. Will work without, but you'll have a better experience.
+  * Tested with Zigbee2Mqtt v1.5.1
