@@ -31,15 +31,23 @@
                     {
                         <span class="badge badge-dark">@device.Type</span>
                     }
-                    @if (device.IsAvailable == false)
+                    <br />
+                    @if (device.GetUnresponsiveDelay(out var delaySinceLastResponse) == true)
+                    {
+                        var unseenPeriod = delaySinceLastResponse.Value.Humanize(1);
+                        <span class="badge badge-warning">unresponsive s. @unseenPeriod</span>
+                    }
+                    else if (delaySinceLastResponse.HasValue)
+                    {
+                        var since = delaySinceLastResponse.Value.Humanize(1);
+                        <span class="badge badge-success">@since</span>
+                    }
+                    else if (device.IsAvailable == false)
                     {
                         <span class="badge badge-danger">offline</span>
                     }
-                    @if (device.GetUnresponsiveDelay(out var unresponsiveDelay) == true)
-                    {
-                        var unseenPeriod = unresponsiveDelay.Value.Humanize(1);
-                        <span class="badge badge-warning">unresponsive s. @unseenPeriod</span>
-                    }
+
+
                     @if (device.LinkQuality.HasValue)
                     {
                         var value = device.LinkQuality.Value;
