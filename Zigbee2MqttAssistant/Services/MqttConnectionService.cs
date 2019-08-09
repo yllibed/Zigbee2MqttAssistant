@@ -317,6 +317,7 @@ namespace Zigbee2MqttAssistant.Services
 				var json = JObject.Parse(payload);
 				var type = json["type"]?.Value<string>();
 				var message = json["message"];
+				var meta = json["meta"];
 
 				switch (type)
 				{
@@ -344,6 +345,15 @@ namespace Zigbee2MqttAssistant.Services
 						{
 							tcs.TrySetResult(null); // unblock waiting for rename
 						}
+						break;
+					}
+
+					case "device_connected":
+					{
+						var friendlyName = message?.Value<string>();
+						var model = meta?["modelID"]?.Value<string>();
+
+						_stateService.NewDevice(friendlyName, friendlyName, model);
 						break;
 					}
 				}

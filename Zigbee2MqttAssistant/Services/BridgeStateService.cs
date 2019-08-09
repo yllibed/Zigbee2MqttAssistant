@@ -26,6 +26,34 @@ namespace Zigbee2MqttAssistant.Services
 			_currentState = Bridge.Default;
 		}
 
+		public ZigbeeDevice NewDevice(string friendlyName, string zigbeeId, string modelId)
+		{
+			ZigbeeDevice device = null;
+			Bridge Update(Bridge state)
+			{
+				device = state.Devices.FirstOrDefault(d => d.FriendlyName.Equals(friendlyName));
+
+				if (device == null)
+				{
+
+					device = new ZigbeeDevice.Builder
+					{
+						FriendlyName = friendlyName,
+						IsAvailable = true,
+						ZigbeeId = zigbeeId,
+						ModelId = modelId
+					};
+					state = state.WithDevices(devices => devices.Add(device));
+				}
+
+				return state;
+			}
+
+			ImmutableInterlocked.Update(ref _currentState, Update);
+
+			return device;
+		}
+
 		public ZigbeeDevice UpdateDevice(string friendlyName, string jsonPayload)
 		{
 			ZigbeeDevice device = null;
@@ -256,19 +284,21 @@ namespace Zigbee2MqttAssistant.Services
 				foreach (var deviceJson in json)
 				{
 					var friendlyName = deviceJson["friendly_name"]?.Value<string>();
+					var zigbeeId = deviceJson["ieeeAddr"]?.Value<string>();
+
 					if (string.IsNullOrWhiteSpace(friendlyName))
 					{
 						if (deviceJson["type"]?.Value<string>().Equals("Coordinator", StringComparison.InvariantCultureIgnoreCase) ?? false)
 						{
-							state = state.WithCoordinatorZigbeeId(deviceJson["ieeeAddr"]?.Value<string>());
+							state = state.WithCoordinatorZigbeeId(zigbeeId);
 						}
 
 						continue;
 					}
 
-					var device = state.Devices.FirstOrDefault(d => d.FriendlyName.Equals(friendlyName));
+					var device = state.Devices.FirstOrDefault(d => d.FriendlyName.Equals(friendlyName) || (d.ZigbeeId?.Equals(zigbeeId) ?? false));
 					var newDevice = (device ?? new ZigbeeDevice.Builder { FriendlyName = friendlyName })
-						.WithZigbeeId(deviceJson["ieeeAddr"]?.Value<string>())
+						.WithZigbeeId(zigbeeId)
 						.WithType(deviceJson["type"]?.Value<string>())
 						.WithModel(deviceJson["modelId"]?.Value<string>().Trim().Trim((char)0))
 						.WithModelId(deviceJson["model"]?.Value<string>().Trim().Trim((char)0))
