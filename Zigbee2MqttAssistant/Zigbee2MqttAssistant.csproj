@@ -3,8 +3,6 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <UserSecretsId>7cdee70e-f378-4353-a750-8bfb867845a1</UserSecretsId>
   </PropertyGroup>
 
 
@@ -12,7 +10,6 @@
     <PackageReference Include="Humanizer" Version="2.6.2" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.7.12" />
     <PackageReference Include="MQTTnet" Version="3.0.5" />
     <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="3.0.5" />
     <PackageReference Include="System.Reactive" Version="4.1.6" />
