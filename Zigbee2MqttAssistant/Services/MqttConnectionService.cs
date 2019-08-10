@@ -59,11 +59,7 @@ namespace Zigbee2MqttAssistant.Services
 
 		public async Task StartAsync(CancellationToken ct)
 		{
-			_logger.LogInformation("Starting MqttConnectionService...");
-			await Task.Yield();
-			await Connect(ct);
-			_logger.LogInformation("Subscribing to MQTT topics...");
-			await Subscribe(ct);
+			await Connect();
 		}
 
 		public async Task StopAsync(CancellationToken ct)
@@ -73,10 +69,12 @@ namespace Zigbee2MqttAssistant.Services
 			Disconnect();
 		}
 
-		private async Task Connect(CancellationToken ct)
+		private async Task Connect()
 		{
 			Disconnect();
 
+			_logger.LogInformation("Starting MqttConnectionService...");
+			await Task.Yield();
 			var settings = _settings.CurrentSettings;
 
 			var options = new MqttClientOptionsBuilder()
@@ -96,6 +94,15 @@ namespace Zigbee2MqttAssistant.Services
 			_client.DisconnectedHandler = this;
 			_client.ApplicationMessageReceivedHandler = this;
 			await _client.StartAsync(managedOptions);
+
+			_connection.Disposable = Disposable.Create(() =>
+			{
+				_logger.LogInformation("Disconnection from MQTT server...");
+				_client.Dispose();
+			});
+
+			_logger.LogInformation("Subscribing to MQTT topics...");
+			await Subscribe();
 		}
 
 		private void StartPolling()
@@ -145,10 +152,11 @@ namespace Zigbee2MqttAssistant.Services
 
 		private void Disconnect()
 		{
+			StopPolling();
 			_connection.Disposable = null;
 		}
 
-		private async Task Subscribe(CancellationToken ct)
+		private async Task Subscribe()
 		{
 			var settings = _settings.CurrentSettings;
 			await _client.SubscribeAsync($"{settings.BaseTopic}/#");
@@ -455,6 +463,13 @@ namespace Zigbee2MqttAssistant.Services
 			await _client.PublishAsync(msg);
 
 			await tcs.Task;
+		}
+
+		public async Task Reset()
+		{
+			_stateService.Clear();
+
+			await Connect();
 		}
 	}
 }

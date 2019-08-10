@@ -29,6 +29,14 @@ namespace Zigbee2MqttAssistant.Controllers
 			return View(state);
 		}
 
+		[HttpPost]
+		public async Task<IActionResult> Reset()
+		{
+			await _operationService.Reset();
+
+			return RedirectToAction("Index");
+		}
+
 		public IActionResult Device(string id)
 		{
 			var device = _stateService.FindDeviceById(id, out var state);

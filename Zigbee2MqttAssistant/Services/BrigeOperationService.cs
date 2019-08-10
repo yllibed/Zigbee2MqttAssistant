@@ -44,5 +44,7 @@ namespace Zigbee2MqttAssistant.Services
 		{
 			return _mqtt.AllowJoinAndWait(permitJoin);
 		}
+
+		public Task Reset() => _mqtt.Reset();
 	}
 }
