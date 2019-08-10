@@ -51,7 +51,7 @@ jobs:
       displayName: 'Create a script file to restore version number on during release management'
       inputs:
         script: |
-          echo ##vso[task.setvariable variable=GitVersion.SemVer]$(GitVersion.SemVer)>> "$(Build.ArtifactStagingDirectory)/restore-version.ps1"
+          echo ##vso[task.setvariable variable=GitVersion.SemVer]$(GitVersion.SemVer)>> "$(Build.ArtifactStagingDirectory)/restore-version.txt"
 
     - task: PublishBuildArtifacts@1
       condition: always()
