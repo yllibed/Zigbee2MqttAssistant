@@ -1,0 +1,92 @@
+# ASP.NET Core
+# Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+- master
+
+jobs:
+  - job: build_on_windows
+    pool:
+      vmImage: 'windows-latest'
+
+    variables:
+      buildConfiguration: 'Release'
+
+    steps:
+
+    - task: GitVersion@4
+      inputs:
+        updateAssemblyInfo: true
+
+    - task: NuGetToolInstaller@1
+      displayName: 'Use NuGet 4.4.1'
+      inputs:
+        versionSpec: 4.4.1
+        checkLatest: true
+
+    - task: MSBuild@1
+      inputs:
+        msbuildLocationMethod: version
+        msbuildVersion: latest
+        msbuildArchitecture: x86
+        msbuildArguments: /r /p:Configuration=$(buildConfiguration) /p:OutputPath=app /t:Publish /detailedsummary /m:16 /bl:$(build.artifactstagingdirectory)\build.binlog
+        clean: false
+        maximumCpuCount: true
+        restoreNugetPackages: false
+        logProjectEvents: false
+        createLogFile: false
+
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: 'Zigbee2MqttAssistant/apppublish'
+        Contents: '**'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)/app'
+
+    - task: PublishBuildArtifacts@1
+      condition: always()
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'Application'
+        ArtifactType: Container
+
+  - job: create_docker_on_linux
+    dependsOn: build_on_windows
+    pool:
+      vmImage: 'ubuntu-latest'
+
+    steps:
+    # As of 2019/07/18 GitVersion is failing on Linux, even with v5.0.0.-beta5-9
+    # - task: GitVersion@4
+    #   inputs:
+    #     updateAssemblyInfo: true
+
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        downloadType: 'all'
+        downloadPath: '$(Build.ArtifactStagingDirectory)'
+
+    - task: DockerInstaller@0
+      inputs:
+        dockerVersion: '17.09.0-ce'
+
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: '$(Build.ArtifactStagingDirectory)/Application/app'
+        Contents: '**'
+        TargetFolder: 'Zigbee2MqttAssistant/apppublish'
+
+    - task: CmdLine@2
+      inputs:
+        # echo ##vso[task.setvariable variable=GitVersion.SemVer]$(GitVersion.SemVer)>> "$(Build.ArtifactStagingDirectory)/config.txt"
+        script: |
+          docker build . -t zigbee2mqttassistant:$(Build.BuildId)
+          docker save zigbee2mqttassistant:$(Build.BuildId) -o "$(Build.ArtifactStagingDirectory)/zigbee2mqttassistant-$(Build.BuildId).tar"
+
+    - task: PublishBuildArtifacts@1
+      condition: always()
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'Docker Images'
+        publishLocation: 'Container'
