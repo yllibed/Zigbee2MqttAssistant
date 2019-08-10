@@ -79,8 +79,8 @@ jobs:
 
     - task: CmdLine@2
       inputs:
-        # echo ##vso[task.setvariable variable=GitVersion.SemVer]$(GitVersion.SemVer)>> "$(Build.ArtifactStagingDirectory)/config.txt"
         script: |
+          echo ##vso[task.setvariable variable=GitVersion.SemVer]$(GitVersion.SemVer)>> "$(Build.ArtifactStagingDirectory)/restore-version.ps1"
           docker build . -t zigbee2mqttassistant:$(Build.BuildId)
           docker save zigbee2mqttassistant:$(Build.BuildId) -o "$(Build.ArtifactStagingDirectory)/zigbee2mqttassistant-$(Build.BuildId).tar"
 
