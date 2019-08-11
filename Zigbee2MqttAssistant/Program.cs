@@ -19,6 +19,11 @@ namespace Zigbee2MqttAssistant
 
 		public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
 			WebHost.CreateDefaultBuilder(args)
+				.ConfigureAppConfiguration((hostingContext, config) =>
+				{
+					config.AddEnvironmentVariables(prefix: "Z2MA_"); // for docker ex: Z2MA_SETTINGS__MQTTSERVER
+					config.AddJsonFile("/data/options.json", optional: true); // for HASS.IO
+				})
 				.UseStartup<Startup>();
 	}
 }
