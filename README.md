@@ -55,8 +55,10 @@ on allowed settings.
 
 # Roadmap
 * [X] Build a CI + publish to docker hub
-* [ ] Shorter environment variables + config file (for docker image)
-* [ ] Create a HASS-IO add-on
+* [X] Shorter environment variables + config file (for docker image)
+* [X] Create a `HASS.IO` add-on
+  * [ ] Support for `HASS.IO` Ingress
+  * [ ] Automatic update of repo on new version
 * [ ] Support _Zigbee Bindings_ & _groups_
 * [ ] Better display of "routes to coordinator"
 * [ ] Improve UI
