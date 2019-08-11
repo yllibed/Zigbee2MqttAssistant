@@ -6,9 +6,12 @@
 # --------------------------------------------------------------
 FROM mcr.microsoft.com/dotnet/core/aspnet:2.2-stretch-slim
 EXPOSE 80
-LABEL description="Zigbee2MqttAssistant - A GUI for Zigbee2Mqtt"
-LABEL author="carl.debilly@gmail.com"
-LABEL "project.url"="https://github.com/yllibed/Zigbee2MqttAssistant"
+
+# Metadata for information about this software
+LABEL description="Zigbee2MqttAssistant - A GUI for Zigbee2Mqtt" author="carl.debilly@gmail.com" "project.url"="https://github.com/yllibed/Zigbee2MqttAssistant"
+
+# Additionnal metadata for HASS.IO
+LABEL io.hass.version="172" io.hass.type="addon" io.hass.arch="amd64"
 
 WORKDIR /app
 COPY Zigbee2MqttAssistant/apppublish .
