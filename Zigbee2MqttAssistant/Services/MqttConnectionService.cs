@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Immutable;
+using System.Linq;
 using System.Reactive.Disposables;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -169,9 +170,24 @@ namespace Zigbee2MqttAssistant.Services
 			_connection.Dispose();
 		}
 
+		private static readonly string[] _topicsToIgnore =
+		{
+			"/bridge/config/devices/get",
+			"/bridge/config/permit_join",
+			"/bridge/config/rename",
+			"zigbee2mqtt/bridge/networkmap",
+		};
+
 		public async Task HandleApplicationMessageReceivedAsync(MqttApplicationMessageReceivedEventArgs eventArgs)
 		{
 			var msg = eventArgs.ApplicationMessage;
+
+			var topic = msg.Topic;
+
+			if (_topicsToIgnore.Any(s => topic.EndsWith(s)))
+			{
+				return; // this topic could be safely ignored
+			}
 
 			if (DispatchZigbee2MqttMessage(msg))
 			{
