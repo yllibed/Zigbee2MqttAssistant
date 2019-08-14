@@ -25,6 +25,7 @@ namespace Zigbee2MqttAssistant.Models
 		/// <summary>
 		/// Name or IP of the MQTT server
 		/// </summary>
+		[EqualityHash]
 		public string MqttServer { get; } = "mqtt";
 
 		/// <summary>

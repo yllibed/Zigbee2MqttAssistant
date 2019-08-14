@@ -178,7 +178,7 @@ namespace Zigbee2MqttAssistant.Services
 			"zigbee2mqtt/bridge/networkmap",
 		};
 
-		public async Task HandleApplicationMessageReceivedAsync(MqttApplicationMessageReceivedEventArgs eventArgs)
+		public Task HandleApplicationMessageReceivedAsync(MqttApplicationMessageReceivedEventArgs eventArgs)
 		{
 			var msg = eventArgs.ApplicationMessage;
 
@@ -186,30 +186,32 @@ namespace Zigbee2MqttAssistant.Services
 
 			if (_topicsToIgnore.Any(s => topic.EndsWith(s)))
 			{
-				return; // this topic could be safely ignored
+				return Task.CompletedTask; // this topic could be safely ignored
 			}
 
 			if (DispatchZigbee2MqttMessage(msg))
 			{
-				return;
+				return Task.CompletedTask;
 			}
 
 			if (DispatchHassDiscoveryMessage(msg))
 			{
-				return;
+				return Task.CompletedTask;
 			}
 
 			if (DispatchDevicesMessage(msg))
 			{
-				return;
+				return Task.CompletedTask;
 			}
 
 			if (DispatchLogMessage(msg))
 			{
-				return;
+				return Task.CompletedTask;
 			}
 
 			_logger.LogWarning($"Unable to quality a message received on topic '{msg.Topic}'.");
+
+			return Task.CompletedTask;
 		}
 
 		private Regex FriendlyNameExtractor;
@@ -388,24 +390,27 @@ namespace Zigbee2MqttAssistant.Services
 			return false;
 		}
 
-		public async Task HandleConnectedAsync(MqttClientConnectedEventArgs eventArgs)
+		public Task HandleConnectedAsync(MqttClientConnectedEventArgs eventArgs)
 		{
 			_logger.LogInformation($"Successfully connected to MQTT server {_settings.CurrentSettings.MqttServer}.");
 
 			_stateService.Clear();
 			disconnectWarned = false;
+
+			return Task.CompletedTask;
+
 		}
 
 		private bool disconnectWarned = false;
 
-		public async Task HandleDisconnectedAsync(MqttClientDisconnectedEventArgs eventArgs)
+		public Task HandleDisconnectedAsync(MqttClientDisconnectedEventArgs eventArgs)
 		{
 			StopPolling();
 
 			if (disconnectWarned)
 			{
 				_logger.LogDebug(eventArgs.Exception, $"Error connecting to MQTT server {_settings.CurrentSettings.MqttServer}.");
-				return;
+				return Task.CompletedTask;
 			}
 
 			disconnectWarned = true;
@@ -417,6 +422,9 @@ namespace Zigbee2MqttAssistant.Services
 			{
 				_logger.LogWarning(eventArgs.Exception, $"Unable to connect to MQTT server {_settings.CurrentSettings.MqttServer}.");
 			}
+
+			return Task.CompletedTask;
+
 		}
 
 		private ImmutableDictionary<string, TaskCompletionSource<object>> _renameWaitingList = ImmutableDictionary<string, TaskCompletionSource<object>>.Empty;

@@ -9,7 +9,7 @@ namespace Zigbee2MqttAssistant.Models.Devices
 	{
 		[EqualityHash]
 		public string EntityId { get; }
-		[EqualityKey]
+		[EqualityHash]
 		public string Component { get; }
 		public string Name { get; }
 		public string DeviceClass { get; }
