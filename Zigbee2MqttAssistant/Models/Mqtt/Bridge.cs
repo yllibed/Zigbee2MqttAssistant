@@ -27,7 +27,7 @@ namespace Zigbee2MqttAssistant.Models.Mqtt
 		/// <summary>
 		/// The hardware address of the bridge
 		/// </summary>
-		[EqualityKey]
+		[EqualityHash]
 		public string CoordinatorZigbeeId { get; }
 
 		/// <summary>

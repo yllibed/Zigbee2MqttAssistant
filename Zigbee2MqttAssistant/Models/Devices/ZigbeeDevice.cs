@@ -11,7 +11,7 @@ namespace Zigbee2MqttAssistant.Models.Devices
 	[DebuggerDisplay("{ZigbeeId}-{FriendlyName}")]
 	public partial class ZigbeeDevice
 	{
-		[EqualityKey]
+		[EqualityHash]
 		public string ZigbeeId { get; }
 
 		[EqualityHash]
@@ -24,14 +24,12 @@ namespace Zigbee2MqttAssistant.Models.Devices
 
 		public ImmutableArray<(string zigbeeId, ushort linkQuality)> Parents { get; } = ImmutableArray<(string zigbeeId, ushort linkQuality)>.Empty;
 
-		[EqualityKey]
 		public string FriendlyName { get; }
 
 		public string UniqueId { get; }
 
 		public string Name { get; }
 
-		[EqualityHash]
 		public bool? IsAvailable { get; }
 
 		public DateTimeOffset? LastSeen { get; }
