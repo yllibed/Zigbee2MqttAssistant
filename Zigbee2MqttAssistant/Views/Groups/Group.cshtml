@@ -1,0 +1,11 @@
+﻿@model (Zigbee2MqttAssistant.Models.Mqtt.Bridge state, Zigbee2MqttAssistant.Models.Devices.DeviceGroup group)
+
+@{
+    ViewBag.Title = "title";
+
+    var state = Model.state;
+    var group = Model.group;
+}
+
+<h2>@group.FriendlyName</h2>
+

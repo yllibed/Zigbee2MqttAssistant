@@ -1,4 +1,5 @@
 ﻿using System;
+using Newtonsoft.Json.Linq;
 using Zigbee2MqttAssistant.Models.Devices;
 using Zigbee2MqttAssistant.Models.Mqtt;
 
@@ -20,5 +21,6 @@ namespace Zigbee2MqttAssistant.Services
 		void UpdateNetworkMap(string payload);
 		void UpdateRenamedDevice(string @from, string to);
 		void RemoveDevice(string removedDeviceFriendlyName);
+		void SetGroups(JToken message);
 	}
 }

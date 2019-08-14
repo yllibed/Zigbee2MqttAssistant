@@ -1,0 +1,62 @@
+﻿@model Zigbee2MqttAssistant.Models.Mqtt.Bridge
+
+<h1 class="display-4">Groups</h1>
+
+@if (Model.PermitJoin)
+{
+    <span class="badge badge-danger">DEVICES ARE CURRENTLY ALLOWED TO JOIN NETWORK.</span>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scole="col">Name / Id</th>
+            <th scole="col">Components</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var group in Model.Groups.OrderBy(d => d.FriendlyName))
+        {
+            <tr>
+                <th scope="row">
+                    <a asp-action="Group" asp-route-id="@group.Id"><strong>@group.FriendlyName</strong></a>
+                    <br /><code>@group.Id</code>
+                </th>
+                <td>
+                    @foreach (var deviceId in group.DeviceIds)
+                    {
+                        var deviceName = Model.Devices
+                            .FirstOrDefault(d => d.ZigbeeId?.Equals(deviceId) ?? false)
+                            ?.FriendlyName ?? "unknown";
+                        deviceName = deviceName.Equals(deviceId) ? "" : $" / {deviceName}";
+                        <span class="badge badge-dark">@(deviceId + deviceName)</span>
+                    }
+                    @if (group.DeviceIds.Length == 0)
+                    {
+                        <span class="badge badge-danger">EMPTY</span>
+                        <p>There's no devices in this group</p>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">New Group</h5>
+        <form asp-action="New" method="post">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Name of the new group" name="newName">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="submit">Add</button>
+                </div>
+            </div>
+        </form>
+        <p>
+            Warning: After renaming devices, you should restart Zigbee2Mqtt to force it to
+            push new discovery entries. Renamed devices will appear "staled" until this reboot.
+            THIS OPERATION WON'T CHANGE IDS IN HOME-ASSISTANT! Only the display name will change.
+        </p>
+    </div>
+</div>

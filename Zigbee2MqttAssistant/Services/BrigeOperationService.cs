@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Zigbee2MqttAssistant.Models.Devices;
 
 namespace Zigbee2MqttAssistant.Services
@@ -46,5 +47,11 @@ namespace Zigbee2MqttAssistant.Services
 		}
 
 		public Task Reset() => _mqtt.Reset();
+
+		public Task<string> NewGroup(string groupName)
+		{
+			return _mqtt.NewGroupAndWaitForId(groupName);
+
+		}
 	}
 }

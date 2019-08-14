@@ -447,6 +447,34 @@ namespace Zigbee2MqttAssistant.Services
 			ImmutableInterlocked.Update(ref _currentState, Update);
 		}
 
+		public void SetGroups(JToken message)
+		{
+			Bridge Update(Bridge state)
+			{
+				var groups = message
+					.OfType<JProperty>()
+					.Select(group =>
+						{
+
+							var id = group.Name;
+							var name = group.Value["friendly_name"]?.Value<string>();
+							var devices = (group.Value["devices"] as JArray)
+								.Values()
+								.Select(v => v.Value<string>())
+								.ToImmutableArray();
+
+							return new DeviceGroup(id, name, devices);
+
+						}
+					)
+					.ToImmutableArray();
+
+				return state.WithGroups(groups);
+			}
+
+			ImmutableInterlocked.Update(ref _currentState, Update);
+		}
+
 		public IReadOnlyCollection<IReadOnlyCollection<ZigbeeDevice>> GetRoutesToCoordinator(ZigbeeDevice forDevice)
 		{
 			var state = _currentState;

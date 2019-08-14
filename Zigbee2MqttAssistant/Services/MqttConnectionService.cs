@@ -125,20 +125,30 @@ namespace Zigbee2MqttAssistant.Services
 
 				while (!ct.IsCancellationRequested)
 				{
-					var msg = new MqttApplicationMessageBuilder()
+					var msgDevices = new MqttApplicationMessageBuilder()
 						.WithTopic($"{settings.BaseTopic}/bridge/config/devices/get")
 						.Build();
 
-					await _client.PublishAsync(msg);
+					await _client.PublishAsync(msgDevices);
+
+					if (count % 2 == 0)
+					{
+						var msgGroups = new MqttApplicationMessageBuilder()
+							.WithTopic($"{settings.BaseTopic}/bridge/config/groups")
+							.WithPayload("raw")
+							.Build();
+
+						await _client.PublishAsync(msgGroups);
+					}
 
 					if (count % 3 == 0)
 					{
-						var msg2 = new MqttApplicationMessageBuilder()
+						var msgGroups = new MqttApplicationMessageBuilder()
 							.WithTopic($"{settings.BaseTopic}/bridge/networkmap")
 							.WithPayload("raw")
 							.Build();
 
-						await _client.PublishAsync(msg2);
+						await _client.PublishAsync(msgGroups);
 					}
 
 					await Task.Delay(TimeSpan.FromMinutes(5), ct);
@@ -173,6 +183,7 @@ namespace Zigbee2MqttAssistant.Services
 		private static readonly string[] _topicsToIgnore =
 		{
 			"/bridge/config/devices/get",
+			"/bridge/config/groups",
 			"/bridge/config/permit_join",
 			"/bridge/config/rename",
 			"zigbee2mqtt/bridge/networkmap",
@@ -347,17 +358,12 @@ namespace Zigbee2MqttAssistant.Services
 
 				switch (type)
 				{
-					case "device_renamed":
+					case "device_connected":
 					{
-						var from = message["from"]?.Value<string>();
-						var to = message["to"]?.Value<string>();
-						_stateService.UpdateRenamedDevice(from, to);
+						var friendlyName = message?.Value<string>();
+						var model = meta?["modelID"]?.Value<string>();
 
-						if (ImmutableInterlocked.TryRemove(ref _renameWaitingList, from, out var tcs))
-						{
-							tcs.TrySetResult(null); // unblock waiting for rename
-						}
-
+						_stateService.NewDevice(friendlyName, friendlyName, model);
 						break;
 					}
 
@@ -374,12 +380,24 @@ namespace Zigbee2MqttAssistant.Services
 						break;
 					}
 
-					case "device_connected":
+					case "device_renamed":
 					{
-						var friendlyName = message?.Value<string>();
-						var model = meta?["modelID"]?.Value<string>();
+						var from = message["from"]?.Value<string>();
+						var to = message["to"]?.Value<string>();
+						_stateService.UpdateRenamedDevice(from, to);
 
-						_stateService.NewDevice(friendlyName, friendlyName, model);
+						if (ImmutableInterlocked.TryRemove(ref _renameWaitingList, from, out var tcs))
+						{
+							tcs.TrySetResult(null); // unblock waiting for rename
+						}
+
+						break;
+					}
+
+					case "groups":
+					{
+						_stateService.SetGroups(message);
+
 						break;
 					}
 				}
@@ -494,6 +512,11 @@ namespace Zigbee2MqttAssistant.Services
 			_stateService.Clear();
 
 			await Connect();
+		}
+
+		public Task<string> NewGroupAndWaitForId(string groupName)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

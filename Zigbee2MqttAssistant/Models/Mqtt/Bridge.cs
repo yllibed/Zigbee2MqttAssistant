@@ -42,6 +42,8 @@ namespace Zigbee2MqttAssistant.Models.Mqtt
 
 		public ImmutableArray<ZigbeeDevice> Devices { get;  } = ImmutableArray<ZigbeeDevice>.Empty;
 
+		public ImmutableArray<DeviceGroup> Groups { get; } = ImmutableArray<DeviceGroup>.Empty;
+
 		public ImmutableArray<LogEntry> Logs { get; } = ImmutableArray<LogEntry>.Empty;
 	}
 }
