@@ -21,11 +21,13 @@ namespace Zigbee2MqttAssistant.Models.Mqtt
 		/// <summary>
 		/// Version of running Zigbee2Mqtt
 		/// </summary>
+		[EqualityHash]
 		public string CoordinatorVersion { get; }
 
 		/// <summary>
 		/// The hardware address of the bridge
 		/// </summary>
+		[EqualityKey]
 		public string CoordinatorZigbeeId { get; }
 
 		/// <summary>
