@@ -2,6 +2,20 @@
 This project is a _Web GUI_ for the very good [Zigbee2Mqtt](https://www.zigbee2mqtt.io/) software
 ([github sources](https://github.com/Koenkk/zigbee2mqtt)).
 
+## Features
+* If you're using zigbee2mqtt for your devices, it's a must.
+* Display zigbee devices and the status of each of them.
+* Flexible installation:
+  * Available as a _HASS.IO_ add-on (integration into _Home Assistant_). _Ingress_ is supported too.
+    note: can be used without Home Assistant.
+  * Published as a docker image.
+* Operations on devices:
+  * Allow network join
+  * Rename devices
+  * Remove devices from network
+  * Visualize device health
+* Build with _ASP.NET Core_
+
 [![Build Status](https://dev.azure.com/yllibed/Zigbee2MqttAssistant/_apis/build/status/yllibed.Zigbee2MqttAssistant?branchName=master)](https://dev.azure.com/yllibed/Zigbee2MqttAssistant/_build/latest?definitionId=4&branchName=master)
 [![Docker Pulls](https://img.shields.io/docker/pulls/carldebilly/zigbee2mqttassistant)](https://hub.docker.com/r/carldebilly/zigbee2mqttassistant)
 
@@ -18,7 +32,7 @@ This project is a _Web GUI_ for the very good [Zigbee2Mqtt](https://www.zigbee2m
    ```
    https://github.com/yllibed/hassio
    ```
-2. Install Zigbee2Mq2tt
+2. Install `Zigbee2Mq2ttAssistant`
 3. Configure your credentials for your MQTT server
 4. Enjoy!
 
@@ -39,7 +53,17 @@ docker run -p 8880:80 -e Z2MA_SETTINGS__MQTTSERVER=<mqttserver> -e Z2MA_SETTINGS
 # Settings
 
 You can refer to [`Settings.cs` file](Zigbee2MqttAssistant/Models/Settings.cs) for more information
-on allowed settings.
+on allowed settings. Here's the important settings:
+
+| Field                             | Default           | Usage                                                   |
+| --------------------------------- | ----------------- | ------------------------------------------------------- |
+| `BasicTopic`                      | `"zigbee2mqtt"`   | Base MQTT topic when Zigbee2Mqtt is publishing its data |
+| `HomeAssistantDiscoveryBaseTopic` | `"homeassistant"` | Base MQTT topic for HASS Discovery                      |
+| `MqttServer`                      | `"mqtt"`          | Name or IP address of the MQTT server                   |
+| `MqttSecure`                      | `false`           | If should use TLS to connect to MQTT server             |
+| `MqttPort`                        | `1883` (normal) or `8883` (secured) | Port for MQTT server                  |
+| `MqttUsername`                    | `""`              | Username for MQTT server                                |
+| `MqttPassword`                    | `""`              | Password for MQTT server                                |
 
 # Features
 * Display all joined devices, event those unsupported by Zigbee2Mqtt
@@ -52,10 +76,12 @@ on allowed settings.
 * [X] Build a CI + publish to docker hub
 * [X] Shorter environment variables + config file (for docker image)
 * [X] Create a `HASS.IO` add-on
-  * [ ] Support for `HASS.IO` Ingress
-  * [ ] Automatic update of repo on new version
-* [ ] Support _Zigbee Bindings_ & _groups_
+  * [X] Support for `HASS.IO` Ingress
+  * [X] Automatic update of repo on new version
+* [ ] Support _Zigbee Bindings_
+* [ ] Support _Zigbee groups_
 * [ ] Better display of "routes to coordinator"
+* [ ] Better support for configuration in docker configuration
 * [ ] Improve UI
 
 # Requirements
