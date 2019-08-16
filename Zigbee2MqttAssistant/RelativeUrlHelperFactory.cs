@@ -47,9 +47,17 @@ namespace Zigbee2MqttAssistant
 				// This is not a well-optimized algorithm, but it works!
 				// You're welcome to improve it.
 				var deepness = _contextHttpContext.Request.Path.Value.Split('/').Length - 2;
-				for (var i = 0; i < deepness; i++)
+
+				if (deepness == 0)
 				{
-					url = i == 0 ? ".." + url : "../" + url;
+					return url.Substring(1);
+				}
+				else
+				{
+					for (var i = 0; i < deepness; i++)
+					{
+						url = i == 0 ? ".." + url : "../" + url;
+					}
 				}
 
 				return url;
