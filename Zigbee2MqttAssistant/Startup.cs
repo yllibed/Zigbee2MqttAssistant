@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.IO;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -42,6 +44,12 @@ namespace Zigbee2MqttAssistant
 			services.AddSingleton<IHostedService, MqttConnectionService>(sp => sp.GetService<MqttConnectionService>());
 
 			services.Decorate<IUrlHelperFactory>((previous, _) => new RelativeUrlHelperFactory(previous));
+
+			if(Directory.Exists("/data"))
+			{
+				services.AddDataProtection()
+					.PersistKeysToFileSystem(new DirectoryInfo("/data"));
+			}
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
