@@ -382,6 +382,32 @@ namespace Zigbee2MqttAssistant.Services
 						_stateService.NewDevice(friendlyName, friendlyName, model);
 						break;
 					}
+
+					case "device_bind":
+					{
+						var from = message["from"]?.Value<string>();
+						var to = message["to"]?.Value<string>();
+
+						if (ImmutableInterlocked.TryRemove(ref _bindWaitingList, (from, to), out var tcs))
+						{
+							tcs.TrySetResult(null);
+						}
+
+						break;
+					}
+
+					case "device_unbind":
+					{
+						var from = message["from"]?.Value<string>();
+						var to = message["to"]?.Value<string>();
+
+						if (ImmutableInterlocked.TryRemove(ref _unbindWaitingList, (from, to), out var tcs))
+						{
+							tcs.TrySetResult(null);
+						}
+
+						break;
+					}
 				}
 
 				return true;
@@ -494,6 +520,72 @@ namespace Zigbee2MqttAssistant.Services
 			_stateService.Clear();
 
 			await Connect();
+		}
+
+		private ImmutableDictionary<(string source, string target), TaskCompletionSource<object>> _bindWaitingList = ImmutableDictionary< (string, string), TaskCompletionSource<object>>.Empty;
+
+		public async Task Bind(string sourceFriendlyName, string targetFriendlyName)
+		{
+			var tcs = new TaskCompletionSource<object>();
+
+			var source = _stateService.FindDeviceById(sourceFriendlyName, out var state);
+			var target = state.FindDevice(targetFriendlyName);
+
+			var isAwaitable = !(string.IsNullOrEmpty(source.ZigbeeId) || string.IsNullOrEmpty(target.ZigbeeId));
+
+			if (isAwaitable)
+			{
+				if (!ImmutableInterlocked.TryAdd(ref _bindWaitingList, (source.ZigbeeId, target.ZigbeeId), tcs))
+				{
+					throw new InvalidOperationException("Another bind in progress for this device.");
+				}
+			}
+
+			var msg = new MqttApplicationMessageBuilder()
+				.WithTopic($"{_settings.CurrentSettings.BaseTopic}/bridge/bind/{sourceFriendlyName}")
+				.WithPayload(targetFriendlyName)
+				.Build();
+
+			await _client.PublishAsync(msg);
+
+
+			if (isAwaitable)
+			{
+				await tcs.Task;
+			}
+		}
+
+		private ImmutableDictionary<(string source, string target), TaskCompletionSource<object>> _unbindWaitingList = ImmutableDictionary<(string, string), TaskCompletionSource<object>>.Empty;
+
+		public async Task Unbind(string sourceFriendlyName, string targetFriendlyName)
+		{
+			var tcs = new TaskCompletionSource<object>();
+
+			var source = _stateService.FindDeviceById(sourceFriendlyName, out var state);
+			var target = state.FindDevice(targetFriendlyName);
+
+			var isAwaitable = !(string.IsNullOrEmpty(source.ZigbeeId) || string.IsNullOrEmpty(target.ZigbeeId));
+
+			if (isAwaitable)
+			{
+				if (!ImmutableInterlocked.TryAdd(ref _unbindWaitingList, (source.ZigbeeId, target.ZigbeeId), tcs))
+				{
+					throw new InvalidOperationException("Another unbind in progress for this device.");
+				}
+			}
+
+			var msg = new MqttApplicationMessageBuilder()
+				.WithTopic($"{_settings.CurrentSettings.BaseTopic}/bridge/unbind/{sourceFriendlyName}")
+				.WithPayload(targetFriendlyName)
+				.Build();
+
+			await _client.PublishAsync(msg);
+
+
+			if (isAwaitable)
+			{
+				await tcs.Task;
+			}
 		}
 	}
 }

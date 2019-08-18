@@ -9,5 +9,7 @@ namespace Zigbee2MqttAssistant.Services
 		Task<ZigbeeDevice> RenameDeviceById(string deviceId, string newName);
 		Task AllowJoin(bool permitJoin);
 		Task Reset();
+		Task Bind(string id, string targetId);
+		Task Unbind(string id, string targetId);
 	}
 }

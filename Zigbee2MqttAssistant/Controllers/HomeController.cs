@@ -74,7 +74,8 @@ namespace Zigbee2MqttAssistant.Controllers
 			{
 				Device = device,
 				RouteToCoordinator = routeToCoordinator.ToImmutableArray(),
-				RouteReachCoordinator = reachCoordinator
+				RouteReachCoordinator = reachCoordinator,
+				BridgeState = state
 			};
 
 			return View(vm);
@@ -93,6 +94,21 @@ namespace Zigbee2MqttAssistant.Controllers
 			return RedirectToAction("Index");
 		}
 
+		[HttpPost]
+		public async Task<IActionResult> BindDevice(string id, string targetId)
+		{
+			await _operationService.Bind(id, targetId);
+			return RedirectToAction("Device", new {id});
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> UnbindDevice(string id, string targetId)
+		{
+			await _operationService.Unbind(id, targetId);
+			return RedirectToAction("Device", new { id });
+		}
+
+		[HttpPost]
 		public async Task<IActionResult> RemoveDevice(string id)
 		{
 			var device = await _operationService.RemoveDeviceById(id);

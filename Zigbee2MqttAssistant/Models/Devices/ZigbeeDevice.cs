@@ -63,5 +63,7 @@ namespace Zigbee2MqttAssistant.Models.Devices
 
 			return lastSeen < dateTimeUnresponsive;
 		}
+
+		public override string ToString() => FriendlyName != ZigbeeId ? $"{FriendlyName}-{ZigbeeId}" : FriendlyName;
 	}
 }

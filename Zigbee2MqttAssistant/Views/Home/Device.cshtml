@@ -97,11 +97,42 @@ else
                 </div>
             </div>
         </form>
-        <p>
+        <small class="form-text text-secondary">
             Warning: After renaming devices, you should restart Zigbee2Mqtt to force it to
             push new discovery entries. Renamed devices will appear "staled" until this reboot.
             THIS OPERATION WON'T CHANGE IDS IN HOME-ASSISTANT! Only the display name will change.
-        </p>
+        </small>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Binding</h5>
+        Bind this device (<code>@device.ToString()</code>) to send payloads (instructions) to this
+        device:
+        <form method="post" asp-route-id="@device.FriendlyName">
+            @{
+                var items = Model.BridgeState.Devices
+                    .Select(d => new SelectListItem(d.ToString(), d.FriendlyName))
+                    .OrderBy(x => x.Text)
+                    .Prepend(new SelectListItem("--select a target device--", "", true, disabled: true));
+            }
+            <select name="targetId" asp-items="items" class="form-control"></select>
+            <button class="btn btn-secondary" type="submit" asp-action="BindDevice" asp-route-id="@device.FriendlyName">BIND</button>
+            <button class="btn btn-secondary" type="submit" asp-action="UnbindDevice" asp-route-id="@device.FriendlyName">UNBIND</button>
+        </form>
+        <small class="form-text text-info">
+            <a href="https://www.zigbee2mqtt.io/information/binding.html" target="_blank">See documentation here on binding</a>.
+            Binding to specific endpoint not supported yet.
+        </small>
+        <small class="form-text text-secondary">
+            TIP1: You should manipulate the device right before sending the command to ensure the device will be awake and able to receive the binding instruction.
+        </small>
+        <small class="form-text text-secondary">
+            TIP2: you may need to activate the <code>report</code> feature if you want the coordinator to receive new values.
+            See how to activate the <code>report</code> feature <a href="https://www.zigbee2mqtt.io/information/report.html" target="_blank">here</a>.
+        </small>
+        <small class="form-text text-danger text-capitalize">You should check Zigbee2Mqtt logs to see if the binding/unbinding is successful.</small>
     </div>
 </div>
 
@@ -111,12 +142,12 @@ else
         <form asp-action="RemoveDevice" method="post" asp-route-id="@device.FriendlyName">
             <button class="btn bg-danger" type="submit">REMOVE THIS DEVICE</button>
         </form>
-        <p>
+        <small class="form-text text-info">
             This will remove the device from Zigbee2Mqtt. You may repair it if you need it again.
             Removing a connected device will probably cause the re-creation of the device itself.
-            <br/>
+            <br />
             TIP: removing a device could help solving connection issues by forcing Zigbee2Mqtt to
             rediscover the device.
-        </p>
+        </small>
     </div>
 </div>

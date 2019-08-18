@@ -34,6 +34,11 @@ namespace Zigbee2MqttAssistant
 
 			private string MakeUrlRelative(string url)
 			{
+				if (url == null)
+				{
+					return null;
+				}
+
 				if (url.Length == 0 || url[0] != '/')
 				{
 					return url; // that's an url going elsewhere: no need to be relative

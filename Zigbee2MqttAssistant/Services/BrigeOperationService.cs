@@ -46,5 +46,31 @@ namespace Zigbee2MqttAssistant.Services
 		}
 
 		public Task Reset() => _mqtt.Reset();
+
+		public async Task Bind(string id, string targetId)
+		{
+			var source = _stateService.FindDeviceById(id, out var state);
+			var target = state.FindDevice(targetId);
+
+			if (source == null || target == null)
+			{
+				return;
+			}
+
+			await _mqtt.Bind(source.FriendlyName, target.FriendlyName);
+		}
+
+		public async Task Unbind(string id, string targetId)
+		{
+			var source = _stateService.FindDeviceById(id, out var state);
+			var target = state.FindDevice(targetId);
+
+			if (source == null || target == null)
+			{
+				return;
+			}
+
+			await _mqtt.Unbind(source.FriendlyName, target.FriendlyName);
+		}
 	}
 }

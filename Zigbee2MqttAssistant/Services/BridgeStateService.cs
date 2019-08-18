@@ -266,13 +266,7 @@ namespace Zigbee2MqttAssistant.Services
 		{
 			state = _currentState;
 
-			if (string.IsNullOrWhiteSpace(deviceId))
-			{
-				return null;
-			}
-
-			return state.Devices.FirstOrDefault(device =>
-				device.FriendlyName.Equals(deviceId) || (device.ZigbeeId?.Equals(deviceId) ?? false));
+			return state.FindDevice(deviceId);
 		}
 
 		public void UpdateDevices(string payload)

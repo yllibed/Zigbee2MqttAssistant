@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Linq;
 using Microsoft.Extensions.Logging;
 using Uno;
 using Zigbee2MqttAssistant.Models.Devices;
@@ -43,5 +44,16 @@ namespace Zigbee2MqttAssistant.Models.Mqtt
 		public ImmutableArray<ZigbeeDevice> Devices { get;  } = ImmutableArray<ZigbeeDevice>.Empty;
 
 		public ImmutableArray<LogEntry> Logs { get; } = ImmutableArray<LogEntry>.Empty;
+
+		public ZigbeeDevice FindDevice(string idOrFriendlyName)
+		{
+			if (string.IsNullOrWhiteSpace(idOrFriendlyName))
+			{
+				return null;
+			}
+
+			return Devices.FirstOrDefault(device =>
+				device.FriendlyName.Equals(idOrFriendlyName) || (device.ZigbeeId?.Equals(idOrFriendlyName) ?? false));
+		}
 	}
 }
