@@ -30,15 +30,6 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
-                        @{
-                            var isHassIoIngress = Context.Request.Headers["x-ingress-path"].Count > 0;
-                        }
-                        @if (isHassIoIngress)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" href="/">HA Home</a>
-                            </li>
-                        }
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Devices</a>
                         </li>
@@ -59,7 +50,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2019 - Zigbee2MqttAssistant
+            &copy; 2019 - Carl de Billy. <a href="https://github.com/yllibed/Zigbee2MqttAssistant">Zigbee2Mqtt Assistant GITHUB</a>
         </div>
     </footer>
 
