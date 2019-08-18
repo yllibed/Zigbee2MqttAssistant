@@ -40,7 +40,6 @@ namespace Zigbee2MqttAssistant
 
 			services.AddSingleton<MqttConnectionService>();
 			services.AddSingleton<IHostedService, MqttConnectionService>(sp => sp.GetService<MqttConnectionService>());
-			//services.AddHostedService<MqttConnectionService>();
 
 			services.Decorate<IUrlHelperFactory>((previous, _) => new RelativeUrlHelperFactory(previous));
 		}
