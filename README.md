@@ -8,13 +8,14 @@ This project is a _Web GUI_ for the very good [Zigbee2Mqtt](https://www.zigbee2m
 * Flexible installation:
   * Available as a _HASS.IO_ add-on (integration into _Home Assistant_). _Ingress_ is supported too.
     note: can be used without Home Assistant.
-  * Published as a docker image.
+  * Published as a docker image. (based on `mcr.microsoft.com/dotnet/core/aspnet:2.2-stretch-slim`, a Linux Debian 9 image).
 * Operations on devices:
-  * Allow network join
+  * Allow network join - no more need to setup virtual switches in HA just for that.
   * Rename devices
   * Remove devices from network
+  * Bind device to another one (mostly used for Ikea TRÅDFRI devices - [documentation here](https://www.zigbee2mqtt.io/information/binding.html))
   * Visualize device health
-* Build with _ASP.NET Core_
+* Based on _ASP.NET Core_ 2.2.
 
 [![Build Status](https://dev.azure.com/yllibed/Zigbee2MqttAssistant/_apis/build/status/yllibed.Zigbee2MqttAssistant?branchName=master)](https://dev.azure.com/yllibed/Zigbee2MqttAssistant/_build/latest?definitionId=4&branchName=master)
 [![Docker Pulls](https://img.shields.io/docker/pulls/carldebilly/zigbee2mqttassistant)](https://hub.docker.com/r/carldebilly/zigbee2mqttassistant)
@@ -23,7 +24,6 @@ This project is a _Web GUI_ for the very good [Zigbee2Mqtt](https://www.zigbee2m
 ![](images/devices-list.png)
 ![](images/device-page.png)
 ![](images/status-page.png)
-
 
 # Installation
 
@@ -64,13 +64,6 @@ on allowed settings. Here's the important settings:
 | `MqttPort`                        | `1883` (normal) or `8883` (secured) | Port for MQTT server                  |
 | `MqttUsername`                    | `""`              | Username for MQTT server                                |
 | `MqttPassword`                    | `""`              | Password for MQTT server                                |
-
-# Features
-* Display all joined devices, event those unsupported by Zigbee2Mqtt
-* Display staled devices
-* Let you rename a device easily
-* Let you remove a device easily
-* Activate / deactivate ALLOW JOIN on Zigbee - no need to setup virtual switches in HA just for that.
 
 # Roadmap
 * [X] Build a CI + publish to docker hub
