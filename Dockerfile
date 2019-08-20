@@ -1,33 +1,24 @@
 # This file should be run after compiling the solution with the following command:
 # msbuild /r /p:Configuration=Release /p:OutputPath=app /t:Publish
 
-# --------------------------------------------------------------
-# Linux 64 bits
-# --------------------------------------------------------------
-FROM mcr.microsoft.com/dotnet/core/aspnet:2.2-stretch-slim
+# You should run this file with the following parameters:
+# docker build . --build-args DOTNETTAG=<dotnettag> --build-arg OSTAG=<ostag> -t <image-tag>
+# where:
+#  <dotnettag> is the tag of the dotnet aspnet runtime image
+#  <ostag> is the tag of the runtime for hass.io
+
+ARG DOTNETTAG
+ARG OSTAG
+
+FROM mcr.microsoft.com/dotnet/core/aspnet:$DOTNETTAG
 EXPOSE 80
 
 # Metadata for information about this software
 LABEL description="Zigbee2MqttAssistant - A GUI for Zigbee2Mqtt" author="carl.debilly@gmail.com" "project.url"="https://github.com/yllibed/Zigbee2MqttAssistant"
 
 # Additionnal metadata for HASS.IO
-LABEL io.hass.version="172" io.hass.type="addon" io.hass.arch="amd64"
+LABEL io.hass.version="172" io.hass.type="addon" io.hass.arch="$OSTAG"
 
 WORKDIR /app
 COPY Zigbee2MqttAssistant/apppublish .
 ENTRYPOINT ["dotnet", "Zigbee2MqttAssistant.dll"]
-
-# # --------------------------------------------------------------
-# # Linux ARM (32 bits)
-# # --------------------------------------------------------------
-# FROM mcr.microsoft.com/dotnet/core/aspnet:2.2-stretch-slim-arm32v7
-# EXPOSE 80
-# LABEL description="Zigbee2MqttAssistant - A GUI for Zigbee2Mqtt"
-# LABEL author="carl.debilly@gmail.com"
-# LABEL "project.url"="https://github.com/yllibed/Zigbee2MqttAssistant"
-
-# WORKDIR /app
-# # This is the result of a previously built project using this command line in the same folder:
-# # msbuild /r /p:Configuration=Release /p:OutputPath=app /t:Publish
-# COPY Zigbee2MqttAssistant/apppublish .
-# ENTRYPOINT ["dotnet", "Zigbee2MqttAssistant.dll"]
