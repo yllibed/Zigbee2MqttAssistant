@@ -46,7 +46,7 @@ jobs:
       displayName: 'save docker images to artifacts'
       inputs:
         script: |
-          docker save zigbee2mqttassistant:$(Build.BuildId) -o "$(Build.ArtifactStagingDirectory)/zigbee2mqttassistant-$(Build.BuildId)-$(osTag).tar"
+          docker save zigbee2mqttassistant:$(Build.BuildId)-$(osTag) -o "$(Build.ArtifactStagingDirectory)/zigbee2mqttassistant-$(Build.BuildId)-$(osTag).tar"
 
     - task: PublishBuildArtifacts@1
       displayName: 'Publish docker images as build artifacts'
