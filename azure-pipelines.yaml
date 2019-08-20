@@ -7,7 +7,7 @@ trigger:
 - master
 
 jobs:
-  - job: build_on_windows
+  - job: compile_on_windows
     pool:
       vmImage: 'windows-latest'
 
@@ -60,42 +60,39 @@ jobs:
         ArtifactName: 'Application'
         ArtifactType: Container
 
-  - job: create_docker_on_linux
-    dependsOn: build_on_windows
-    pool:
+# List of microsoft dotnet core images: https://hub.docker.com/_/microsoft-dotnet-core-runtime/  (for "imageTag")
+
+  - template: azure-pipelines.buildimage.yaml
+    parameters:
+      target: linux-x64
       vmImage: 'ubuntu-latest'
+      imageTag: '2.2-stretch-slim'
+      osTag: 'amd64'
 
-    steps:
+  - template: azure-pipelines.buildimage.yaml
+    parameters:
+      target: linux-arm32
+      vmImage: 'ubuntu-latest'
+      imageTag: '2.2-stretch-slim-arm32v7'
+      osTag: 'armv7'
 
-    - task: DownloadBuildArtifacts@0
-      displayName: 'Restore artifacts compiled on Windows'
-      inputs:
-        downloadType: 'all'
-        downloadPath: '$(Build.ArtifactStagingDirectory)'
+  # - template: azure-pipelines.buildimage.yaml
+  #   parameters:
+  #     target: linux-arm64
+  #     vmImage: 'ubuntu-latest'
+  #     imageTag: '3.0.0-preview8-buster-slim'
+  #     osTag: 'armhf'
 
-    - task: DockerInstaller@0
-      displayName: 'Install docker on CI agent'
-      inputs:
-        dockerVersion: '17.09.0-ce'
+  - template: azure-pipelines.buildimage.yaml
+    parameters:
+      target: win-64
+      vmImage: 'windows-2019' # https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azure-devops
+      imageTag: '2.2-nanoserver-1809'
+      osTag: 'win64'
 
-    - task: CopyFiles@2
-      displayName: 'Copy artifacts to right folder for Docker build'
-      inputs:
-        SourceFolder: '$(Build.ArtifactStagingDirectory)/Application/app'
-        Contents: '**'
-        TargetFolder: 'Zigbee2MqttAssistant/apppublish'
-
-    - task: CmdLine@2
-      displayName: 'Build docker images'
-      inputs:
-        script: |
-          docker build . -t zigbee2mqttassistant:$(Build.BuildId)
-          docker save zigbee2mqttassistant:$(Build.BuildId) -o "$(Build.ArtifactStagingDirectory)/zigbee2mqttassistant-$(Build.BuildId)-linux-x64.tar"
-
-    - task: PublishBuildArtifacts@1
-      displayName: 'Publish docker images as build artifacts'
-      condition: always()
-      inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        ArtifactName: 'Application'
-        publishLocation: 'Container'
+  - template: azure-pipelines.buildimage.yaml
+    parameters:
+      target: win-arm32
+      vmImage: 'windows-2019' # https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azure-devops
+      imageTag: '2.2-nanoserver-1809-arm32v7'
+      osTag: 'winarm32'
