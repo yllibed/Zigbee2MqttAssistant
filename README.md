@@ -8,7 +8,7 @@ This project is a _Web GUI_ for the very good [Zigbee2Mqtt](https://www.zigbee2m
 * Flexible installation:
   * Available as a _HASS.IO_ add-on (integration into _Home Assistant_). _Ingress_ is supported too.
     note: can be used without Home Assistant.
-  * Published as a docker image. (based on `mcr.microsoft.com/dotnet/core/aspnet:2.2-stretch-slim`, a Linux Debian 9 image).
+  * Published as a docker image (Linux & Windows, both for x64 + ARMv7)
 * Operations on devices:
   * Allow network join - no more need to setup virtual switches in HA just for that.
   * Rename devices
@@ -36,19 +36,19 @@ This project is a _Web GUI_ for the very good [Zigbee2Mqtt](https://www.zigbee2m
 3. Configure your credentials for your MQTT server
 4. Enjoy!
 
-> **IMPORTANT** The current version only works on Linux / `amd64` architecture. More architectures will be available soon. Please open an issue if you need another architecture.
-
 ## OPTION 2 - Installing from docker
 Run the following command by replacing `<mqttserver>`, `<mqttusername>`, `<mqttpassword>` with your correct values.
 ```bash
-docker run -p 8880:80 -e Z2MA_SETTINGS__MQTTSERVER=<mqttserver> -e Z2MA_SETTINGS__MQTTUSERNAME=<mqttusername> -e Z2MA_SETTINGS__MQTTPASSWORD=<mqttpassword> --restart always carldebilly/zigbee2mqttassistant:linux-x64
+docker run -p 8880:80 -e Z2MA_SETTINGS__MQTTSERVER=<mqttserver> -e Z2MA_SETTINGS__MQTTUSERNAME=<mqttusername> -e Z2MA_SETTINGS__MQTTPASSWORD=<mqttpassword> --restart always carldebilly/zigbee2mqttassistant
 ```
-> **draft note**: the environment variables will change in the future and it will
-> be possible to specify a configuration file in future versions.
+> **draft note**: environment variables are currently the easiest way to set those settings.
+> Open an issue if you need it to be in a configuration file/folder.
 
 ## OPTION 3 - Installing from sources & compiling using Visual Studio
 1. Compile the solution file
 2. Adjust settings in `appsettings.json` for your MQTT connection
+
+> Note: it won't compile using the _dotnet core_ build yet. For now, MSBuild is required to build it.
 
 # Settings
 
@@ -71,10 +71,10 @@ on allowed settings. Here's the important settings:
 * [X] Create a `HASS.IO` add-on
   * [X] Support for `HASS.IO` Ingress
   * [X] Automatic update of repo on new version
-* [ ] Support _Zigbee Bindings_
-* [ ] Support _Zigbee groups_
+* [X] Support _Zigbee Bindings_
+* [X] Support _Docker Manifest_ (support for ARM + Windows)
+* [ ] Support _Zigbee groups_ **WAITING FOR NEXT VERSION OF ZIGBEE2MQTT FOR THIS ONE**
 * [ ] Better display of "routes to coordinator"
-* [ ] Better support for configuration in docker configuration
 * [ ] Improve UI
 
 # Requirements
