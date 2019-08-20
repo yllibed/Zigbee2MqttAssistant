@@ -40,7 +40,7 @@ jobs:
       displayName: 'Build docker images'
       inputs:
         script: |
-          docker build . -t zigbee2mqttassistant:$(Build.BuildId) --build-arg DOTNETTAG=$(imageTag) --build-arg OSTAG=$(osTag)
+          docker build . -t zigbee2mqttassistant:$(Build.BuildId)-$(osTag) --build-arg DOTNETTAG=$(imageTag) --build-arg OSTAG=$(osTag)
 
     - task: CmdLine@2
       displayName: 'save docker images to artifacts'
