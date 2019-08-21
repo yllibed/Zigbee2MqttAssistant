@@ -71,10 +71,10 @@ jobs:
 
   - template: azure-pipelines.buildimage.yaml
     parameters:
-      target: linux-x64
+      target: linux-x64-alpine
       vmImage: 'ubuntu-latest'
       imageTag: '2.2-alpine3.9'
-      osTag: 'amd64-alpine'
+      osTag: 'amd64alpine'
 
   - template: azure-pipelines.buildimage.yaml
     parameters:
