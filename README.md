@@ -57,7 +57,7 @@ on allowed settings. Here's the important settings:
 
 | Field                             | Default           | Usage                                                   |
 | --------------------------------- | ----------------- | ------------------------------------------------------- |
-| `BasicTopic`                      | `"zigbee2mqtt"`   | Base MQTT topic when Zigbee2Mqtt is publishing its data |
+| `BaseTopic`                      | `"zigbee2mqtt"`   | Base MQTT topic when Zigbee2Mqtt is publishing its data |
 | `HomeAssistantDiscoveryBaseTopic` | `"homeassistant"` | Base MQTT topic for HASS Discovery                      |
 | `MqttServer`                      | `"mqtt"`          | Name or IP address of the MQTT server                   |
 | `MqttSecure`                      | `false`           | If should use TLS to connect to MQTT server             |
