@@ -6,8 +6,8 @@
 <h1>Status</h1>
 
 <p>
-    Bridge State: @(Model.Online ? "online" : "offline") <br />
-    Current Log Level: @Model.LogLevel <br />
+    Bridge State: <code>@(Model.Online ? "online" : "offline")</code> <br />
+    Current Log Level: <code>@Model.LogLevel</code>
 </p>
 
 <div class="card">
@@ -27,12 +27,11 @@
                 <button class="btn" type="submit" asp-action="AllowJoin" asp-route-permitJoin="true">ALLOW NEW DEVICES TO JOIN NETWORK</button>
             }
         </form>
-        <p>
+        <small class="form-text text-info">
             Use this feature to allow new devices to join the network.
-        </p>
+        </small>
     </div>
 </div>
-
 
 <div class="card">
     <div class="card-body">
@@ -40,8 +39,9 @@
         <form method="post">
             <button class="btn bg-danger" asp-action="Reset">RESET</button>
         </form>
-        <br />
-        Use this to force Zigbee2Mqtt to restart from scratch. Useful if the state is not sync with Zigbee2Mqtt.
-        If could mean there's a bug. If it's the case, please report it!
+        <small class="form-text text-info">
+            Use this to force Zigbee2Mqtt to restart from scratch. Useful if the state is not sync with Zigbee2Mqtt.
+            If could mean there's a bug. If it's the case, please report it!
+        </small>
     </div>
 </div>
