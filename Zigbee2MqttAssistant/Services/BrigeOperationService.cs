@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Zigbee2MqttAssistant.Models.Devices;
+using Zigbee2MqttAssistant.Models.Mqtt;
 
 namespace Zigbee2MqttAssistant.Services
 {
@@ -71,6 +73,14 @@ namespace Zigbee2MqttAssistant.Services
 			}
 
 			await _mqtt.Unbind(source.FriendlyName, target.FriendlyName);
+		}
+
+		public async Task SetLogLevel(string level)
+		{
+			if (Enum.TryParse<MqttLogLevel>(level, ignoreCase: true, out var mqttLogLevel))
+			{
+				await _mqtt.SetLogLevel(mqttLogLevel);
+			}
 		}
 	}
 }
