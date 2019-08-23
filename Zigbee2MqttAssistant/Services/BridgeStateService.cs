@@ -137,14 +137,14 @@ namespace Zigbee2MqttAssistant.Services
 			ImmutableInterlocked.Update(ref _currentState, Update);
 		}
 
-		public void SetBridgeConfig(string configJson, out bool isJoinAllowed)
+		public void SetBridgeConfig(string configJson, out bool isJoinAllowed, out MqttLogLevel logLevel)
 		{
 			var json = JObject.Parse(configJson);
 
 			var version = json["version"]?.Value<string>();
 			var coordinator = json["coordinator"]?.Value<string>();
 			var permitJoin = json["permit_join"]?.Value<bool>() ?? false;
-			var logLevel = json["log_level"]?.ToObject<MqttLogLevel>() ?? MqttLogLevel.Info;
+			var logLevel2 = logLevel = json["log_level"]?.ToObject<MqttLogLevel>() ?? MqttLogLevel.Info;
 
 			isJoinAllowed = permitJoin;
 
@@ -154,7 +154,7 @@ namespace Zigbee2MqttAssistant.Services
 					.WithZigbee2MqttVersion(version)
 					.WithCoordinatorVersion(coordinator)
 					.WithPermitJoin(permitJoin)
-					.WithLogLevel(logLevel);
+					.WithLogLevel(logLevel2);
 
 				return state;
 			}

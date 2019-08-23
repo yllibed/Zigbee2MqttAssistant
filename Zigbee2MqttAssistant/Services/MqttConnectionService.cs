@@ -246,11 +246,16 @@ namespace Zigbee2MqttAssistant.Services
 					}
 					else if (value.Equals("config"))
 					{
-						_stateService.SetBridgeConfig(configJson: payload, isJoinAllowed: out var isJoinAllowed);
+						_stateService.SetBridgeConfig(configJson: payload, isJoinAllowed: out var isJoinAllowed, logLevel: out var logLevel);
 
 						if (ImmutableInterlocked.TryRemove(ref _allowJoinWaitingList, isJoinAllowed, out var tcs))
 						{
 							tcs.TrySetResult(null);
+						}
+
+						if (ImmutableInterlocked.TryRemove(ref _logLevelWaitingList, logLevel, out var tcs2))
+						{
+							tcs2.TrySetResult(null);
 						}
 					}
 					return true;
@@ -586,6 +591,27 @@ namespace Zigbee2MqttAssistant.Services
 			{
 				await tcs.Task;
 			}
+		}
+
+		private ImmutableDictionary<MqttLogLevel, TaskCompletionSource<object>> _logLevelWaitingList = ImmutableDictionary<MqttLogLevel, TaskCompletionSource<object>>.Empty;
+
+		public async Task SetLogLevel(MqttLogLevel level)
+		{
+			var tcs = new TaskCompletionSource<object>();
+
+			if (!ImmutableInterlocked.TryAdd(ref _logLevelWaitingList, level, tcs))
+			{
+				tcs = _logLevelWaitingList[level];
+			}
+
+			var msg = new MqttApplicationMessageBuilder()
+				.WithTopic($"{_settings.CurrentSettings.BaseTopic}/bridge/config/log_level")
+				.WithPayload(level.ToString())
+				.Build();
+
+			await _client.PublishAsync(msg);
+
+			await tcs.Task;
 		}
 	}
 }

@@ -11,5 +11,6 @@ namespace Zigbee2MqttAssistant.Services
 		Task Reset();
 		Task Bind(string id, string targetId);
 		Task Unbind(string id, string targetId);
+		Task SetLogLevel(string level);
 	}
 }

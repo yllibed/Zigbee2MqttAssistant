@@ -138,6 +138,12 @@ namespace Zigbee2MqttAssistant.Controllers
 		{
 			await _operationService.AllowJoin(permitJoin);
 
+			return RedirectToAction("Status");
+		}
+
+		public async Task<IActionResult> SetLogLevel(string level)
+		{
+			await _operationService.SetLogLevel(level);
 
 			return RedirectToAction("Status");
 		}
