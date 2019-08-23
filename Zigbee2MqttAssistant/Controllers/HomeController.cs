@@ -11,6 +11,7 @@ using Zigbee2MqttAssistant.Services;
 
 namespace Zigbee2MqttAssistant.Controllers
 {
+	[IgnoreAntiforgeryToken]
 	public class HomeController : Controller
 	{
 		private readonly IBridgeStateService _stateService;

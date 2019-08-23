@@ -33,7 +33,7 @@ jobs:
         msbuildLocationMethod: version
         msbuildVersion: latest
         msbuildArchitecture: x86
-        msbuildArguments: /r /p:Configuration=$(buildConfiguration) /p:OutputPath=app /t:Publish /detailedsummary /m:16 /bl:$(build.artifactstagingdirectory)\build.binlog
+        msbuildArguments: /r /p:Configuration=$(buildConfiguration) /p:OutputPath=app /p:Version=$(GitVersion.InformationalVersion) /p:AssemblyVersion=$(GitVersion.AssemblySemVer) /p:FileVersion=$(GitVersion.MajorMinorPatch) /t:Publish /detailedsummary /m:16 /bl:$(build.artifactstagingdirectory)\build.binlog
         clean: false
         maximumCpuCount: true
         restoreNugetPackages: false

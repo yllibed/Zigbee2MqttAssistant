@@ -8,6 +8,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A7EAEBA6-16F0-4B41-B577-5DCCB3462A3B}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		azure-pipelines.buildimage.yaml = azure-pipelines.buildimage.yaml
+		azure-pipelines.yaml = azure-pipelines.yaml
 		Dockerfile = Dockerfile
 		README.md = README.md
 	EndProjectSection

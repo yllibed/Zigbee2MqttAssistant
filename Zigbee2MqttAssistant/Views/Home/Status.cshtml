@@ -1,4 +1,5 @@
-﻿@model Zigbee2MqttAssistant.Models.Mqtt.Bridge
+﻿@using System.Reflection
+@model Zigbee2MqttAssistant.Models.Mqtt.Bridge
 @{
     ViewData["Title"] = "Status";
 }
@@ -6,8 +7,8 @@
 <h1>Status</h1>
 
 <p>
-    Bridge State: @(Model.Online ? "online" : "offline") <br />
-    Current Log Level: @Model.LogLevel <br />
+    Bridge State: <code>@(Model.Online ? "online" : "offline")</code> <br />
+    Current Log Level: <code>@Model.LogLevel</code>
 </p>
 
 <div class="card">
@@ -27,12 +28,11 @@
                 <button class="btn" type="submit" asp-action="AllowJoin" asp-route-permitJoin="true">ALLOW NEW DEVICES TO JOIN NETWORK</button>
             }
         </form>
-        <p>
+        <small class="form-text text-info">
             Use this feature to allow new devices to join the network.
-        </p>
+        </small>
     </div>
 </div>
-
 
 <div class="card">
     <div class="card-body">
@@ -40,8 +40,29 @@
         <form method="post">
             <button class="btn bg-danger" asp-action="Reset">RESET</button>
         </form>
-        <br />
-        Use this to force Zigbee2Mqtt to restart from scratch. Useful if the state is not sync with Zigbee2Mqtt.
-        If could mean there's a bug. If it's the case, please report it!
+        <small class="form-text text-info">
+            Use this to force Zigbee2Mqtt to restart from scratch. Useful if the state is not sync with Zigbee2Mqtt.
+            If could mean there's a bug. If it's the case, please report it!
+        </small>
+    </div>
+</div>
+
+@{
+    var assembly = typeof(Program).Assembly;
+    var assemblyVersion = assembly.GetCustomAttribute<AssemblyVersionAttribute>()?.Version
+        ?? assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version
+        ?? "<unknown>";
+    var fullVersion = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "<unknown>";
+    var configuration = assembly.GetCustomAttribute<AssemblyConfigurationAttribute>()?.Configuration ?? "<unknown>";
+}
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Versions</h5>
+        <div class="form-text text-info">
+            Version of Zigbee2MqttAssistant (this software): <code>@assemblyVersion</code> (<code>@fullVersion</code>) @configuration<br/>
+            Version of Zigbee2Mqtt: <code>@Model.Zigbee2MqttVersion</code> <br/>
+            Coordinator version: <code>@Model.CoordinatorVersion</code> <br/>
+            Coordinator Zigbee Id: <code>@Model.CoordinatorZigbeeId</code>
+        </div>
     </div>
 </div>
