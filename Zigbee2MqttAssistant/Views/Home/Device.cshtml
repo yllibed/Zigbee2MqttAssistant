@@ -27,7 +27,7 @@ else
     {
         case null:
             {
-                <div class="alert alert-primary">
+                <div class="alert alert.alert-secondary">
                     No "last_seen" information for this device: unable to check for responsiveness.
                 </div>
             }
@@ -50,14 +50,13 @@ else
 }
 
 <p>
-    Zigbee Id is <span class="badge badge-secondary">@(device.ZigbeeId ?? "unknown yet (did you restart recently?)")</span>.
-    Address on Zigbee Network is <span class="badge badge-secondary">@("0x" + device.NetworkAddress?.ToString("X") ?? "unknown")</span>.
-    Link quality is <span class="badge badge-secondary">@(device.LinkQuality?.ToString() ?? "unknown")</span>/<code>255</code>.
-    <br />
-    Model is <span class="badge badge-primary">@(device.Model ?? "unknown")</span> by <span class="badge badge-secondary">@(device.Manufacturer ?? "unknown")</span>.
-    Hardware version is <code>@(device.HardwareVersion?.ToString() ?? "unknown")</code>.
-    <br />
-    This device type is <span class="badge badge-secondary">@(device.Type ?? "unknown")</span>
+    Zigbee Id is <span class="badge badge-secondary">@(device.ZigbeeId ?? "unknown yet (did you restart recently?)")</span>.<br/>
+    Address on Zigbee Network is <span class="badge badge-secondary">@("0x" + device.NetworkAddress?.ToString("X") ?? "unknown")</span>.<br/>
+    Link quality is <span class="badge badge-secondary">@(device.LinkQuality?.ToString() ?? "unknown")</span>/<code>255</code>.<br/>
+    Battery level is <span class="badge badge-secondary">@(device.BatteryLevel?.ToString() ?? "unknown")</span>%.<br />
+    Model is <span class="badge badge-primary">@(device.Model ?? "unknown")</span> by <span class="badge badge-secondary">@(device.Manufacturer ?? "unknown")</span>.<br/>
+    Hardware version is <code>@(device.HardwareVersion?.ToString() ?? "unknown")</code>.<br />
+    This device type is <span class="badge badge-secondary">@(device.Type ?? "unknown")</span><br/>
 </p>
 
 @*@if (device.ZigbeeId != null)
