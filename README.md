@@ -66,6 +66,7 @@ on allowed settings. Here's the important settings:
 | `MqttUsername`                    | `""`              | Username for MQTT server                                |
 | `MqttPassword`                    | `""`              | Password for MQTT server                                |
 | `LowBatteryThreshold`             | `30`              | Threshold for triggering low-battery warning (%)        |
+| `TelemetryOptOut`                 | `false`           | Opt out of [integrated telemetry](TELEMETRY.md)         |
 
 # Roadmap
 * [X] Build a CI + publish to docker hub
