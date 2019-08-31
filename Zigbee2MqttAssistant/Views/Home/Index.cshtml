@@ -42,10 +42,10 @@
                         var since = delaySinceLastResponse.Value.Humanize(1);
                         <span class="badge badge-success">@since</span>
                     }
-                    else if (device.IsAvailable == false)
+                    @*else if (device.IsAvailable == false)
                     {
                         <span class="badge badge-danger">offline</span>
-                    }
+                    }*@
 
 
                     @if (device.LinkQuality.HasValue)
