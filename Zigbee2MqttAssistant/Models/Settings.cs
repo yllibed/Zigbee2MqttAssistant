@@ -48,5 +48,11 @@ namespace Zigbee2MqttAssistant.Models
 		/// Password to use for MQTT server
 		/// </summary>
 		public string MqttPassword { get; } = "";
+
+		/// <summary>
+		/// Threshold to report battery level as low.
+		/// Set to zero to disable this feature.
+		/// </summary>
+		public decimal LowBatteryThreshold { get; } = 30;
 	}
 }

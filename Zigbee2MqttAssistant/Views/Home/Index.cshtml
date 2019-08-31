@@ -1,12 +1,16 @@
 ﻿@using Humanizer
-@model Zigbee2MqttAssistant.Models.Mqtt.Bridge
+@model (Zigbee2MqttAssistant.Models.Mqtt.Bridge bridge, Zigbee2MqttAssistant.Models.Settings settings)
 @{
     ViewData["Title"] = "Devices";
 }
 
 <h1 class="display-4">Devices</h1>
 
-@if (Model.PermitJoin)
+@{
+    var bridge = Model.bridge;
+    var settings = Model.settings;
+}
+@if (bridge.PermitJoin)
 {
     <span class="badge badge-danger">DEVICES ARE CURRENTLY ALLOWED TO JOIN NETWORK.</span>
 }
@@ -20,7 +24,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var device in Model.Devices.OrderBy(d => d.FriendlyName))
+        @foreach (var device in bridge.Devices.OrderBy(d => d.FriendlyName))
         {
             <tr>
                 <th scope="row">
@@ -42,10 +46,10 @@
                         var since = delaySinceLastResponse.Value.Humanize(1);
                         <span class="badge badge-success">@since</span>
                     }
-                    else if (device.IsAvailable == false)
-                    {
-                        <span class="badge badge-danger">offline</span>
-                    }
+                    @*else if (device.IsAvailable == false)
+        {
+            <span class="badge badge-danger">offline</span>
+        }*@
 
 
                     @if (device.LinkQuality.HasValue)
@@ -60,9 +64,15 @@
                             <span class="badge badge-warning">weak link</span>
                         }
                     }
-                    <i class="material-icons">
-                        signal_cellular_0_bar
-                    </i>
+
+                    @if (device.BatteryLevel.HasValue)
+                    {
+                        var value = device.BatteryLevel.Value;
+                        if (value <= settings.LowBatteryThreshold)
+                        {
+                            <span class="badge badge-danger">low battery (@value%)</span>
+                        }
+                    }
                 </th>
                 <td>
                     @foreach (var entity in device.Entities.OrderBy(e => e.Component))

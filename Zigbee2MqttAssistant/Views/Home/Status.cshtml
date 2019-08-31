@@ -1,4 +1,5 @@
 ﻿@using System.Reflection
+@using Zigbee2MqttAssistant.Models.Mqtt
 @model Zigbee2MqttAssistant.Models.Mqtt.Bridge
 @{
     ViewData["Title"] = "Status";
@@ -42,12 +43,12 @@
         <form method="post">
             <div class="input-group mb-3">
                 <select name="level">
-                    <option value="debug">Debug Mode</option>
-                    <option value="info">Information level</option>
-                    <option value="warn">Warnings & errors only</option>
-                    <option value="error">Errors only</option>
+                    <option value="debug" selected="@(Model.LogLevel == MqttLogLevel.Debug ? "selected" : null)">Debug Mode</option>
+                    <option value="info" selected="@(Model.LogLevel == MqttLogLevel.Info ? "selected" : null)">Information level</option>
+                    <option value="warn" selected="@(Model.LogLevel == MqttLogLevel.Warn ? "selected" : null)">Warnings & errors only</option>
+                    <option value="error" selected="@(Model.LogLevel == MqttLogLevel.Error ? "selected" : null)">Errors only</option>
                 </select>
-                <button class="btn bg-danger" asp-action="SetLogLevel">SET</button>
+                <button class="btn" asp-action="SetLogLevel">SET LOG LEVEL</button>
             </div>
         </form>
         <small class="form-text text-info">

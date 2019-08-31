@@ -58,13 +58,14 @@ on allowed settings. Here's the important settings:
 
 | Field                             | Default           | Usage                                                   |
 | --------------------------------- | ----------------- | ------------------------------------------------------- |
-| `BaseTopic`                      | `"zigbee2mqtt"`   | Base MQTT topic when Zigbee2Mqtt is publishing its data |
+| `BaseTopic`                       | `"zigbee2mqtt"`   | Base MQTT topic when Zigbee2Mqtt is publishing its data |
 | `HomeAssistantDiscoveryBaseTopic` | `"homeassistant"` | Base MQTT topic for HASS Discovery                      |
 | `MqttServer`                      | `"mqtt"`          | Name or IP address of the MQTT server                   |
 | `MqttSecure`                      | `false`           | If should use TLS to connect to MQTT server             |
 | `MqttPort`                        | `1883` (normal) or `8883` (secured) | Port for MQTT server                  |
 | `MqttUsername`                    | `""`              | Username for MQTT server                                |
 | `MqttPassword`                    | `""`              | Password for MQTT server                                |
+| `LowBatteryThreshold`             | `30`              | Threshold for triggering low-battery warning (%)        |
 
 # Roadmap
 * [X] Build a CI + publish to docker hub

@@ -54,8 +54,9 @@ namespace Zigbee2MqttAssistant.Services
 			var baseHassTopic = $"{settings.HomeAssistantDiscoveryBaseTopic}/";
 
 			var regexOptions = RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant;
-			FriendlyNameExtractor = new Regex($"{Regex.Escape(baseTopic)}(?<name>[^/]+)(?:/(?<state>(availability|state|config)))?$", regexOptions);
-			HassDiscoveryExtractor = new Regex($"{Regex.Escape(baseHassTopic)}(?<class>[^/]+)/(?<deviceId>[^/]+)/(?<component>[^/]+)/(?<config>config)?", regexOptions);
+			FriendlyNameExtractor = new Regex($"^{Regex.Escape(baseTopic)}(?<name>[^/]+)(?:/(?<state>(availability|state|config)))?$", regexOptions);
+			HassDiscoveryExtractor = new Regex($"^{Regex.Escape(baseHassTopic)}(?<class>[^/]+)/(?<deviceId>[^/]+)/(?<component>[^/]+)/(?<config>config)?$", regexOptions);
+			_setTopicRegex = new Regex($"^{Regex.Escape(baseTopic)}(?<name>[^/]+)/set$", regexOptions);
 		}
 
 		public async Task StartAsync(CancellationToken ct)
@@ -172,11 +173,14 @@ namespace Zigbee2MqttAssistant.Services
 
 		private static readonly string[] _topicsToIgnore =
 		{
-			"/bridge/config/devices/get",
-			"/bridge/config/permit_join",
-			"/bridge/config/rename",
-			"zigbee2mqtt/bridge/networkmap",
+			"/bridge/config/devices/get", // request for a device list
+			"/bridge/config/permit_join", // setting allow join
+			"/bridge/config/rename", // request to rename a device
+			"/bridge/config/log_level", // request to change log level
+			"/bridge/networkmap", // request for a network map
 		};
+
+		private Regex _setTopicRegex;
 
 		public Task HandleApplicationMessageReceivedAsync(MqttApplicationMessageReceivedEventArgs eventArgs)
 		{
@@ -187,6 +191,11 @@ namespace Zigbee2MqttAssistant.Services
 			if (_topicsToIgnore.Any(s => topic.EndsWith(s)))
 			{
 				return Task.CompletedTask; // this topic could be safely ignored
+			}
+
+			if (_setTopicRegex.IsMatch(topic))
+			{
+				return Task.CompletedTask; // this one too
 			}
 
 			if (DispatchZigbee2MqttMessage(msg))
@@ -209,7 +218,7 @@ namespace Zigbee2MqttAssistant.Services
 				return Task.CompletedTask;
 			}
 
-			_logger.LogWarning($"Unable to quality a message received on topic '{msg.Topic}'.");
+			_logger.LogWarning($"Unable to qualify a message received on topic '{msg.Topic}'.");
 
 			return Task.CompletedTask;
 		}

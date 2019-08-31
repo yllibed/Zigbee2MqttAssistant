@@ -34,6 +34,8 @@ namespace Zigbee2MqttAssistant.Models.Devices
 
 		public DateTimeOffset? LastSeen { get; }
 
+		public decimal? BatteryLevel { get; }
+
 		public string Manufacturer { get; }
 
 		public string Model { get; }

@@ -16,18 +16,20 @@ namespace Zigbee2MqttAssistant.Controllers
 	{
 		private readonly IBridgeStateService _stateService;
 		private readonly IBridgeOperationService _operationService;
+		private readonly ISettingsService _settings;
 
-		public HomeController(IBridgeStateService stateService, IBridgeOperationService operationService)
+		public HomeController(IBridgeStateService stateService, IBridgeOperationService operationService, ISettingsService settings)
 		{
 			_stateService = stateService;
 			_operationService = operationService;
+			_settings = settings;
 		}
 
 		public IActionResult Index()
 		{
 			var state = _stateService.CurrentState;
 
-			return View(state);
+			return View((state, _settings.CurrentSettings));
 		}
 
 		[HttpPost]

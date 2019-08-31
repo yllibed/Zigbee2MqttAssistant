@@ -60,6 +60,7 @@ namespace Zigbee2MqttAssistant.Services
 			var json = JObject.Parse(jsonPayload);
 			var linkQuality = json["linkquality"]?.Value<ushort>();
 			var lastSeen = json["last_seen"]?.Value<DateTime>();
+			var battery = json["battery"]?.Value<decimal>();
 
 			Bridge Update(Bridge state)
 			{
@@ -75,9 +76,20 @@ namespace Zigbee2MqttAssistant.Services
 					state = state.WithDevices(devices => devices.Add(device));
 				}
 
-				if (lastSeen.HasValue)
+				if (lastSeen.HasValue || battery.HasValue)
 				{
-					var newDevice = device.WithLastSeen(lastSeen);
+					ZigbeeDevice.Builder builder = device;
+					if (lastSeen.HasValue)
+					{
+						builder.LastSeen = lastSeen;
+					}
+
+					if (battery.HasValue)
+					{
+						builder.BatteryLevel = battery;
+					}
+
+					ZigbeeDevice newDevice = builder;
 
 					if (newDevice != device)
 					{
@@ -111,7 +123,7 @@ namespace Zigbee2MqttAssistant.Services
 					return state;
 				}
 
-				var newDevice = device.WithIsAvailable(isOnline);
+				ZigbeeDevice newDevice = device.WithIsAvailable(isOnline);
 
 				state = state.WithDevices(devices => devices.Replace(device, newDevice));
 
@@ -186,7 +198,7 @@ namespace Zigbee2MqttAssistant.Services
 				{
 					// no device with this zigbeeId is known, try to find device from payload
 					var topic = json["state_topic"].Value<string>()
-					            ?? json["json_attributes_topic"].Value<string>()
+								?? json["json_attributes_topic"].Value<string>()
 								?? json["availability_topic"].Value<string>();
 
 					if (topic == null)
@@ -291,7 +303,7 @@ namespace Zigbee2MqttAssistant.Services
 					}
 
 					var device = state.Devices.FirstOrDefault(d => d.FriendlyName.Equals(friendlyName) || (d.ZigbeeId?.Equals(zigbeeId) ?? false));
-					var newDevice = (device ?? new ZigbeeDevice.Builder { FriendlyName = friendlyName })
+					ZigbeeDevice newDevice = (device ?? new ZigbeeDevice.Builder { FriendlyName = friendlyName })
 						.WithZigbeeId(zigbeeId)
 						.WithType(deviceJson["type"]?.Value<string>())
 						.WithModel(deviceJson["modelId"]?.Value<string>().Trim().Trim((char)0))
@@ -411,7 +423,7 @@ namespace Zigbee2MqttAssistant.Services
 					return state;
 				}
 
-				var newDevice = device.WithFriendlyName(to);
+				ZigbeeDevice newDevice = device.WithFriendlyName(to);
 				if (newDevice != device)
 				{
 					state = state.WithDevices(devices => devices.Replace(device, newDevice));
