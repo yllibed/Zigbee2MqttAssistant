@@ -54,5 +54,20 @@ namespace Zigbee2MqttAssistant.Models
 		/// Set to zero to disable this feature.
 		/// </summary>
 		public decimal LowBatteryThreshold { get; } = 30;
+
+		/// <summary>
+		/// If you want to opt-out of Zigbee2MqttAssistant telemetry.
+		/// Set to true to disable telemetry.
+		/// </summary>
+		/// <remarks>
+		/// No personal information is collected. More details there:
+		/// https://github.com/yllibed/Zigbee2MqttAssistant/blob/master/TELEMETRY.md
+		/// </remarks>
+		public bool TelemetryOptOut { get; } = false;
+
+		/// <summary>
+		/// Instrumentation Key for Azure AppInsights
+		/// </summary>
+		public string TelemetryInstrumentationKey { get; } = "a07cd338-3c1d-417a-890b-67e56efa2ae9";
 	}
 }

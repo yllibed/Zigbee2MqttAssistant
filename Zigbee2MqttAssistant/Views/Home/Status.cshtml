@@ -1,6 +1,8 @@
 ﻿@using System.Reflection
 @using Zigbee2MqttAssistant.Models.Mqtt
+@using Zigbee2MqttAssistant.Services
 @model Zigbee2MqttAssistant.Models.Mqtt.Bridge
+@inject ISystemInformation systemInformation
 @{
     ViewData["Title"] = "Status";
 }
@@ -74,22 +76,19 @@
     </div>
 </div>
 
-@{
-    var assembly = typeof(Program).Assembly;
-    var assemblyVersion = assembly.GetCustomAttribute<AssemblyVersionAttribute>()?.Version
-        ?? assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version
-        ?? "<unknown>";
-    var fullVersion = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "<unknown>";
-    var configuration = assembly.GetCustomAttribute<AssemblyConfigurationAttribute>()?.Configuration ?? "<unknown>";
-}
 <div class="card">
     <div class="card-body">
-        <h5 class="card-title">Versions</h5>
+        <h5 class="card-title">System Information</h5>
         <div class="form-text text-info">
-            Version of Zigbee2MqttAssistant (this software): <code>@assemblyVersion</code> (<code>@fullVersion</code>) @configuration<br />
-            Version of Zigbee2Mqtt: <code>@Model.Zigbee2MqttVersion</code> <br />
-            Coordinator version: <code>@Model.CoordinatorVersion</code> <br />
-            Coordinator Zigbee Id: <code>@Model.CoordinatorZigbeeId</code>
+            Version (this software): <code>@systemInformation.Version</code> (<code>@systemInformation.FullVersion</code>) @systemInformation.BuildType @systemInformation.EnvironmentType<br />
+            Operating System / Version: <code>@systemInformation.OsType</code> / <code>@systemInformation.OsVersion</code> / <code>@(systemInformation.OsIs64Bits ? "64 bits" : "32 bits")</code> <br />
+            Processor: <code>@systemInformation.ProcessorType</code>, <code>@systemInformation.ProcessorCount</code> cores/threads <br />
+            Docker / HASS.IO: <code>@(systemInformation.IsDocker ? "Docker" : "No - standalone")</code> <code>@(systemInformation.IsHassIo ? "+ HASS.IO" : "")</code> <br />
+            Version of Zigbee2Mqtt: <code>@systemInformation.Zigbee2MttVersion</code> <br />
+            Coordinator version: <code>@systemInformation.CoordinatorVersion</code> <br />
+            Coordinator Zigbee Id: <code>@systemInformation.CoordinatorZigbeeId</code> <br />
+            Telemetry: <code>@(systemInformation.Telemetry ? "Enabled" : "Disabled")</code>
+            (More on telemetry <a href="https://github.com/yllibed/Zigbee2MqttAssistant/blob/master/TELEMETRY.md">here</a>.)
         </div>
     </div>
 </div>
