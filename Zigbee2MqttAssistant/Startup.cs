@@ -39,6 +39,7 @@ namespace Zigbee2MqttAssistant
 			services.AddSingleton<IBridgeStateService, BridgeStateService>();
 			services.AddSingleton<IBridgeOperationService, BrigeOperationService>();
 			services.AddSingleton<ISettingsService, SettingsService>();
+			services.AddSingleton<ISystemInformation, SystemInformation>();
 
 			services.AddSingleton<MqttConnectionService>();
 			services.AddSingleton<IHostedService, MqttConnectionService>(sp => sp.GetService<MqttConnectionService>());

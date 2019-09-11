@@ -1,4 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Http
+@using Zigbee2MqttAssistant.Services
+@inject IBridgeStateService bridgeStateService
 <!DOCTYPE html>
 <html>
 <head>
@@ -43,9 +45,22 @@
     </header>
 
 <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+    <main role="main" class="pb-3">
+        @if (bridgeStateService.CurrentState.PermitJoin)
+        {
+            <span class="badge badge-danger">DEVICES ARE CURRENTLY ALLOWED TO JOIN NETWORK.</span>
+        }
+        @if (!bridgeStateService.CurrentState.MqttConnected)
+        {
+            <span class="badge badge-danger">NOT CONNECTED TO MQTT BROKER.</span>
+        }
+        @if (!bridgeStateService.CurrentState.Online)
+        {
+            <span class="badge badge-danger">ZIGBEE2MQTT SEEMS DOWN (NOT CONNECTED TO MQTT BROKER).</span>
+        }
+
+        @RenderBody()
+    </main>
     </div>
 
     <footer class="border-top footer text-muted">

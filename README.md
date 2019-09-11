@@ -33,7 +33,7 @@ This project is a _Web GUI_ for the very good [Zigbee2Mqtt](https://www.zigbee2m
    ```
    https://github.com/yllibed/hassio
    ```
-2. Install `Zigbee2Mq2ttAssistant`
+2. Install `Zigbee2MqttAssistant`
 3. Configure your credentials for your MQTT server
 4. Enjoy!
 
@@ -66,6 +66,7 @@ on allowed settings. Here's the important settings:
 | `MqttUsername`                    | `""`              | Username for MQTT server                                |
 | `MqttPassword`                    | `""`              | Password for MQTT server                                |
 | `LowBatteryThreshold`             | `30`              | Threshold for triggering low-battery warning (%)        |
+| `TelemetryOptOut`                 | `false`           | Opt out of [integrated telemetry](TELEMETRY.md)         |
 
 # Roadmap
 * [X] Build a CI + publish to docker hub
@@ -75,6 +76,7 @@ on allowed settings. Here's the important settings:
   * [X] Automatic update of repo on new version
 * [X] Support _Zigbee Bindings_
 * [X] Support _Docker Manifest_ (support for ARM + Windows)
+* [X] Add telemetry into project
 * [ ] Support _Zigbee groups_ **WAITING FOR NEXT VERSION OF ZIGBEE2MQTT FOR THIS ONE**
 * [ ] Better display of "routes to coordinator"
 * [ ] Improve UI

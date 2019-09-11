@@ -10,6 +10,11 @@ namespace Zigbee2MqttAssistant.Models.Mqtt
 	public partial class Bridge
 	{
 		/// <summary>
+		/// If the MQTT is connected
+		/// </summary>
+		public bool MqttConnected { get; }
+
+		/// <summary>
 		/// If the bridge is connected to MQTT
 		/// </summary>
 		public bool Online { get; } = false;
@@ -35,6 +40,15 @@ namespace Zigbee2MqttAssistant.Models.Mqtt
 		/// Log level of the bridge
 		/// </summary>
 		public MqttLogLevel LogLevel { get; } = MqttLogLevel.Info;
+
+		/// <summary>
+		/// Name & Version of the MQTT broker, null means "unknown"
+		/// </summary>
+		/// <remarks>
+		/// This is the content of the $SYS/broker/version topic
+		/// if the MQTT brokers supports it (won't work with EMQX, for example)
+		/// </remarks>
+		public string MqttBroker { get; }
 
 		/// <summary>
 		/// If join is permitted on the bridge
