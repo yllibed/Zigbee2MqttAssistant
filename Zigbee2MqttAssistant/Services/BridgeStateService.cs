@@ -174,6 +174,16 @@ namespace Zigbee2MqttAssistant.Services
 			ImmutableInterlocked.Update(ref _currentState, Update);
 		}
 
+		public void SetMqttBrokerVersion(string version)
+		{
+			ImmutableInterlocked.Update(ref _currentState, state => state.WithMqttBroker(version));
+		}
+
+		public void SetMqttConnected(bool isConnected)
+		{
+			ImmutableInterlocked.Update(ref _currentState, state => state.WithMqttConnected(isConnected));
+		}
+
 		public HomeAssistantEntity SetDeviceEntity(
 			string zigbeeId,
 			string entityClass,

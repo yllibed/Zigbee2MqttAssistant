@@ -59,6 +59,9 @@ namespace Zigbee2MqttAssistant.Services
 		public string Zigbee2MttVersion => _stateService.CurrentState.Zigbee2MqttVersion;
 		public string CoordinatorVersion => _stateService.CurrentState.CoordinatorVersion;
 		public string CoordinatorZigbeeId => _stateService.CurrentState.CoordinatorZigbeeId;
+		public string MqttBroker => _stateService.CurrentState.MqttBroker;
+		public bool MqttBrokerConnected => _stateService.CurrentState.MqttConnected;
+		public int NumberOfDevices => _stateService.CurrentState.Devices.Length;
 		public bool Telemetry { get; }
 	}
 }

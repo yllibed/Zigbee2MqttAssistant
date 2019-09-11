@@ -340,3 +340,5 @@ ASALocalRun/
 healthchecksdb
 Zigbee2MqttAssistant/appsettings.*.json
 .vscode/
+/Zigbee2MqttAssistant/app
+/Zigbee2MqttAssistant/apppublish

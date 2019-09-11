@@ -161,7 +161,14 @@ namespace Zigbee2MqttAssistant.Services
 		private async Task Subscribe()
 		{
 			var settings = _settings.CurrentSettings;
+
+			// Subscribe to broker information - it may not exists
+			await _client.SubscribeAsync($"$SYS/broker/version");
+
+			// Subscribe to Zigbee2Mqtt topics
 			await _client.SubscribeAsync($"{settings.BaseTopic}/#");
+
+			// Subscribe to entries published by Zigbee2Mqtt for HomeAssistant discovery
 			await _client.SubscribeAsync($"{settings.HomeAssistantDiscoveryBaseTopic}/#");
 		}
 
@@ -182,7 +189,7 @@ namespace Zigbee2MqttAssistant.Services
 
 		private Regex _setTopicRegex;
 
-		public Task HandleApplicationMessageReceivedAsync(MqttApplicationMessageReceivedEventArgs eventArgs)
+		Task IMqttApplicationMessageReceivedHandler.HandleApplicationMessageReceivedAsync(MqttApplicationMessageReceivedEventArgs eventArgs)
 		{
 			var msg = eventArgs.ApplicationMessage;
 
@@ -214,6 +221,11 @@ namespace Zigbee2MqttAssistant.Services
 			}
 
 			if (DispatchLogMessage(msg))
+			{
+				return Task.CompletedTask;
+			}
+
+			if (DispatchBrokerVersionmessage(msg))
 			{
 				return Task.CompletedTask;
 			}
@@ -430,11 +442,25 @@ namespace Zigbee2MqttAssistant.Services
 			return false;
 		}
 
-		public Task HandleConnectedAsync(MqttClientConnectedEventArgs eventArgs)
+		private bool DispatchBrokerVersionmessage(MqttApplicationMessage msg)
+		{
+			if (msg.Topic.Equals("$SYS/broker/version", StringComparison.InvariantCultureIgnoreCase) && msg.Payload != null)
+			{
+				var version = _utf8.GetString(msg.Payload);
+				_stateService.SetMqttBrokerVersion(version);
+
+				return true;
+			}
+
+			return false;
+		}
+
+		Task IMqttClientConnectedHandler.HandleConnectedAsync(MqttClientConnectedEventArgs eventArgs)
 		{
 			_logger.LogInformation($"Successfully connected to MQTT server {_settings.CurrentSettings.MqttServer}.");
 
 			_stateService.Clear();
+			_stateService.SetMqttConnected(isConnected: true);
 			disconnectWarned = false;
 
 			return Task.CompletedTask;
@@ -443,8 +469,10 @@ namespace Zigbee2MqttAssistant.Services
 
 		private bool disconnectWarned = false;
 
-		public Task HandleDisconnectedAsync(MqttClientDisconnectedEventArgs eventArgs)
+		Task IMqttClientDisconnectedHandler.HandleDisconnectedAsync(MqttClientDisconnectedEventArgs eventArgs)
 		{
+			_stateService.SetMqttConnected(isConnected: false);
+
 			StopPolling();
 
 			if (disconnectWarned)

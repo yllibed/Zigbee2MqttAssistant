@@ -5,6 +5,7 @@
 		string OsType { get; }
 		string OsVersion { get; }
 		bool OsIs64Bits { get; }
+		string ProcessorType { get; }
 		int ProcessorCount { get; }
 		bool IsDocker { get; }
 		bool IsHassIo { get; }
@@ -15,7 +16,9 @@
 		string Zigbee2MttVersion { get; }
 		string CoordinatorVersion { get; }
 		string CoordinatorZigbeeId { get; }
-		string ProcessorType { get; }
+		string MqttBroker { get; }
+		bool MqttBrokerConnected { get; }
+		int NumberOfDevices { get; }
 		bool Telemetry { get; }
 	}
 }
