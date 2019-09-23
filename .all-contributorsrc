@@ -1,0 +1,23 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "VivantSenior",
+      "name": "VivantSenior",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/49829548?v=4",
+      "profile": "https://github.com/VivantSenior",
+      "contributions": [
+        "doc"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "Zigbee2MqttAssistant",
+  "projectOwner": "yllibed",
+  "repoType": "github",
+  "repoHost": "https://github.com"
+}
