@@ -1,5 +1,5 @@
 # Zigbee2Mqtt Assistant
-[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors)
 
 This project is a _Web GUI_ for the very good [Zigbee2Mqtt](https://www.zigbee2mqtt.io/) software
 ([github sources](https://github.com/Koenkk/zigbee2mqtt)).
@@ -111,6 +111,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/VivantSenior"><img src="https://avatars3.githubusercontent.com/u/49829548?v=4" width="100px;" alt="VivantSenior"/><br /><sub><b>VivantSenior</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/commits?author=VivantSenior" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/alwashe"><img src="https://avatars3.githubusercontent.com/u/15383159?v=4" width="100px;" alt="alwashe"/><br /><sub><b>alwashe</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/commits?author=alwashe" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/agreenfield1"><img src="https://avatars3.githubusercontent.com/u/16204747?v=4" width="100px;" alt="agreenfield1"/><br /><sub><b>agreenfield1</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/commits?author=agreenfield1" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/neographikal"><img src="https://avatars1.githubusercontent.com/u/2643715?v=4" width="100px;" alt="neographikal"/><br /><sub><b>neographikal</b></sub></a><br /><a href="#ideas-neographikal" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 
