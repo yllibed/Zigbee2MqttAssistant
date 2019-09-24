@@ -40,6 +40,15 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "wixoff",
+      "name": "wixoff",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/945097?v=4",
+      "profile": "https://github.com/wixoff",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
