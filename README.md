@@ -1,5 +1,6 @@
 # Zigbee2Mqtt Assistant
 [![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors)
+
 This project is a _Web GUI_ for the very good [Zigbee2Mqtt](https://www.zigbee2mqtt.io/) software
 ([github sources](https://github.com/Koenkk/zigbee2mqtt)).
 
