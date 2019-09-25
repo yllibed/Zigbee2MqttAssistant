@@ -1,5 +1,5 @@
 # Zigbee2Mqtt Assistant
-[![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors)
 
 This project is a _Web GUI_ for the very good [Zigbee2Mqtt](https://www.zigbee2mqtt.io/) software
 ([github sources](https://github.com/Koenkk/zigbee2mqtt)).
@@ -114,6 +114,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/neographikal"><img src="https://avatars1.githubusercontent.com/u/2643715?v=4" width="100px;" alt="neographikal"/><br /><sub><b>neographikal</b></sub></a><br /><a href="#ideas-neographikal" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/yllibed/Zigbee2MqttAssistant/issues?q=author%3Aneographikal" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/wixoff"><img src="https://avatars1.githubusercontent.com/u/945097?v=4" width="100px;" alt="wixoff"/><br /><sub><b>wixoff</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/issues?q=author%3Awixoff" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/heubi76"><img src="https://avatars0.githubusercontent.com/u/25635057?v=4" width="100px;" alt="heubi76"/><br /><sub><b>heubi76</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/issues?q=author%3Aheubi76" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://gadget-freakz.com"><img src="https://avatars3.githubusercontent.com/u/649642?v=4" width="100px;" alt="Remco van Geel"/><br /><sub><b>Remco van Geel</b></sub></a><br /><a href="#ideas-remb0" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 

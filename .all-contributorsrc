@@ -59,6 +59,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "remb0",
+      "name": "Remco van Geel",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/649642?v=4",
+      "profile": "https://gadget-freakz.com",
+      "contributions": [
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
