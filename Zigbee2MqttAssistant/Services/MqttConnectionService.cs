@@ -6,7 +6,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.Migrations.Design;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
@@ -15,11 +14,9 @@ using MQTTnet.Client.Connecting;
 using MQTTnet.Client.Disconnecting;
 using MQTTnet.Client.Options;
 using MQTTnet.Client.Receiving;
-using MQTTnet.Diagnostics;
 using MQTTnet.Extensions.ManagedClient;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Remotion.Linq.Parsing.Structure.IntermediateModel;
 using Zigbee2MqttAssistant.Models.Mqtt;
 
 namespace Zigbee2MqttAssistant.Services
@@ -54,7 +51,7 @@ namespace Zigbee2MqttAssistant.Services
 			var baseHassTopic = $"{settings.HomeAssistantDiscoveryBaseTopic}/";
 
 			var regexOptions = RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant;
-			FriendlyNameExtractor = new Regex($"^{Regex.Escape(baseTopic)}(?<name>[^/]+)(?:/(?<state>(availability|state|config)))?$", regexOptions);
+			FriendlyNameExtractor = new Regex($"^{Regex.Escape(baseTopic)}(?<name>.+?)(?:/(?<state>(availability|state|config|config/devices)))?$", regexOptions);
 			HassDiscoveryExtractor = new Regex($"^{Regex.Escape(baseHassTopic)}(?<class>[^/]+)/(?<deviceId>[^/]+)/(?<component>[^/]+)/(?<config>config)?$", regexOptions);
 			_setTopicRegex = new Regex($"^{Regex.Escape(baseTopic)}(?<name>[^/]+)/set$", regexOptions);
 		}
@@ -174,9 +171,10 @@ namespace Zigbee2MqttAssistant.Services
 		private static readonly string[] _topicsToIgnore =
 		{
 			"/bridge/config/devices/get", // request for a device list
-			"/bridge/config/permit_join", // setting allow join
-			"/bridge/config/rename", // request to rename a device
 			"/bridge/config/log_level", // request to change log level
+			"/bridge/config/permit_join", // setting allow join
+			"/bridge/config/remove", // request for a device remove
+			"/bridge/config/rename", // request to rename a device
 			"/bridge/networkmap", // request for a network map
 		};
 
@@ -198,11 +196,6 @@ namespace Zigbee2MqttAssistant.Services
 				return Task.CompletedTask; // this one too
 			}
 
-			if (DispatchZigbee2MqttMessage(msg))
-			{
-				return Task.CompletedTask;
-			}
-
 			if (DispatchHassDiscoveryMessage(msg))
 			{
 				return Task.CompletedTask;
@@ -214,6 +207,11 @@ namespace Zigbee2MqttAssistant.Services
 			}
 
 			if (DispatchLogMessage(msg))
+			{
+				return Task.CompletedTask;
+			}
+
+			if (DispatchZigbee2MqttMessage(msg))
 			{
 				return Task.CompletedTask;
 			}

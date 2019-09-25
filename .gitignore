@@ -340,3 +340,7 @@ ASALocalRun/
 healthchecksdb
 Zigbee2MqttAssistant/appsettings.*.json
 .vscode/
+
+# Misc local docker build
+/Zigbee2MqttAssistant/app
+/Zigbee2MqttAssistant/apppublish
