@@ -79,10 +79,14 @@
                     {
                         <span class="badge badge-dark">@entity.Component</span>
                     }
-                    @if (device.Entities.Length == 0)
+                    @if (device.Type?.Equals("Coordinator", StringComparison.CurrentCultureIgnoreCase) ?? false)
                     {
-                        <span class="badge badge-danger">NO COMPONENTS DEFINED</span>
-                        <span>Maybe this device is not known to Zigbee2Mqtt?</span>
+                        <span class="badge badge-dark">@device.Type</span>
+                    }
+                    else if (device.Entities.Length == 0)
+                    {
+                        <span class="badge badge-danger">NO COMPONENTS</span>
+                        <span>Maybe this device is not (yet) supported by Zigbee2Mqtt?</span>
                     }
                 </td>
             </tr>
