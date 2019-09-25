@@ -171,9 +171,10 @@ namespace Zigbee2MqttAssistant.Services
 		private static readonly string[] _topicsToIgnore =
 		{
 			"/bridge/config/devices/get", // request for a device list
-			"/bridge/config/permit_join", // setting allow join
-			"/bridge/config/rename", // request to rename a device
 			"/bridge/config/log_level", // request to change log level
+			"/bridge/config/permit_join", // setting allow join
+			"/bridge/config/remove", // request for a device remove
+			"/bridge/config/rename", // request to rename a device
 			"/bridge/networkmap", // request for a network map
 		};
 
