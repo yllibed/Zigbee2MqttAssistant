@@ -6,7 +6,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.Migrations.Design;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
@@ -15,11 +14,9 @@ using MQTTnet.Client.Connecting;
 using MQTTnet.Client.Disconnecting;
 using MQTTnet.Client.Options;
 using MQTTnet.Client.Receiving;
-using MQTTnet.Diagnostics;
 using MQTTnet.Extensions.ManagedClient;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Remotion.Linq.Parsing.Structure.IntermediateModel;
 using Zigbee2MqttAssistant.Models.Mqtt;
 
 namespace Zigbee2MqttAssistant.Services
@@ -54,7 +51,7 @@ namespace Zigbee2MqttAssistant.Services
 			var baseHassTopic = $"{settings.HomeAssistantDiscoveryBaseTopic}/";
 
 			var regexOptions = RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant;
-			FriendlyNameExtractor = new Regex($"^{Regex.Escape(baseTopic)}(?<name>[^/]+)(?:/(?<state>(availability|state|config)))?$", regexOptions);
+			FriendlyNameExtractor = new Regex($"^{Regex.Escape(baseTopic)}(?<name>.+?)(?:/(?<state>(availability|state|config|config/devices)))?$", regexOptions);
 			HassDiscoveryExtractor = new Regex($"^{Regex.Escape(baseHassTopic)}(?<class>[^/]+)/(?<deviceId>[^/]+)/(?<component>[^/]+)/(?<config>config)?$", regexOptions);
 			_setTopicRegex = new Regex($"^{Regex.Escape(baseTopic)}(?<name>[^/]+)/set$", regexOptions);
 		}
@@ -198,11 +195,6 @@ namespace Zigbee2MqttAssistant.Services
 				return Task.CompletedTask; // this one too
 			}
 
-			if (DispatchZigbee2MqttMessage(msg))
-			{
-				return Task.CompletedTask;
-			}
-
 			if (DispatchHassDiscoveryMessage(msg))
 			{
 				return Task.CompletedTask;
@@ -214,6 +206,11 @@ namespace Zigbee2MqttAssistant.Services
 			}
 
 			if (DispatchLogMessage(msg))
+			{
+				return Task.CompletedTask;
+			}
+
+			if (DispatchZigbee2MqttMessage(msg))
 			{
 				return Task.CompletedTask;
 			}
