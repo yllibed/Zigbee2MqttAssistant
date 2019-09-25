@@ -29,3 +29,4 @@ The telemetry feature collects the following data:
 * OS & processor type (Windows/Linux) (amd64/arm)
 * Installation type (Docker or HASS.IO)
 * Versions: HASS.IO, Zigbee2Mqtt
+* Crash reports with anonymized details

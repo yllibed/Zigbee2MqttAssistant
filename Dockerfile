@@ -2,13 +2,13 @@
 # msbuild /r /p:Configuration=Release /p:OutputPath=app /t:Publish
 
 # You should run this file with the following parameters:
-# docker build . --build-args DOTNETTAG=<dotnettag> --build-arg OSTAG=<ostag> -t <image-tag>
+# docker build . --build-arg DOTNETTAG=<dotnettag> --build-arg OSTAG=<ostag> -t <image-tag>
 # where:
 #  <dotnettag> is the tag of the dotnet aspnet runtime image
 #  <ostag> is the tag of the runtime for hass.io
 
-ARG DOTNETTAG
-ARG OSTAG
+ARG DOTNETTAG=3.0-alpine-arm64v8
+ARG OSTAG=
 
 FROM mcr.microsoft.com/dotnet/core/aspnet:$DOTNETTAG
 EXPOSE 80

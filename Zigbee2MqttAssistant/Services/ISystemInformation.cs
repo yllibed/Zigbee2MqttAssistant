@@ -1,4 +1,6 @@
-﻿namespace Zigbee2MqttAssistant.Services
+﻿using System;
+
+namespace Zigbee2MqttAssistant.Services
 {
 	public interface ISystemInformation
 	{
@@ -20,5 +22,6 @@
 		bool MqttBrokerConnected { get; }
 		int NumberOfDevices { get; }
 		bool Telemetry { get; }
+		DateTimeOffset StartTime { get; }
 	}
 }

@@ -64,10 +64,5 @@ namespace Zigbee2MqttAssistant.Models
 		/// https://github.com/yllibed/Zigbee2MqttAssistant/blob/master/TELEMETRY.md
 		/// </remarks>
 		public bool TelemetryOptOut { get; } = false;
-
-		/// <summary>
-		/// Instrumentation Key for Azure AppInsights
-		/// </summary>
-		public string TelemetryInstrumentationKey { get; } = "a07cd338-3c1d-417a-890b-67e56efa2ae9";
 	}
 }

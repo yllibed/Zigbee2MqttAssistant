@@ -8,20 +8,31 @@ namespace Zigbee2MqttAssistant.Services
 	{
 		public SettingsService(IConfiguration configuration, ILogger<SettingsService> logger)
 		{
+			var settings = GetFromConfiguration(configuration);
+			if(settings == null)
+			{
+				logger.LogWarning(
+					"Section 'settings' in configuration does not exists. Will use default settings instead.");
+				CurrentSettings = Settings.Default;
+			}
+			else
+			{
+				CurrentSettings = settings;
+			}
+		}
+
+		internal static Settings GetFromConfiguration(IConfiguration configuration)
+		{
 			var section = configuration.GetSection("settings");
 
 			if (section.Exists())
 			{
 				var settingsBuilder = new Settings.Builder();
 				section.Bind(settingsBuilder);
-				CurrentSettings = settingsBuilder;
+				return settingsBuilder;
 			}
-			else
-			{
-				logger.LogWarning(
-					"Section 'settings' in configuration does not exists. Will use default settings instead.");
-				CurrentSettings = Settings.Default;
-			}
+
+			return null;
 		}
 
 		public Settings CurrentSettings { get; }

@@ -1,4 +1,6 @@
 ﻿using System.IO;
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
@@ -9,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Zigbee2MqttAssistant.Services;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
@@ -16,9 +19,12 @@ namespace Zigbee2MqttAssistant
 {
 	public class Startup
 	{
-		public Startup(IConfiguration configuration)
+		private readonly ILogger<Startup> _logger;
+
+		public Startup(IConfiguration configuration, ILogger<Startup> logger)
 		{
 			Configuration = configuration;
+			_logger = logger;
 		}
 
 		public IConfiguration Configuration { get; }
@@ -33,6 +39,20 @@ namespace Zigbee2MqttAssistant
 				options.MinimumSameSitePolicy = SameSiteMode.None;
 			});
 
+			var appSettings = SettingsService.GetFromConfiguration(Configuration);
+			services.AddApplicationInsightsTelemetry(o =>
+			{
+				o.EnableHeartbeat = true;
+
+				if (appSettings?.TelemetryOptOut != true)
+				{
+					_logger.LogWarning("Telemetry is activated using ApplicationInsight.\n --> See https://github.com/yllibed/Zigbee2MqttAssistant/blob/master/TELEMETRY.md for more information.");
+				}
+				else
+				{
+					o.InstrumentationKey = "";
+				}
+			});
 
 			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
@@ -43,6 +63,8 @@ namespace Zigbee2MqttAssistant
 
 			services.AddSingleton<MqttConnectionService>();
 			services.AddSingleton<IHostedService, MqttConnectionService>(sp => sp.GetService<MqttConnectionService>());
+
+			//services.AddSingleton<IAppTelemetry, AppTelemetry>();
 
 			services.Decorate<IUrlHelperFactory>((previous, _) => new RelativeUrlHelperFactory(previous));
 

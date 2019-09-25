@@ -63,5 +63,6 @@ namespace Zigbee2MqttAssistant.Services
 		public bool MqttBrokerConnected => _stateService.CurrentState.MqttConnected;
 		public int NumberOfDevices => _stateService.CurrentState.Devices.Length;
 		public bool Telemetry { get; }
+		public DateTimeOffset StartTime { get; } = DateTimeOffset.Now;
 	}
 }
