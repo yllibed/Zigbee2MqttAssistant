@@ -10,7 +10,7 @@
     <PackageReference Include="Humanizer.Core" Version="2.7.9" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
-    <PackageReference Include="MQTTnet" Version="3.0.5" />
+    <PackageReference Include="MQTTnet" Version="3.0.8" />
     <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="3.0.5" />
     <PackageReference Include="Scrutor" Version="3.1.0" />
     <PackageReference Include="System.Reactive" Version="4.1.6" />
