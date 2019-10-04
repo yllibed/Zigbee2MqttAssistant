@@ -216,7 +216,7 @@ namespace Zigbee2MqttAssistant.Services
 				return Task.CompletedTask;
 			}
 
-			_logger.LogWarning($"Unable to qualify a message received on topic '{msg.Topic}'.");
+			_logger.LogInformation($"Unable to qualify a message received on topic '{msg.Topic}'.");
 
 			return Task.CompletedTask;
 		}
