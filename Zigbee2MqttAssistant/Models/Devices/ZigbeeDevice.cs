@@ -2,7 +2,6 @@
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
-using Microsoft.EntityFrameworkCore.Design;
 using Uno;
 
 namespace Zigbee2MqttAssistant.Models.Devices

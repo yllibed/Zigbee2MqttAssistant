@@ -1,4 +1,6 @@
-# Zibee2Mqtt Assistant
+# Zigbee2Mqtt Assistant
+[![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors)
+
 This project is a _Web GUI_ for the very good [Zigbee2Mqtt](https://www.zigbee2mqtt.io/) software
 ([github sources](https://github.com/Koenkk/zigbee2mqtt)).
 
@@ -97,3 +99,25 @@ on allowed settings. Here's the important settings:
 * If you have suggestions or find bugs, don't hesitate to open and issue here, on Github.
 * **PULL REQUESTS** are welcome! Please open an issue first and link it to your PR. If you're
   unsure about how to implement a feature, we should discuss it in the issue first.
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/VivantSenior"><img src="https://avatars3.githubusercontent.com/u/49829548?v=4" width="100px;" alt="VivantSenior"/><br /><sub><b>VivantSenior</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/commits?author=VivantSenior" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/alwashe"><img src="https://avatars3.githubusercontent.com/u/15383159?v=4" width="100px;" alt="alwashe"/><br /><sub><b>alwashe</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/commits?author=alwashe" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/agreenfield1"><img src="https://avatars3.githubusercontent.com/u/16204747?v=4" width="100px;" alt="agreenfield1"/><br /><sub><b>agreenfield1</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/commits?author=agreenfield1" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/neographikal"><img src="https://avatars1.githubusercontent.com/u/2643715?v=4" width="100px;" alt="neographikal"/><br /><sub><b>neographikal</b></sub></a><br /><a href="#ideas-neographikal" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/yllibed/Zigbee2MqttAssistant/issues?q=author%3Aneographikal" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/wixoff"><img src="https://avatars1.githubusercontent.com/u/945097?v=4" width="100px;" alt="wixoff"/><br /><sub><b>wixoff</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/issues?q=author%3Awixoff" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/heubi76"><img src="https://avatars0.githubusercontent.com/u/25635057?v=4" width="100px;" alt="heubi76"/><br /><sub><b>heubi76</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/issues?q=author%3Aheubi76" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://gadget-freakz.com"><img src="https://avatars3.githubusercontent.com/u/649642?v=4" width="100px;" alt="Remco van Geel"/><br /><sub><b>Remco van Geel</b></sub></a><br /><a href="#ideas-remb0" title="Ideas, Planning, & Feedback">🤔</a></td>
+  </tr>
+</table>
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

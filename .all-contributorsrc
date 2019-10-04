@@ -1,0 +1,78 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "VivantSenior",
+      "name": "VivantSenior",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/49829548?v=4",
+      "profile": "https://github.com/VivantSenior",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "alwashe",
+      "name": "alwashe",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/15383159?v=4",
+      "profile": "https://github.com/alwashe",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "agreenfield1",
+      "name": "agreenfield1",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/16204747?v=4",
+      "profile": "https://github.com/agreenfield1",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "neographikal",
+      "name": "neographikal",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/2643715?v=4",
+      "profile": "https://github.com/neographikal",
+      "contributions": [
+        "ideas",
+        "bug"
+      ]
+    },
+    {
+      "login": "wixoff",
+      "name": "wixoff",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/945097?v=4",
+      "profile": "https://github.com/wixoff",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "heubi76",
+      "name": "heubi76",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/25635057?v=4",
+      "profile": "https://github.com/heubi76",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "remb0",
+      "name": "Remco van Geel",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/649642?v=4",
+      "profile": "https://gadget-freakz.com",
+      "contributions": [
+        "ideas"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "Zigbee2MqttAssistant",
+  "projectOwner": "yllibed",
+  "repoType": "github",
+  "repoHost": "https://github.com"
+}
