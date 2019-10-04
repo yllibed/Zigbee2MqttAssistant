@@ -51,7 +51,7 @@ namespace Zigbee2MqttAssistant.Services
 			var baseHassTopic = $"{settings.HomeAssistantDiscoveryBaseTopic}/";
 
 			var regexOptions = RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant;
-			FriendlyNameExtractor = new Regex($"^{Regex.Escape(baseTopic)}(?<name>.+?)(?:/(?<state>(availability|state|config|config/devices)))?$", regexOptions);
+			FriendlyNameExtractor = new Regex($"^{Regex.Escape(baseTopic)}(?<name>.+?)(?:/(?<state>(availability|state|config|config/devices|attributes)))?$", regexOptions);
 			HassDiscoveryExtractor = new Regex($"^{Regex.Escape(baseHassTopic)}(?<class>[^/]+)/(?<deviceId>[^/]+)/(?<component>[^/]+)/(?<config>config)?$", regexOptions);
 			_setTopicRegex = new Regex($"^{Regex.Escape(baseTopic)}(?<name>[^/]+)/set$", regexOptions);
 		}
@@ -388,7 +388,10 @@ namespace Zigbee2MqttAssistant.Services
 
 					case "device_connected":
 					{
-						var friendlyName = message?.Value<string>();
+						var friendlyName = message.Type == JTokenType.Object
+							? message["friendly_name"]?.Value<string>()
+							: message?.Value<string>();
+
 						var model = meta?["modelID"]?.Value<string>();
 
 						_stateService.NewDevice(friendlyName, friendlyName, model);
