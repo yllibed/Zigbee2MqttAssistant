@@ -69,7 +69,10 @@ on allowed settings. Here's the important settings:
 | `MqttPassword`                    | `""`              | Password for MQTT server                                |
 | `LowBatteryThreshold`             | `30`              | Threshold for triggering low-battery warning (%)        |
 
-For environment variables, you can use any of the previous fields, prefixed with `Z2MA_SETTINGS__`.  By example, you can specify the `MqttPort` with an environment variable in the following way: ``Z2MA_SETTINGS__MQTTPORT=11883`.
+For environment variables, you can use any of the previous fields, prefixed with `Z2MA_SETTINGS__`.  By example, you can specify the `MqttPort` with an environment variable in the following way:
+```
+Z2MA_SETTINGS__MQTTPORT=11883
+```
 
 # Roadmap
 * [X] Build a CI + publish to docker hub
