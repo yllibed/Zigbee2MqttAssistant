@@ -42,6 +42,8 @@ namespace Zigbee2MqttAssistant.Controllers
 
 		public IActionResult Device(string id)
 		{
+			id = Uri.UnescapeDataString(id);
+
 			var device = _stateService.FindDeviceById(id, out var state);
 
 			if (device == null)
@@ -51,7 +53,7 @@ namespace Zigbee2MqttAssistant.Controllers
 
 			// find route to coordinator
 			var routeToCoordinator = new List<ZigbeeDevice>();
-			var parentDevice = device;
+			//var parentDevice = device;
 			var reachCoordinator = false;
 			//while (parentDevice != null)
 			//{
@@ -87,6 +89,7 @@ namespace Zigbee2MqttAssistant.Controllers
 		[HttpPost]
 		public async Task<IActionResult> RenameDevice(string id, string newName)
 		{
+			id = Uri.UnescapeDataString(id);
 			var device = await _operationService.RenameDeviceById(id, newName);
 
 			if (device == null)
@@ -100,6 +103,7 @@ namespace Zigbee2MqttAssistant.Controllers
 		[HttpPost]
 		public async Task<IActionResult> BindDevice(string id, string targetId)
 		{
+			id = Uri.UnescapeDataString(id);
 			await _operationService.Bind(id, targetId);
 			return RedirectToAction("Device", new {id});
 		}
@@ -107,6 +111,7 @@ namespace Zigbee2MqttAssistant.Controllers
 		[HttpPost]
 		public async Task<IActionResult> UnbindDevice(string id, string targetId)
 		{
+			id = Uri.UnescapeDataString(id);
 			await _operationService.Unbind(id, targetId);
 			return RedirectToAction("Device", new { id });
 		}
@@ -114,6 +119,7 @@ namespace Zigbee2MqttAssistant.Controllers
 		[HttpPost]
 		public async Task<IActionResult> RemoveDevice(string id)
 		{
+			id = Uri.UnescapeDataString(id);
 			var device = await _operationService.RemoveDeviceById(id);
 
 			if (device == null)

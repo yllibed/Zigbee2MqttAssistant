@@ -51,7 +51,7 @@ namespace Zigbee2MqttAssistant.Services
 			var baseHassTopic = $"{settings.HomeAssistantDiscoveryBaseTopic}/";
 
 			var regexOptions = RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant;
-			FriendlyNameExtractor = new Regex($"^{Regex.Escape(baseTopic)}(?<name>.+?)(?:/(?<state>(availability|state|config|config/devices)))?$", regexOptions);
+			FriendlyNameExtractor = new Regex($"^{Regex.Escape(baseTopic)}(?<name>.+?)(?:/(?<state>(availability|state|config|config/devices|attributes)))?$", regexOptions);
 			HassDiscoveryExtractor = new Regex($"^{Regex.Escape(baseHassTopic)}(?<class>[^/]+)/(?<deviceId>[^/]+)/(?<component>[^/]+)/(?<config>config)?$", regexOptions);
 			_setTopicRegex = new Regex($"^{Regex.Escape(baseTopic)}(?<name>[^/]+)/set$", regexOptions);
 		}
@@ -186,37 +186,53 @@ namespace Zigbee2MqttAssistant.Services
 
 			var topic = msg.Topic;
 
-			if (_topicsToIgnore.Any(s => topic.EndsWith(s)))
+			try
 			{
-				return Task.CompletedTask; // this topic could be safely ignored
-			}
+				_logger.LogDebug($"Received MQTT message on topic '{topic}'");
 
-			if (_setTopicRegex.IsMatch(topic))
+				if (_topicsToIgnore.Any(s => topic.EndsWith(s)))
+				{
+					_logger.LogDebug($"MQTT message on topic '{topic}' is on ignored list.");
+					return Task.CompletedTask; // this topic could be safely ignored
+				}
+
+				if (_setTopicRegex.IsMatch(topic))
+				{
+					_logger.LogDebug($"MQTT message on topic '{topic}' is a set topic, we can ignore it.");
+					return Task.CompletedTask; // this one too
+				}
+
+				if (DispatchHassDiscoveryMessage(msg))
+				{
+					_logger.LogDebug(
+						$"MQTT message on topic '{topic}' has been processed as a HASS discovery message.");
+					return Task.CompletedTask;
+				}
+
+				if (DispatchDevicesMessage(msg))
+				{
+					_logger.LogDebug(
+						$"MQTT message on topic '{topic}' has been processed as a device information message.");
+					return Task.CompletedTask;
+				}
+
+				if (DispatchLogMessage(msg))
+				{
+					_logger.LogDebug($"MQTT message on topic '{topic}' has been processed as a Z2M log message.");
+					return Task.CompletedTask;
+				}
+
+				if (DispatchZigbee2MqttMessage(msg))
+				{
+					return Task.CompletedTask;
+				}
+
+				_logger.LogInformation($"Unable to qualify a message received on topic '{msg.Topic}'.");
+			}
+			catch (Exception ex)
 			{
-				return Task.CompletedTask; // this one too
+				_logger.LogError(ex, $"Error processing MQTT message on topic '{topic}'");
 			}
-
-			if (DispatchHassDiscoveryMessage(msg))
-			{
-				return Task.CompletedTask;
-			}
-
-			if (DispatchDevicesMessage(msg))
-			{
-				return Task.CompletedTask;
-			}
-
-			if (DispatchLogMessage(msg))
-			{
-				return Task.CompletedTask;
-			}
-
-			if (DispatchZigbee2MqttMessage(msg))
-			{
-				return Task.CompletedTask;
-			}
-
-			_logger.LogWarning($"Unable to qualify a message received on topic '{msg.Topic}'.");
 
 			return Task.CompletedTask;
 		}
@@ -388,7 +404,10 @@ namespace Zigbee2MqttAssistant.Services
 
 					case "device_connected":
 					{
-						var friendlyName = message?.Value<string>();
+						var friendlyName = message.Type == JTokenType.Object
+							? message["friendly_name"]?.Value<string>()
+							: message?.Value<string>();
+
 						var model = meta?["modelID"]?.Value<string>();
 
 						_stateService.NewDevice(friendlyName, friendlyName, model);
@@ -443,6 +462,7 @@ namespace Zigbee2MqttAssistant.Services
 
 		public Task HandleDisconnectedAsync(MqttClientDisconnectedEventArgs eventArgs)
 		{
+
 			StopPolling();
 
 			if (disconnectWarned)

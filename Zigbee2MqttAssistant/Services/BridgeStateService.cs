@@ -154,7 +154,25 @@ namespace Zigbee2MqttAssistant.Services
 			var json = JObject.Parse(configJson);
 
 			var version = json["version"]?.Value<string>();
-			var coordinator = json["coordinator"]?.Value<string>();
+			var coordinator = json["coordinator"];
+			var coordinatorVersion = default(string);
+			var coordinatorType = "zStack";
+
+			switch (coordinator.Type)
+			{
+				case JTokenType.String:
+				{
+					coordinatorVersion = coordinator.Value<string>();
+					break;
+				}
+				case JTokenType.Object:
+				{
+					coordinatorVersion = coordinator["meta"]?["revision"]?.Value<string>();
+					coordinatorType = coordinator["type"]?.Value<string>();
+					break;
+				}
+			}
+
 			var permitJoin = json["permit_join"]?.Value<bool>() ?? false;
 			var logLevel2 = logLevel = json["log_level"]?.ToObject<MqttLogLevel>() ?? MqttLogLevel.Info;
 
@@ -164,7 +182,8 @@ namespace Zigbee2MqttAssistant.Services
 			{
 				state = state
 					.WithZigbee2MqttVersion(version)
-					.WithCoordinatorVersion(coordinator)
+					.WithCoordinatorVersion(coordinatorVersion)
+					.WithCoordinatorType(coordinatorType)
 					.WithPermitJoin(permitJoin)
 					.WithLogLevel(logLevel2);
 
