@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Zigbee2MqttAssistant.Models.Devices;
 
 namespace Zigbee2MqttAssistant.Services
@@ -12,5 +13,6 @@ namespace Zigbee2MqttAssistant.Services
 		Task Bind(string id, string targetId);
 		Task Unbind(string id, string targetId);
 		Task SetLogLevel(string level);
+		Task<(DateTimeOffset dateTime, string dot)> RequestNetworkMap(bool forceRefresh);
 	}
 }

@@ -1,0 +1,105 @@
+﻿@using System.Collections.Immutable
+@using Zigbee2MqttAssistant.Models.Devices
+@using Zigbee2MqttAssistant.Services
+@inject IBridgeStateService stateService
+@{
+    ViewData["Title"] = "Map";
+
+    var state = stateService.CurrentState;
+
+    var devices = state
+        .Devices
+        .Where(d => !string.IsNullOrWhiteSpace(d.ZigbeeId))
+        .ToImmutableList();
+
+    var links = devices
+        .SelectMany(d => d.Parents.Select(p => (from:d.ZigbeeId, to:p.zigbeeId, quality:p.linkQuality)))
+        .ToImmutableList();
+
+    string getShape(ZigbeeDevice device)
+    {
+        switch (device.Type)
+        {
+            case "Coordinator":
+                return "hexagon";
+            case "EndDevice":
+                return "ellipse";
+            default:
+                return "box";
+        }
+    }
+
+    string getMass(ZigbeeDevice device)
+    {
+        switch (device.Type)
+        {
+            case "Coordinator":
+                return "5";
+            case "EndDevice":
+                return "1";
+            default:
+                return "2";
+        }
+    }
+
+}
+
+<h1>Map</h1>
+
+<div class="card">
+    @if (!state.Devices.Any(d => d.Parents.Any()))
+    {
+        <div>MAP NOT AVAILABLE YET - REFRESH TO SEE SOMETHING.</div>
+        <form method="get">
+            <button class="btn btn-outline-secondary" asp-area="" asp-action="Map">REFRESH</button>
+        </form>
+    }
+    <div id="map"></div>
+</div>
+
+<script src="~/lib/vis-network/dist/vis-network.js" asp-append-version="true"></script>
+
+<script type="text/javascript">
+    var network;
+
+    (function (ctl) {
+        const options = {
+            autoResize: true
+        };
+
+        const nodes = new vis.DataSet([
+            @foreach(var device in devices)
+            {
+                WriteLiteral("{id: '" + device.ZigbeeId + "', label: '" + device.FriendlyName + "', shape:'" + getShape(device) + "', mass:" + getMass(device) + "},\n");
+            }
+        ]);
+        const edges = new vis.DataSet([
+            @{
+            @foreach(var link in links)
+            {
+                WriteLiteral("{from: '" + link.from + "', to: '" + link.to + "', value: " + link.quality + ", label: " + link.quality + "},\n");
+            }
+            }
+        ]);
+
+        const data = {
+            nodes: nodes,
+            edges: edges
+        };
+
+        network = new vis.Network(ctl, data, options);
+
+        const onResize = function () {
+            const rect = ctl.getBoundingClientRect();
+            const pageHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+            const ctlHeight = Math.max((pageHeight - rect.top) - 20, 200);
+
+            ctl.style.height = ctlHeight + "px";
+        };
+
+        onResize();
+
+        document.addEventListener("resize", onResize);
+
+    })(document.getElementById("map"));
+</script>

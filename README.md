@@ -7,6 +7,7 @@ This project is a _Web GUI_ for the very good [Zigbee2Mqtt](https://www.zigbee2m
 ## Features
 * If you're using zigbee2mqtt for your devices, it's a must.
 * Display zigbee devices and the status of each of them.
+* Display an interactive map of the network
 * Flexible installation:
   * Available as a _HASS.IO_ add-on (integration into _Home Assistant_). _Ingress_ is supported too.
     note: can be used without Home Assistant.
@@ -82,7 +83,8 @@ Z2MA_SETTINGS__MQTTPORT=11883
   * [X] Automatic update of repo on new version
 * [X] Support _Zigbee Bindings_
 * [X] Support _Docker Manifest_ (support for ARM + Windows)
-* [ ] Support _Zigbee groups_ **WAITING FOR NEXT VERSION OF ZIGBEE2MQTT FOR THIS ONE**
+* [X] Support mapping of network
+* [ ] Support _Zigbee groups_
 * [ ] Better display of "routes to coordinator"
 * [ ] Improve UI
 
