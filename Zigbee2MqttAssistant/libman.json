@@ -1,0 +1,38 @@
+{
+  "version": "1.0",
+  "defaultProvider": "unpkg",
+  "libraries": [
+    {
+      "provider": "unpkg",
+      "library": "vis-network@6.1.1",
+      "destination": "wwwroot/lib/vis-network/",
+      "files": [
+        "dist/img/network/acceptDeleteIcon.png",
+        "dist/img/network/addNodeIcon.png",
+        "dist/img/network/backIcon.png",
+        "dist/img/network/connectIcon.png",
+        "dist/img/network/cross.png",
+        "dist/img/network/cross2.png",
+        "dist/img/network/deleteIcon.png",
+        "dist/img/network/downArrow.png",
+        "dist/img/network/editIcon.png",
+        "dist/img/network/leftArrow.png",
+        "dist/img/network/minus.png",
+        "dist/img/network/plus.png",
+        "dist/img/network/rightArrow.png",
+        "dist/img/network/upArrow.png",
+        "dist/img/network/zoomExtends.png",
+        "dist/vis-network.css",
+        "dist/vis-network.esm.js",
+        "dist/vis-network.esm.js.map",
+        "dist/vis-network.esm.min.js",
+        "dist/vis-network.esm.min.js.map",
+        "dist/vis-network.js",
+        "dist/vis-network.js.map",
+        "dist/vis-network.min.css",
+        "dist/vis-network.min.js",
+        "dist/vis-network.min.js.map"
+      ]
+    }
+  ]
+}

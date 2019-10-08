@@ -155,5 +155,10 @@ namespace Zigbee2MqttAssistant.Controllers
 
 			return RedirectToAction("Status");
 		}
+
+		public IActionResult Map()
+		{
+			return View();
+		}
 	}
 }
