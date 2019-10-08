@@ -50,6 +50,9 @@
     @if (!state.Devices.Any(d => d.Parents.Any()))
     {
         <div>MAP NOT AVAILABLE YET - REFRESH TO SEE SOMETHING.</div>
+        <form method="get">
+            <button class="btn btn-outline-secondary" asp-area="" asp-action="Map">REFRESH</button>
+        </form>
     }
     <div id="map"></div>
 </div>
