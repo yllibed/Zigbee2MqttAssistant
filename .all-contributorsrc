@@ -77,6 +77,16 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "nbogojevic",
+      "name": "Nenad Bogojevic",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/1485503?v=4",
+      "profile": "https://github.com/nbogojevic",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
