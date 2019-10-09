@@ -209,6 +209,14 @@ namespace Zigbee2MqttAssistant.Services
 			var deviceName = json["device"]["name"]?.Value<string>();
 			var deviceIds = json["device"]["identifiers"]?.FirstOrDefault()?.Value<string>();
 
+			if (string.IsNullOrWhiteSpace(entityName)
+			    || string.IsNullOrWhiteSpace(entityId)
+			    || string.IsNullOrWhiteSpace(deviceName)
+			    || string.IsNullOrWhiteSpace(deviceIds))
+			{
+				return null;
+			}
+
 			Bridge Update(Bridge state)
 			{
 				var device = state.Devices.FirstOrDefault(d => d.ZigbeeId != null && d.ZigbeeId.Equals(zigbeeId));
@@ -318,7 +326,7 @@ namespace Zigbee2MqttAssistant.Services
 							state = state.WithCoordinatorZigbeeId(zigbeeId);
 						}
 
-						continue;
+						friendlyName = "Coordinator";
 					}
 
 					var device = state.Devices.FirstOrDefault(d => d.FriendlyName.Equals(friendlyName) || (d.ZigbeeId?.Equals(zigbeeId) ?? false));

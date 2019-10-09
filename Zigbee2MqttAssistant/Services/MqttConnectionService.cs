@@ -320,7 +320,7 @@ namespace Zigbee2MqttAssistant.Services
 			var component = match.Groups["component"];
 			var config = match.Groups["config"];
 
-			if (config.Success && msg.Payload != null)
+			if (config.Success && msg.Payload != null && msg.Payload.Length > 2)
 			{
 				var payload = _utf8.GetString(msg.Payload);
 				

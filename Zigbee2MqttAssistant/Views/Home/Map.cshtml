@@ -34,11 +34,11 @@
         switch (device.Type)
         {
             case "Coordinator":
-                return "5";
+                return "8";
             case "EndDevice":
                 return "1";
             default:
-                return "2";
+                return "5";
         }
     }
 
@@ -70,14 +70,14 @@
         const nodes = new vis.DataSet([
             @foreach(var device in devices)
             {
-                WriteLiteral("{id: '" + device.ZigbeeId + "', label: '" + device.FriendlyName + "', shape:'" + getShape(device) + "', mass:" + getMass(device) + "},\n");
+                WriteLiteral("{id: '" + device.ZigbeeId + "', label: '" + device.FriendlyName.Replace("'", "\\'") + "', shape:'" + getShape(device) + "', mass:" + getMass(device) + "},\n");
             }
         ]);
         const edges = new vis.DataSet([
             @{
             @foreach(var link in links)
             {
-                WriteLiteral("{from: '" + link.from + "', to: '" + link.to + "', value: " + link.quality + ", label: " + link.quality + "},\n");
+                WriteLiteral("{from: '" + link.from + "', to: '" + link.to + "', label: '" + link.quality + "', length: " + (1000 / (Math.Pow(link.quality + 1, 1.25)) + 25) +", arrows: { to: { enabled: true } }, font: { size: 10 } },\n");
             }
             }
         ]);
@@ -87,19 +87,24 @@
             edges: edges
         };
 
-        network = new vis.Network(ctl, data, options);
-
+        
         const onResize = function () {
             const rect = ctl.getBoundingClientRect();
             const pageHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
             const ctlHeight = Math.max((pageHeight - rect.top) - 20, 200);
 
             ctl.style.height = ctlHeight + "px";
+
+            if (network) {
+                network.fit();
+            }
         };
 
         onResize();
 
-        document.addEventListener("resize", onResize);
+        window.addEventListener("resize", onResize);
+
+        network = new vis.Network(ctl, data, options);
 
     })(document.getElementById("map"));
 </script>
