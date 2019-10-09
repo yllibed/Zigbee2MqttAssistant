@@ -1,5 +1,5 @@
 # Zigbee2Mqtt Assistant
-[![All Contributors](https://img.shields.io/badge/all_contributors-9-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-10-orange.svg?style=flat-square)](#contributors)
 
 This project is a _Web GUI_ for the very good [Zigbee2Mqtt](https://www.zigbee2mqtt.io/) software
 ([github sources](https://github.com/Koenkk/zigbee2mqtt)).
@@ -126,6 +126,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="http://abscond.org"><img src="https://avatars0.githubusercontent.com/u/425?v=4" width="100px;" alt="James Darling"/><br /><sub><b>James Darling</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/issues?q=author%3Ajames" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/nbogojevic"><img src="https://avatars2.githubusercontent.com/u/1485503?v=4" width="100px;" alt="Nenad Bogojevic"/><br /><sub><b>Nenad Bogojevic</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/issues?q=author%3Anbogojevic" title="Bug reports">🐛</a> <a href="https://github.com/yllibed/Zigbee2MqttAssistant/commits?author=nbogojevic" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/trekker25"><img src="https://avatars3.githubusercontent.com/u/24300944?v=4" width="100px;" alt="trekker25"/><br /><sub><b>trekker25</b></sub></a><br /><a href="#question-trekker25" title="Answering Questions">💬</a></td>
   </tr>
 </table>
 
