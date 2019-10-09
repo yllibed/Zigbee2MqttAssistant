@@ -96,6 +96,15 @@
       "contributions": [
         "question"
       ]
+    },
+    {
+      "login": "brendanmullan",
+      "name": "Brendan Mullan",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/4569153?v=4",
+      "profile": "https://github.com/brendanmullan",
+      "contributions": [
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
