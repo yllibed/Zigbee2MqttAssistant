@@ -318,7 +318,7 @@ namespace Zigbee2MqttAssistant.Services
 							state = state.WithCoordinatorZigbeeId(zigbeeId);
 						}
 
-						continue;
+						friendlyName = "Coordinator";
 					}
 
 					var device = state.Devices.FirstOrDefault(d => d.FriendlyName.Equals(friendlyName) || (d.ZigbeeId?.Equals(zigbeeId) ?? false));
