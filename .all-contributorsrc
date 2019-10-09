@@ -87,6 +87,15 @@
         "bug",
         "code"
       ]
+    },
+    {
+      "login": "trekker25",
+      "name": "trekker25",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/24300944?v=4",
+      "profile": "https://github.com/trekker25",
+      "contributions": [
+        "question"
+      ]
     }
   ],
   "contributorsPerLine": 7,
