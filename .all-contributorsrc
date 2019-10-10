@@ -105,6 +105,15 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "seaverd",
+      "name": "seaverd",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/2743685?v=4",
+      "profile": "https://github.com/seaverd",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
