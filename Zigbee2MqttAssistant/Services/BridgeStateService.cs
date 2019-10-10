@@ -310,7 +310,18 @@ namespace Zigbee2MqttAssistant.Services
 
 		public void UpdateDevices(string payload)
 		{
-			var json = JArray.Parse(payload);
+			var json = JToken.Parse(payload);
+
+			if (json.Type == JTokenType.Object && json["type"]?.Value<string>() == "devices")
+			{
+				json = json["message"];
+			}
+
+			if (json.Type != JTokenType.Array)
+			{
+				_logger.LogWarning($"Invalid/unknown devices payload received. root element type is {json.Root.Type}: {payload.Substring(0, 40)}... -- will be ignored.");
+				return;
+			}
 
 			Bridge Update(Bridge state)
 			{
@@ -324,9 +335,13 @@ namespace Zigbee2MqttAssistant.Services
 						if (deviceJson["type"]?.Value<string>().Equals("Coordinator", StringComparison.InvariantCultureIgnoreCase) ?? false)
 						{
 							state = state.WithCoordinatorZigbeeId(zigbeeId);
+							friendlyName = "Coordinator";
 						}
-
-						friendlyName = "Coordinator";
+						else
+						{
+							_logger.LogWarning($"Unable to understand device with json {deviceJson} -- will be ignored.");
+							continue; // unable to qualify this device
+						}
 					}
 
 					var device = state.Devices.FirstOrDefault(d => d.FriendlyName.Equals(friendlyName) || (d.ZigbeeId?.Equals(zigbeeId) ?? false));
