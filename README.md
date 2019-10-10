@@ -1,5 +1,5 @@
 # Zigbee2Mqtt Assistant
-[![All Contributors](https://img.shields.io/badge/all_contributors-11-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-12-orange.svg?style=flat-square)](#contributors)
 
 This project is a _Web GUI_ for the very good [Zigbee2Mqtt](https://www.zigbee2mqtt.io/) software
 ([github sources](https://github.com/Koenkk/zigbee2mqtt)).
@@ -128,6 +128,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/nbogojevic"><img src="https://avatars2.githubusercontent.com/u/1485503?v=4" width="100px;" alt="Nenad Bogojevic"/><br /><sub><b>Nenad Bogojevic</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/issues?q=author%3Anbogojevic" title="Bug reports">🐛</a> <a href="https://github.com/yllibed/Zigbee2MqttAssistant/commits?author=nbogojevic" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/trekker25"><img src="https://avatars3.githubusercontent.com/u/24300944?v=4" width="100px;" alt="trekker25"/><br /><sub><b>trekker25</b></sub></a><br /><a href="#question-trekker25" title="Answering Questions">💬</a></td>
     <td align="center"><a href="https://github.com/brendanmullan"><img src="https://avatars3.githubusercontent.com/u/4569153?v=4" width="100px;" alt="Brendan Mullan"/><br /><sub><b>Brendan Mullan</b></sub></a><br /><a href="#ideas-brendanmullan" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/seaverd"><img src="https://avatars3.githubusercontent.com/u/2743685?v=4" width="100px;" alt="seaverd"/><br /><sub><b>seaverd</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/issues?q=author%3Aseaverd" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 
