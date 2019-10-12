@@ -76,12 +76,12 @@ jobs:
       imageTag: '3.0-disco-arm32v7'
       osTag: 'armv7'
 
-   - template: azure-pipelines.buildimage.yaml
-     parameters:
-       target: linux-arm64
-       vmImage: 'ubuntu-latest'
-       imageTag: '3.0-alpine-arm64v8'
-       osTag: 'aarch64'
+  - template: azure-pipelines.buildimage.yaml
+    parameters:
+      target: linux-arm64
+      vmImage: 'ubuntu-latest'
+      imageTag: '3.0-alpine-arm64v8'
+      osTag: 'aarch64'
 
   - template: azure-pipelines.buildimage.yaml
     parameters:
