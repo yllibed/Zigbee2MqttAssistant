@@ -73,7 +73,7 @@ jobs:
     parameters:
       target: linux-arm32
       vmImage: 'ubuntu-latest'
-      imageTag: '3.0-disco-arm32v7'
+      imageTag: '3.0-buster-slim-arm32v7'
       osTag: 'armv7'
 
   - template: azure-pipelines.buildimage.yaml
