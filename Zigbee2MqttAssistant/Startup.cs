@@ -3,14 +3,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Zigbee2MqttAssistant.Services;
-using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace Zigbee2MqttAssistant
 {
@@ -33,8 +30,10 @@ namespace Zigbee2MqttAssistant
 				options.MinimumSameSitePolicy = SameSiteMode.None;
 			});
 
-
-			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+			services.AddControllersWithViews(c =>
+			{
+				c.ReturnHttpNotAcceptable = true;
+			});
 
 			services.AddSingleton<IBridgeStateService, BridgeStateService>();
 			services.AddSingleton<IBridgeOperationService, BrigeOperationService>();
@@ -53,7 +52,7 @@ namespace Zigbee2MqttAssistant
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 		{
 			if (env.IsDevelopment())
 			{
@@ -66,11 +65,14 @@ namespace Zigbee2MqttAssistant
 
 			app.UseStaticFiles();
 
-			app.UseMvc(routes =>
+			app.UseRouting();
+
+
+			app.UseEndpoints(endpoints =>
 			{
-				routes.MapRoute(
+				endpoints.MapControllerRoute(
 					name: "default",
-					template: "{controller=Home}/{action=Index}/{*id}");
+					pattern: "{controller=Home}/{action=Index}/{*id}");
 			});
 		}
 	}
