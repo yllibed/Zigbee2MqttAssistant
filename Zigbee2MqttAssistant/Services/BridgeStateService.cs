@@ -422,6 +422,8 @@ namespace Zigbee2MqttAssistant.Services
 
 						var parent = link["targetIeeeAddr"]?.Value<string>();
 						var linkQuality = link["lqi"]?.Value<ushort>();
+						var relationship = link["relationship"]?.Value<byte>();
+
 						if (string.IsNullOrWhiteSpace(parent) || linkQuality == null)
 						{
 							continue; // weird case (payload is invalid?)
@@ -434,12 +436,12 @@ namespace Zigbee2MqttAssistant.Services
 						if (existingParent != default)
 						{
 							newDevice = device
-								.WithParents(parents => parents.Replace(existingParent, (parent, linkQuality.Value)));
+								.WithParents(parents => parents.Replace(existingParent, (parent, linkQuality.Value, relationship)));
 						}
 						else
 						{
 							newDevice = device
-								.WithParents(parents => parents.Add((parent, linkQuality.Value)));
+								.WithParents(parents => parents.Add((parent, linkQuality.Value, relationship)));
 						}
 
 						if (device != newDevice)
