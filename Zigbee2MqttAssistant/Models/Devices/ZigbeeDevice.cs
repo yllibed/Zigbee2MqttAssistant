@@ -17,11 +17,12 @@ namespace Zigbee2MqttAssistant.Models.Devices
 		public uint? NetworkAddress { get; }
 
 		public ushort? LinkQuality => Parents
-			.Select(p => (ushort?) p.linkQuality)
+			.Where(p => p.relationship < 3)
+			.Select(p => (ushort?)p.linkQuality)
 			.DefaultIfEmpty()
 			.Max(); // This is a pattern for non-existent .MaxOrDefault()
 
-		public ImmutableArray<(string zigbeeId, ushort linkQuality)> Parents { get; } = ImmutableArray<(string zigbeeId, ushort linkQuality)>.Empty;
+		public ImmutableArray<(string zigbeeId, ushort linkQuality, byte? relationship)> Parents { get; } = ImmutableArray<(string zigbeeId, ushort linkQuality, byte? relationship)>.Empty;
 
 		public string FriendlyName { get; }
 
