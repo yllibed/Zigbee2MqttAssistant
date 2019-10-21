@@ -63,8 +63,8 @@ on allowed settings. Here's the important settings:
 | --------------------------------- | ----------------- | ------------------------------------------------------- |
 | `BaseTopic`                       | `"zigbee2mqtt"`   | Base MQTT topic when Zigbee2Mqtt is publishing its data |
 | `HomeAssistantDiscoveryBaseTopic` | `"homeassistant"` | Base MQTT topic for HASS Discovery                      |
-| `MqttServer`                      | `"mqtt"`          | Name or IP address of the MQTT server                   |
-| `MqttSecure`                      | `false`           | If should use TLS to connect to MQTT server             |
+| `MqttServer`                      | `"mqtt"`          | Name or IP address of the MQTT server. Put only the name or the address of the server here.  **DON'T USE THE `mqtt://` ADDRESS FORMAT**. |
+| `MqttSecure`                      | `false`           | If should use TLS to connect to MQTT server. Valid options are `true`, `false` or `"insecure"`. _Insecure_ means it's using TLS, but without any server certificate check. |
 | `MqttPort`                        | `1883` (normal) or `8883` (secured) | Port for MQTT server                  |
 | `MqttUsername`                    | `""`              | Username for MQTT server                                |
 | `MqttPassword`                    | `""`              | Password for MQTT server                                |
@@ -73,6 +73,7 @@ on allowed settings. Here's the important settings:
 For environment variables, you can use any of the previous fields, prefixed with `Z2MA_SETTINGS__`.  By example, you can specify the `MqttPort` with an environment variable in the following way:
 ```
 Z2MA_SETTINGS__MQTTPORT=11883
+Z2MA_SETTINGS__MQTTSECURE=INSECURE
 ```
 
 # Roadmap
