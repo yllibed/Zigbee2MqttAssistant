@@ -206,8 +206,8 @@ namespace Zigbee2MqttAssistant.Services
 
 			var entityName = json["name"]?.Value<string>();
 			var entityId = json["unique_id"]?.Value<string>();
-			var deviceName = json["device"]["name"]?.Value<string>();
-			var deviceIds = json["device"]["identifiers"]?.FirstOrDefault()?.Value<string>();
+			var deviceName = json["device"]?["name"]?.Value<string>();
+			var deviceIds = json["device"]?["identifiers"]?.FirstOrDefault()?.Value<string>();
 
 			if (string.IsNullOrWhiteSpace(entityName)
 			    || string.IsNullOrWhiteSpace(entityId)

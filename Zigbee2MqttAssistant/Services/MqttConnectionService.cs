@@ -17,6 +17,7 @@ using MQTTnet.Client.Receiving;
 using MQTTnet.Extensions.ManagedClient;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Zigbee2MqttAssistant.Models;
 using Zigbee2MqttAssistant.Models.Mqtt;
 
 namespace Zigbee2MqttAssistant.Services
@@ -78,7 +79,11 @@ namespace Zigbee2MqttAssistant.Services
 
 			var options = new MqttClientOptionsBuilder()
 				.WithTcpServer(settings.MqttServer, settings.MqttPort)
-				.WithTls(x => x.UseTls = settings.MqttSecure)
+				.WithTls(x =>
+				{
+					x.UseTls = settings.MqttSecure != TlsMode.False;
+					x.AllowUntrustedCertificates = settings.MqttSecure == TlsMode.Insecure;
+				})
 				.WithCredentials(settings.MqttUsername, settings.MqttPassword)
 				.Build();
 

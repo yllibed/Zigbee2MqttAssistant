@@ -31,7 +31,7 @@ namespace Zigbee2MqttAssistant.Models
 		/// <summary>
 		/// 
 		/// </summary>
-		public bool MqttSecure { get; } = false;
+		public TlsMode MqttSecure { get; } = TlsMode.False;
 
 		/// <summary>
 		/// Port to use for MQTT Server if different than default value
