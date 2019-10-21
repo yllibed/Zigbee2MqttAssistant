@@ -75,6 +75,7 @@ For environment variables, you can use any of the previous fields, prefixed with
 Z2MA_SETTINGS__MQTTPORT=11883
 Z2MA_SETTINGS__MQTTSECURE=INSECURE
 ```
+Note: Uppercase is used here as a convention. It's actually case insensitive.
 
 # Roadmap
 * [X] Build a CI + publish to docker hub
