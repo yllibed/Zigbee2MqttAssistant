@@ -54,5 +54,17 @@ namespace Zigbee2MqttAssistant.Models
 		/// Set to zero to disable this feature.
 		/// </summary>
 		public decimal LowBatteryThreshold { get; } = 30;
+
+		/// <summary>
+		/// Cron expression for polling for devices.
+		/// Default value: every 6 minutes.
+		/// </summary>
+		public string DevicesPollingSchedule { get; } = "*/6 * * * *";
+
+		/// <summary>
+		/// Cron expression for polling for devices.
+		/// Default value: every 20 minutes.
+		/// </summary>
+		public string NetworkScanSchedule { get; } = "*/20 * * * *";
 	}
 }

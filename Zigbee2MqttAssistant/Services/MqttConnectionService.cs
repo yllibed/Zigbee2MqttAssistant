@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Cronos;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
@@ -116,11 +117,13 @@ namespace Zigbee2MqttAssistant.Services
 
 			var ct = cancellableDisposable.Token;
 
-			var t = PollingTask(); // start it
+			var t1 = PollingDevicesTask();
+			var t2 = PollingNetworkTask();
 
-			async Task PollingTask()
+			async Task PollingDevicesTask()
 			{
 				var settings = _settings.CurrentSettings;
+				var cron = CronExpression.Parse(settings.DevicesPollingSchedule);
 
 				long count = 0;
 
@@ -144,7 +147,48 @@ namespace Zigbee2MqttAssistant.Services
 						await _client.PublishAsync(msg2);
 					}
 
-					await Task.Delay(TimeSpan.FromMinutes(5), ct);
+					var now = DateTimeOffset.Now;
+					var next = cron.GetNextOccurrence(now, TimeZoneInfo.Local) ?? now.AddMinutes(6);
+					var delay = next - now;
+
+					_logger.LogDebug($"PollingDevicesTask: Waiting until {next} (currently is {now}. (cron={cron})");
+					await Task.Delay(delay, ct);
+				}
+			}
+
+			async Task PollingNetworkTask()
+			{
+				var settings = _settings.CurrentSettings;
+				var cron = CronExpression.Parse(settings.NetworkScanSchedule);
+
+				long count = 0;
+
+				await Task.Delay(5000, ct);
+
+				while (!ct.IsCancellationRequested)
+				{
+					var msg = new MqttApplicationMessageBuilder()
+						.WithTopic($"{settings.BaseTopic}/bridge/config/devices/get")
+						.Build();
+
+					await _client.PublishAsync(msg);
+
+					if (count % 3 == 0)
+					{
+						var msg2 = new MqttApplicationMessageBuilder()
+							.WithTopic($"{settings.BaseTopic}/bridge/networkmap")
+							.WithPayload("raw")
+							.Build();
+
+						await _client.PublishAsync(msg2);
+					}
+
+					var now = DateTimeOffset.Now;
+					var next = cron.GetNextOccurrence(now, TimeZoneInfo.Local) ?? now.AddMinutes(20);
+					var delay = next - now;
+
+					_logger.LogDebug($"PollingNetworkTask: Waiting until {next} (currently is {now}. (cron={cron})");
+					await Task.Delay(delay, ct);
 				}
 			}
 		}
