@@ -82,16 +82,5 @@ namespace Zigbee2MqttAssistant.Services
 				await _mqtt.SetLogLevel(mqttLogLevel);
 			}
 		}
-
-		public async Task<(DateTimeOffset dateTime, string dot)> RequestNetworkMap(bool forceRefresh)
-		{
-			var map = @"digraph G {
-  ""Welcome"" -> ""To""
-  ""To"" -> ""Web""
-  ""To"" -> ""GraphViz!""
-}";
-
-			return (DateTimeOffset.Now, map);
-		}
 	}
 }

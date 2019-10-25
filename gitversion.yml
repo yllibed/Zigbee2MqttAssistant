@@ -1,18 +1,12 @@
 assembly-versioning-scheme: MajorMinorPatch
 mode: ContinuousDeployment
-next-version: 0.2.0
+next-version: 0.3.0
 continuous-delivery-fallback-tag: ""
 
 branches:
   master:
     regex: master
     increment: none
-    tag: dev
-  stable:
-    regex: stable
-    tag: 
-    increment: none
-    source-branches: ['master']
 
 ignore:
   sha: []

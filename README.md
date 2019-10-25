@@ -69,6 +69,8 @@ on allowed settings. Here's the important settings:
 | `MqttUsername`                    | `""`              | Username for MQTT server                                |
 | `MqttPassword`                    | `""`              | Password for MQTT server                                |
 | `LowBatteryThreshold`             | `30`              | Threshold for triggering low-battery warning (%)        |
+| `DevicesPollingSchedule`          | `*/6 * * * *`     | Schedule (cron expression) for device list refresh. Default value: every 6 minutes. |
+| `NetworkScanSchedule`             | `*/20 * * * *`    | Schedule (cron expression) for device list refresh. Default value: every 20 minutes. This network scan can have high cost on your network: [details here](https://github.com/Koenkk/zigbee2mqtt/issues/2118#issuecomment-541339790). |
 
 For environment variables, you can use any of the previous fields, prefixed with `Z2MA_SETTINGS__`.  By example, you can specify the `MqttPort` with an environment variable in the following way:
 ```
@@ -76,6 +78,8 @@ Z2MA_SETTINGS__MQTTPORT=11883
 Z2MA_SETTINGS__MQTTSECURE=INSECURE
 ```
 Note: Uppercase is used here as a convention. It's actually case insensitive.
+
+If you need to change _cron expression_ for other values, you should use a site like <https://crontab.guru/> to validate them. Attention: if you specify specific hours, take care of the time offset (timezone) inside the container!
 
 # Roadmap
 * [X] Build a CI + publish to docker hub
