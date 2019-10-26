@@ -160,5 +160,11 @@ namespace Zigbee2MqttAssistant.Controllers
 		{
 			return View();
 		}
+
+		public async Task<IActionResult> Scan()
+		{
+			await _operationService.ManualRefreshNetworkScan();
+			return View("Map");
+		}
 	}
 }

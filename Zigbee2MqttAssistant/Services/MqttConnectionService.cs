@@ -125,27 +125,11 @@ namespace Zigbee2MqttAssistant.Services
 				var settings = _settings.CurrentSettings;
 				var cron = CronExpression.Parse(settings.DevicesPollingSchedule);
 
-				long count = 0;
-
 				await Task.Delay(5000, ct);
 
 				while (!ct.IsCancellationRequested)
 				{
-					var msg = new MqttApplicationMessageBuilder()
-						.WithTopic($"{settings.BaseTopic}/bridge/config/devices/get")
-						.Build();
-
-					await _client.PublishAsync(msg);
-
-					if (count % 3 == 0)
-					{
-						var msg2 = new MqttApplicationMessageBuilder()
-							.WithTopic($"{settings.BaseTopic}/bridge/networkmap")
-							.WithPayload("raw")
-							.Build();
-
-						await _client.PublishAsync(msg2);
-					}
+					await SendDevicesRequest();
 
 					var now = DateTimeOffset.Now;
 					var next = cron.GetNextOccurrence(now, TimeZoneInfo.Local) ?? now.AddMinutes(6);
@@ -161,27 +145,11 @@ namespace Zigbee2MqttAssistant.Services
 				var settings = _settings.CurrentSettings;
 				var cron = CronExpression.Parse(settings.NetworkScanSchedule);
 
-				long count = 0;
-
 				await Task.Delay(5000, ct);
 
 				while (!ct.IsCancellationRequested)
 				{
-					var msg = new MqttApplicationMessageBuilder()
-						.WithTopic($"{settings.BaseTopic}/bridge/config/devices/get")
-						.Build();
-
-					await _client.PublishAsync(msg);
-
-					if (count % 3 == 0)
-					{
-						var msg2 = new MqttApplicationMessageBuilder()
-							.WithTopic($"{settings.BaseTopic}/bridge/networkmap")
-							.WithPayload("raw")
-							.Build();
-
-						await _client.PublishAsync(msg2);
-					}
+					await SendNetworkScanRequest();
 
 					var now = DateTimeOffset.Now;
 					var next = cron.GetNextOccurrence(now, TimeZoneInfo.Local) ?? now.AddMinutes(20);
@@ -193,6 +161,51 @@ namespace Zigbee2MqttAssistant.Services
 			}
 		}
 
+		private bool _waitingForDevicesResponse = false;
+
+		public async Task SendDevicesRequest()
+		{
+			_logger.LogInformation("Launching a request for an updated devices list...");
+
+			if (_waitingForDevicesResponse)
+			{
+				_logger.LogWarning("Another devices request already in progress.");
+
+				return;
+			}
+
+			var msg = new MqttApplicationMessageBuilder()
+				.WithTopic($"{_settings.CurrentSettings.BaseTopic}/bridge/config/devices/get")
+				.Build();
+
+			_waitingForDevicesResponse = true;
+
+			await _client.PublishAsync(msg);
+		}
+
+		private bool _waitingForNetworkScanResponse = false;
+
+		public async Task SendNetworkScanRequest()
+		{
+			_logger.LogInformation("Launching a request for a network scan...");
+
+			if (_waitingForDevicesResponse)
+			{
+				_logger.LogWarning("Another network scan request already in progress.");
+
+				return;
+			}
+
+			var msg = new MqttApplicationMessageBuilder()
+				.WithTopic($"{_settings.CurrentSettings.BaseTopic}/bridge/networkmap")
+				.WithPayload("raw")
+				.Build();
+
+			_waitingForNetworkScanResponse = true;
+
+			await _client.PublishAsync(msg);
+		}
+
 		private void StopPolling()
 		{
 			_devicePolling.Disposable = null;
@@ -201,6 +214,8 @@ namespace Zigbee2MqttAssistant.Services
 		private void Disconnect()
 		{
 			StopPolling();
+			_waitingForDevicesResponse = false;
+			_waitingForNetworkScanResponse = false;
 			_connection.Disposable = null;
 		}
 
@@ -398,12 +413,16 @@ namespace Zigbee2MqttAssistant.Services
 				var payload = _utf8.GetString(msg.Payload);
 				_stateService.UpdateDevices(payload);
 
+				_waitingForDevicesResponse = false;
+
 				return true;
 			}
 			if (msg.Topic.Equals($"{settings.BaseTopic}/bridge/networkmap/raw"))
 			{
 				var payload = _utf8.GetString(msg.Payload);
 				_stateService.UpdateNetworkMap(payload);
+
+				_waitingForNetworkScanResponse = false;
 
 				return true;
 			}

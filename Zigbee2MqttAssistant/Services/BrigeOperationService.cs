@@ -82,5 +82,9 @@ namespace Zigbee2MqttAssistant.Services
 				await _mqtt.SetLogLevel(mqttLogLevel);
 			}
 		}
+
+		public Task ManualRefreshDevicesList() => _mqtt.SendDevicesRequest();
+
+		public Task ManualRefreshNetworkScan() => _mqtt.SendNetworkScanRequest();
 	}
 }
