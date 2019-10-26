@@ -145,7 +145,7 @@ namespace Zigbee2MqttAssistant.Services
 				var settings = _settings.CurrentSettings;
 				var cron = CronExpression.Parse(settings.NetworkScanSchedule);
 
-				await Task.Delay(5000, ct);
+				await Task.Delay(30000, ct);
 
 				while (!ct.IsCancellationRequested)
 				{
