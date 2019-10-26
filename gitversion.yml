@@ -1,15 +1,16 @@
 assembly-versioning-scheme: MajorMinorPatch
-mode: ContinuousDeployment
-next-version: 0.3.1
+mode: Mainline
+next-version: 0.3.2
 continuous-delivery-fallback-tag: ""
+major-version-bump-message: '\+semver:\s?(breaking|major)'
+minor-version-bump-message: '\+semver:\s?(feature|minor)'
+patch-version-bump-message: '\+semver:\s?(fix|patch)'
+commit-message-incrementing: Enabled
 
 branches:
   master:
     regex: master
-    major-version-bump-message: '\+semver:\s?(breaking|major)'
-    minor-version-bump-message: '\+semver:\s?(feature|minor)'
-    patch-version-bump-message: '\+semver:\s?(fix|patch)'
-    commit-message-incrementing: Enabled
+    tag:
 
 ignore:
   sha: []
