@@ -54,6 +54,13 @@ docker run -p 8880:80 -e Z2MA_SETTINGS__MQTTSERVER=<mqttserver> -e Z2MA_SETTINGS
 
 > Note: it won't compile using the _dotnet core_ build yet. For now, MSBuild is required to build it.
 
+# Branches
+There is 2 branches for Zigbee2MqttAssistant: `dev` and `stable`. When a build version is considered stable enough, it will be pushed from `dev` to `stable` (there's no git branch dedicated to the _stable_ version).
+
+If you want to try newest features, you can get the `dev` branch in the following way:
+* On HASS.IO, pick `zigbee2mqttassistant-dev` package
+* On Docker, pick the following package/tag: `carldebilly/zigbee2mqttassistant:dev`
+
 # Settings
 
 You can refer to [`Settings.cs` file](Zigbee2MqttAssistant/Models/Settings.cs) for more information
