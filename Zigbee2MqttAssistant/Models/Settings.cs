@@ -57,14 +57,14 @@ namespace Zigbee2MqttAssistant.Models
 
 		/// <summary>
 		/// Cron expression for polling for devices.
-		/// Default value: every 6 minutes.
+		/// Default value: every 12 minutes.
 		/// </summary>
-		public string DevicesPollingSchedule { get; } = "*/6 * * * *";
+		public string DevicesPollingSchedule { get; } = "*/12 * * * *";
 
 		/// <summary>
 		/// Cron expression for polling for devices.
-		/// Default value: every 20 minutes.
+		/// Default value: every 40 minutes.
 		/// </summary>
-		public string NetworkScanSchedule { get; } = "*/20 * * * *";
+		public string NetworkScanSchedule { get; } = "0 */3 * * *";
 	}
 }

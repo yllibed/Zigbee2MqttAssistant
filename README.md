@@ -69,8 +69,8 @@ on allowed settings. Here's the important settings:
 | `MqttUsername`                    | `""`              | Username for MQTT server                                |
 | `MqttPassword`                    | `""`              | Password for MQTT server                                |
 | `LowBatteryThreshold`             | `30`              | Threshold for triggering low-battery warning (%)        |
-| `DevicesPollingSchedule`          | `*/6 * * * *`     | Schedule (cron expression) for device list refresh. Default value: every 6 minutes. |
-| `NetworkScanSchedule`             | `*/20 * * * *`    | Schedule (cron expression) for device list refresh. Default value: every 20 minutes. This network scan can have high cost on your network: [details here](https://github.com/Koenkk/zigbee2mqtt/issues/2118#issuecomment-541339790). |
+| `DevicesPollingSchedule`          | `*/12 * * * *`    | Schedule (cron expression) for device list refresh. Default value: every 12 minutes. |
+| `NetworkScanSchedule`             | `0 */3 * * *`     | Schedule (cron expression) for device list refresh. Default value: every 3 hours. This network scan can have high cost on your network: [details here](https://github.com/Koenkk/zigbee2mqtt/issues/2118#issuecomment-541339790). |
 
 For environment variables, you can use any of the previous fields, prefixed with `Z2MA_SETTINGS__`.  By example, you can specify the `MqttPort` with an environment variable in the following way:
 ```
