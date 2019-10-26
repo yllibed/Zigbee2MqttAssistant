@@ -120,10 +120,22 @@ namespace Zigbee2MqttAssistant.Services
 			var t1 = PollingDevicesTask();
 			var t2 = PollingNetworkTask();
 
+			CronExpression ParseCronExpression(string cronExpression)
+			{
+				try
+				{
+					return CronExpression.Parse(cronExpression);
+				}
+				catch (Exception ex)
+				{
+					_logger.LogError(ex, $"Error parsing cron expression '{cronExpression}'.");
+					return null;
+				}
+			}
+
 			async Task PollingDevicesTask()
 			{
-				var settings = _settings.CurrentSettings;
-				var cron = CronExpression.Parse(settings.DevicesPollingSchedule);
+				var cron = ParseCronExpression(_settings.CurrentSettings.DevicesPollingSchedule);
 
 				await Task.Delay(5000, ct);
 
@@ -132,7 +144,7 @@ namespace Zigbee2MqttAssistant.Services
 					await SendDevicesRequest();
 
 					var now = DateTimeOffset.Now;
-					var next = cron.GetNextOccurrence(now, TimeZoneInfo.Local) ?? now.AddMinutes(6);
+					var next = cron?.GetNextOccurrence(now, TimeZoneInfo.Local) ?? now.AddMinutes(6);
 					var delay = next - now;
 
 					_logger.LogDebug($"PollingDevicesTask: Waiting until {next} (currently is {now}. (cron={cron})");
@@ -142,8 +154,7 @@ namespace Zigbee2MqttAssistant.Services
 
 			async Task PollingNetworkTask()
 			{
-				var settings = _settings.CurrentSettings;
-				var cron = CronExpression.Parse(settings.NetworkScanSchedule);
+				var cron = ParseCronExpression(_settings.CurrentSettings.NetworkScanSchedule);
 
 				await Task.Delay(30000, ct);
 
@@ -152,7 +163,7 @@ namespace Zigbee2MqttAssistant.Services
 					await SendNetworkScanRequest();
 
 					var now = DateTimeOffset.Now;
-					var next = cron.GetNextOccurrence(now, TimeZoneInfo.Local) ?? now.AddMinutes(20);
+					var next = cron?.GetNextOccurrence(now, TimeZoneInfo.Local) ?? now.AddMinutes(20);
 					var delay = next - now;
 
 					_logger.LogDebug($"PollingNetworkTask: Waiting until {next} (currently is {now}. (cron={cron})");
@@ -189,7 +200,7 @@ namespace Zigbee2MqttAssistant.Services
 		{
 			_logger.LogInformation("Launching a request for a network scan...");
 
-			if (_waitingForDevicesResponse)
+			if (_waitingForNetworkScanResponse)
 			{
 				_logger.LogWarning("Another network scan request already in progress.");
 
