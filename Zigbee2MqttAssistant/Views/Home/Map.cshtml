@@ -47,6 +47,9 @@
 
 <h1>Map</h1>
 
+<form method="post">
+    <button class="btn btn-outline-secondary" asp-area="" asp-action="Scan">LAUNCH NEW NETWORK SCAN</button>
+</form>
 <div class="card">
     @if (!state.Devices.Any(d => d.Parents.Any()))
     {
@@ -55,9 +58,6 @@
             <button class="btn btn-outline-secondary" asp-area="" asp-action="Map">REFRESH</button>
         </form>
     }
-    <form method="post">
-        <button class="btn btn-outline-secondary" asp-area="" asp-action="Scan">LAUNCH NEW SCAN</button>
-    </form>
     <div id="map"></div>
 </div>
 

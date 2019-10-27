@@ -330,9 +330,11 @@ namespace Zigbee2MqttAssistant.Services
 					var friendlyName = deviceJson["friendly_name"]?.Value<string>();
 					var zigbeeId = deviceJson["ieeeAddr"]?.Value<string>();
 
+					var deviceType = deviceJson["type"]?.Value<string>();
+
 					if (string.IsNullOrWhiteSpace(friendlyName))
 					{
-						if (deviceJson["type"]?.Value<string>().Equals("Coordinator", StringComparison.InvariantCultureIgnoreCase) ?? false)
+						if (deviceType?.Equals("Coordinator", StringComparison.InvariantCultureIgnoreCase) ?? false)
 						{
 							state = state.WithCoordinatorZigbeeId(zigbeeId);
 							friendlyName = "Coordinator";
@@ -345,16 +347,22 @@ namespace Zigbee2MqttAssistant.Services
 					}
 
 					var device = state.Devices.FirstOrDefault(d => d.FriendlyName.Equals(friendlyName) || (d.ZigbeeId?.Equals(zigbeeId) ?? false));
+					var networkAddress = (deviceJson["nwkAddr"] ?? deviceJson["networkAddress"])?.Value<uint>();
+					var model = (deviceJson["modelId"] ?? deviceJson["modelID"])?.Value<string>().Trim().Trim((char)0);
+					var modelId = deviceJson["model"]?.Value<string>().Trim().Trim((char)0);
+					var manufacturer = (deviceJson["manufName"] ?? deviceJson["manufacturerName"])?.Value<string>().Trim().Trim((char)0);
+					var hardwareVersion = (deviceJson["hwVersion"] ?? deviceJson["hardwareVersion"])?.Value<long>();
+
 					ZigbeeDevice newDevice = (device ?? new ZigbeeDevice.Builder { FriendlyName = friendlyName })
 						.WithZigbeeId(zigbeeId)
-						.WithType(deviceJson["type"]?.Value<string>())
-						.WithModel(deviceJson["modelId"]?.Value<string>().Trim().Trim((char)0))
-						.WithModelId(deviceJson["model"]?.Value<string>().Trim().Trim((char)0))
-						.WithNetworkAddress(deviceJson["nwkAddr"]?.Value<uint>())
-						.WithHardwareVersion(deviceJson["hwVersion"]?.Value<long>())
-						.WithManufacturer(deviceJson["manufName"]?.Value<string>().Trim().Trim((char)0));
+						.WithType(deviceType)
+						.WithNetworkAddress(networkAddress)
+						.WithModel(model)
+						.WithModelId(modelId)
+						.WithManufacturer(manufacturer)
+						.WithHardwareVersion(hardwareVersion);
 
-					if(ParseDateTimeOffset(deviceJson["lastSeen"], out var lastSeen))
+					if (ParseDateTimeOffset(deviceJson["lastSeen"], out var lastSeen))
 					{
 						newDevice = newDevice.WithLastSeen(lastSeen);
 					}
