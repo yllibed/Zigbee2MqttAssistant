@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
@@ -14,6 +15,7 @@ namespace Zigbee2MqttAssistant
 	{
 		public static void Main(string[] args)
 		{
+			PrintProductVersion();
 			CreateWebHostBuilder(args).Build().Run();
 		}
 
@@ -25,5 +27,14 @@ namespace Zigbee2MqttAssistant
 					config.AddJsonFile("/data/options.json", optional: true); // for HASS.IO
 				})
 				.UseStartup<Startup>();
+
+		private static void PrintProductVersion()
+		{
+			var assembly = typeof(Program).Assembly;
+			var product = assembly.GetCustomAttribute<AssemblyProductAttribute>()?.Product;
+			var version = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+
+			Console.WriteLine($"Starting {product} v{version}...");
+		}
 	}
 }
