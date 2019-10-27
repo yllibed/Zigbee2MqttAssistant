@@ -120,10 +120,23 @@ namespace Zigbee2MqttAssistant.Services
 			var t1 = PollingDevicesTask();
 			var t2 = PollingNetworkTask();
 
+
+			CronExpression ParseCronExpression(string cronExpression)
+			{
+				try
+				{
+					return CronExpression.Parse(cronExpression);
+				}
+				catch (Exception ex)
+				{
+					_logger.LogError(ex, $"Error parsing cron expression '{cronExpression}'.");
+					return null;
+				}
+			}
+
 			async Task PollingDevicesTask()
 			{
-				var settings = _settings.CurrentSettings;
-				var cron = CronExpression.Parse(settings.DevicesPollingSchedule);
+				var cron = ParseCronExpression(_settings.CurrentSettings.DevicesPollingSchedule);
 
 				await Task.Delay(5000, ct);
 
@@ -132,7 +145,7 @@ namespace Zigbee2MqttAssistant.Services
 					await SendDevicesRequest();
 
 					var now = DateTimeOffset.Now;
-					var next = cron.GetNextOccurrence(now, TimeZoneInfo.Local) ?? now.AddMinutes(6);
+					var next = cron?.GetNextOccurrence(now, TimeZoneInfo.Local) ?? now.AddMinutes(6);
 					var delay = next - now;
 
 					_logger.LogDebug($"PollingDevicesTask: Waiting until {next} (currently is {now}. (cron={cron})");
@@ -142,8 +155,11 @@ namespace Zigbee2MqttAssistant.Services
 
 			async Task PollingNetworkTask()
 			{
-				var settings = _settings.CurrentSettings;
-				var cron = CronExpression.Parse(settings.NetworkScanSchedule);
+				var cron = ParseCronExpression(_settings.CurrentSettings.NetworkScanSchedule);
+
+				// A random offset is used to prevent many instances to send the same request
+				// exactly at the same time
+				var randomOffset = TimeSpan.FromSeconds(new Random().NextDouble() * 6);
 
 				await Task.Delay(30000, ct);
 
@@ -152,8 +168,8 @@ namespace Zigbee2MqttAssistant.Services
 					await SendNetworkScanRequest();
 
 					var now = DateTimeOffset.Now;
-					var next = cron.GetNextOccurrence(now, TimeZoneInfo.Local) ?? now.AddMinutes(20);
-					var delay = next - now;
+					var next = (cron?.GetNextOccurrence(now, TimeZoneInfo.Local) ?? now.AddMinutes(20)) + randomOffset;
+					var delay = (next - now);
 
 					_logger.LogDebug($"PollingNetworkTask: Waiting until {next} (currently is {now}. (cron={cron})");
 					await Task.Delay(delay, ct);
@@ -162,6 +178,15 @@ namespace Zigbee2MqttAssistant.Services
 		}
 
 		private bool _waitingForDevicesResponse = false;
+		private async Task SetLastSeen()
+		{
+			var msg = new MqttApplicationMessageBuilder()
+				.WithTopic($"{_settings.CurrentSettings.BaseTopic}/bridge/config/last_seen")
+				.WithPayload("epoch")
+				.Build();
+
+			await _client.PublishAsync(msg);
+		}
 
 		public async Task SendDevicesRequest()
 		{
@@ -189,7 +214,7 @@ namespace Zigbee2MqttAssistant.Services
 		{
 			_logger.LogInformation("Launching a request for a network scan...");
 
-			if (_waitingForDevicesResponse)
+			if (_waitingForNetworkScanResponse)
 			{
 				_logger.LogWarning("Another network scan request already in progress.");
 
@@ -234,7 +259,7 @@ namespace Zigbee2MqttAssistant.Services
 
 		private static readonly string[] _topicsToIgnore =
 		{
-			"/bridge/config/devices/get", // request for a device list
+			"/bridge/config/last_seen", // request to set "last_seen"
 			"/bridge/config/log_level", // request to change log level
 			"/bridge/config/permit_join", // setting allow join
 			"/bridge/config/remove", // request for a device remove
@@ -264,6 +289,20 @@ namespace Zigbee2MqttAssistant.Services
 				{
 					_logger.LogDebug($"MQTT message on topic '{topic}' is a set topic, we can ignore it.");
 					return Task.CompletedTask; // this one too
+				}
+
+				if (topic.EndsWith("/bridge/config/devices/get"))
+				{
+					// Something elsewhere asked for a devices list
+					_waitingForDevicesResponse = true;
+					return Task.CompletedTask;
+				}
+
+				if (topic.EndsWith("/bridge/networkmap"))
+				{
+					// Something elsewhere asked for a network scan
+					_waitingForNetworkScanResponse = true;
+					return Task.CompletedTask;
 				}
 
 				if (DispatchHassDiscoveryMessage(msg))
@@ -362,7 +401,11 @@ namespace Zigbee2MqttAssistant.Services
 			else
 			{
 				var payload = _utf8.GetString(msg.Payload);
-				_stateService.UpdateDevice(friendlyName: friendlyName, payload);
+				_stateService.UpdateDevice(friendlyName: friendlyName, jsonPayload: payload, forceLastSeen: out var setLastSeen);
+				if (setLastSeen && _settings.CurrentSettings.AutosetLastSeen)
+				{
+					var t = SetLastSeen();
+				}
 			}
 
 			return true;

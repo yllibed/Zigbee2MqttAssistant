@@ -56,6 +56,17 @@ namespace Zigbee2MqttAssistant.Models
 		public decimal LowBatteryThreshold { get; } = 30;
 
 		/// <summary>
+		/// Let Zigbee2MqttAssistant turn on the last_seen
+		/// feature when detected as not activated.
+		/// </summary>
+		/// <remarks>
+		/// The chosen mode is "epoch".
+		/// Zigbee2MqttAssistant is compatible with other formats,
+		/// it's just this one (epoch) is less parsing to use.
+		/// </remarks>
+		public bool AutosetLastSeen { get; } = true;
+
+		/// <summary>
 		/// Cron expression for polling for devices.
 		/// Default value: every 12 minutes.
 		/// </summary>

@@ -54,13 +54,13 @@ namespace Zigbee2MqttAssistant.Services
 			return device;
 		}
 
-		public ZigbeeDevice UpdateDevice(string friendlyName, string jsonPayload)
+		public ZigbeeDevice UpdateDevice(string friendlyName, string jsonPayload, out bool forceLastSeen)
 		{
 			ZigbeeDevice device = null;
 			var json = JObject.Parse(jsonPayload);
 			var linkQuality = json["linkquality"]?.Value<ushort>();
-			var lastSeen = json["last_seen"]?.Value<DateTime>();
 			var battery = json["battery"]?.Value<decimal>();
+			forceLastSeen = !ParseDateTimeOffset(json["last_seen"], out var lastSeen);
 
 			Bridge Update(Bridge state)
 			{
@@ -354,6 +354,11 @@ namespace Zigbee2MqttAssistant.Services
 						.WithHardwareVersion(deviceJson["hwVersion"]?.Value<long>())
 						.WithManufacturer(deviceJson["manufName"]?.Value<string>().Trim().Trim((char)0));
 
+					if(ParseDateTimeOffset(deviceJson["lastSeen"], out var lastSeen))
+					{
+						newDevice = newDevice.WithLastSeen(lastSeen);
+					}
+
 					if (device != newDevice)
 					{
 						state = device == null
@@ -366,6 +371,22 @@ namespace Zigbee2MqttAssistant.Services
 			}
 
 			ImmutableInterlocked.Update(ref _currentState, Update);
+		}
+
+		private bool ParseDateTimeOffset(JToken jtoken, out DateTimeOffset? dateTimeOffset)
+		{
+			switch (jtoken?.Type)
+			{
+				case JTokenType.Integer:
+					dateTimeOffset =  DateTimeOffset.FromUnixTimeMilliseconds(jtoken.Value<long>());
+					return true;
+				case JTokenType.String:
+					dateTimeOffset = jtoken.Value<DateTimeOffset>();
+					return true;
+				default:
+					dateTimeOffset = null;
+					return false;
+			}
 		}
 
 		public void UpdateNetworkMap(string payload)
