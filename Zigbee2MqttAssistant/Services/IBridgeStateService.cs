@@ -10,7 +10,7 @@ namespace Zigbee2MqttAssistant.Services
 
 		void Clear();
 		ZigbeeDevice NewDevice(string friendlyName, string zigbeeId, string modelId);
-		ZigbeeDevice UpdateDevice(string friendlyName, string jsonPayload);
+		ZigbeeDevice UpdateDevice(string friendlyName, string jsonPayload, out bool forceLastSeen);
 		void SetDeviceAvailability(string friendlyName, bool isOnline);
 		void SetBridgeState(bool isOnline);
 		void SetBridgeConfig(string configJson, out bool isJoinAllowed, out MqttLogLevel logLevel);

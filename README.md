@@ -76,6 +76,7 @@ on allowed settings. Here's the important settings:
 | `MqttUsername`                    | `""`              | Username for MQTT server                                |
 | `MqttPassword`                    | `""`              | Password for MQTT server                                |
 | `LowBatteryThreshold`             | `30`              | Threshold for triggering low-battery warning (%)        |
+| `AutosetLastSeen`                 | true              | Will turn on `last_Seen` on Zigbee2Mqtt automatically when detected as off. |
 | `DevicesPollingSchedule`          | `*/12 * * * *`    | Schedule (cron expression) for device list refresh. Default value: every 12 minutes. |
 | `NetworkScanSchedule`             | `0 */3 * * *`     | Schedule (cron expression) for device list refresh. Default value: every 3 hours. This network scan can have high cost on your network: [details here](https://github.com/Koenkk/zigbee2mqtt/issues/2118#issuecomment-541339790). |
 
@@ -98,8 +99,7 @@ If you need to change _cron expression_ for other values, you should use a site 
 * [X] Support _Docker Manifest_ (support for ARM + Windows)
 * [X] Support mapping of network
 * [ ] Support _Zigbee groups_
-* [ ] Better display of "routes to coordinator"
-* [ ] Improve UI
+* [ ] Support for device images
 
 # Requirements
 * You need a running installation of `Zigbee2Mqtt` v1.5.0+
@@ -113,7 +113,7 @@ If you need to change _cron expression_ for other values, you should use a site 
     **AN ACTUAL INSTALLATION OF HOME ASSISTANT IS NOT REQUIRED**
 
      To activate: `homeassistant: true` in Zigbee2Mqtt configuration
-  * `last_seen` should be set to `ISO_8601`. Not required, but you'll have a better experience when activated.
+  * `last_seen` should be activated on Zigbee2Mqtt (any format supported). There's an option (`AutosetLastSeen`) to activate it automatically through MQTT.
 
 # Contributing
 * If you have suggestions or find bugs, don't hesitate to open and issue here, on Github.

@@ -120,6 +120,7 @@ namespace Zigbee2MqttAssistant.Services
 			var t1 = PollingDevicesTask();
 			var t2 = PollingNetworkTask();
 
+
 			CronExpression ParseCronExpression(string cronExpression)
 			{
 				try
@@ -173,6 +174,15 @@ namespace Zigbee2MqttAssistant.Services
 		}
 
 		private bool _waitingForDevicesResponse = false;
+		private async Task SetLastSeen()
+		{
+			var msg = new MqttApplicationMessageBuilder()
+				.WithTopic($"{_settings.CurrentSettings.BaseTopic}/bridge/config/last_seen")
+				.WithPayload("epoch")
+				.Build();
+
+			await _client.PublishAsync(msg);
+		}
 
 		public async Task SendDevicesRequest()
 		{
@@ -246,6 +256,7 @@ namespace Zigbee2MqttAssistant.Services
 		private static readonly string[] _topicsToIgnore =
 		{
 			"/bridge/config/devices/get", // request for a device list
+			"/bridge/config/last_seen", // request to set "last_seen"
 			"/bridge/config/log_level", // request to change log level
 			"/bridge/config/permit_join", // setting allow join
 			"/bridge/config/remove", // request for a device remove
@@ -373,7 +384,11 @@ namespace Zigbee2MqttAssistant.Services
 			else
 			{
 				var payload = _utf8.GetString(msg.Payload);
-				_stateService.UpdateDevice(friendlyName: friendlyName, payload);
+				_stateService.UpdateDevice(friendlyName: friendlyName, jsonPayload: payload, forceLastSeen: out var setLastSeen);
+				if (setLastSeen && _settings.CurrentSettings.AutosetLastSeen)
+				{
+					var t = SetLastSeen();
+				}
 			}
 
 			return true;
