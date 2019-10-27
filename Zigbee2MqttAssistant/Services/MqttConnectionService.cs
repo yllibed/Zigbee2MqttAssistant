@@ -157,6 +157,10 @@ namespace Zigbee2MqttAssistant.Services
 			{
 				var cron = ParseCronExpression(_settings.CurrentSettings.NetworkScanSchedule);
 
+				// A random offset is used to prevent many instances to send the same request
+				// exactly at the same time
+				var randomOffset = TimeSpan.FromSeconds(new Random().NextDouble() * 6);
+
 				await Task.Delay(30000, ct);
 
 				while (!ct.IsCancellationRequested)
@@ -164,8 +168,8 @@ namespace Zigbee2MqttAssistant.Services
 					await SendNetworkScanRequest();
 
 					var now = DateTimeOffset.Now;
-					var next = cron?.GetNextOccurrence(now, TimeZoneInfo.Local) ?? now.AddMinutes(20);
-					var delay = next - now;
+					var next = (cron?.GetNextOccurrence(now, TimeZoneInfo.Local) ?? now.AddMinutes(20)) + randomOffset;
+					var delay = (next - now);
 
 					_logger.LogDebug($"PollingNetworkTask: Waiting until {next} (currently is {now}. (cron={cron})");
 					await Task.Delay(delay, ct);
@@ -255,7 +259,6 @@ namespace Zigbee2MqttAssistant.Services
 
 		private static readonly string[] _topicsToIgnore =
 		{
-			"/bridge/config/devices/get", // request for a device list
 			"/bridge/config/last_seen", // request to set "last_seen"
 			"/bridge/config/log_level", // request to change log level
 			"/bridge/config/permit_join", // setting allow join
@@ -286,6 +289,20 @@ namespace Zigbee2MqttAssistant.Services
 				{
 					_logger.LogDebug($"MQTT message on topic '{topic}' is a set topic, we can ignore it.");
 					return Task.CompletedTask; // this one too
+				}
+
+				if (topic.EndsWith("/bridge/config/devices/get"))
+				{
+					// Something elsewhere asked for a devices list
+					_waitingForDevicesResponse = true;
+					return Task.CompletedTask;
+				}
+
+				if (topic.EndsWith("/bridge/networkmap"))
+				{
+					// Something elsewhere asked for a network scan
+					_waitingForNetworkScanResponse = true;
+					return Task.CompletedTask;
 				}
 
 				if (DispatchHassDiscoveryMessage(msg))
