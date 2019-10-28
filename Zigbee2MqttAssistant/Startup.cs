@@ -1,14 +1,15 @@
 ﻿using System.IO;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Zigbee2MqttAssistant.Services;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
@@ -16,6 +17,8 @@ namespace Zigbee2MqttAssistant
 {
 	public class Startup
 	{
+		private readonly ILogger<Startup> _logger;
+
 		public Startup(IConfiguration configuration)
 		{
 			Configuration = configuration;
@@ -65,6 +68,8 @@ namespace Zigbee2MqttAssistant
 			}
 
 			app.UseStaticFiles();
+
+			app.UseMiddleware<PageAutoRefreshMiddleware>();
 
 			app.UseMvc(routes =>
 			{

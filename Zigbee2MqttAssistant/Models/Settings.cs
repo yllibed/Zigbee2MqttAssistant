@@ -77,5 +77,10 @@ namespace Zigbee2MqttAssistant.Models
 		/// Default value: every 40 minutes.
 		/// </summary>
 		public string NetworkScanSchedule { get; } = "0 */3 * * *";
+
+		/// <summary>
+		/// Auto-refresh on all pages (delay in seconds). 0 means no refresh.
+		/// </summary>
+		public int? AutoRefreshRate { get; } = 60;
 	}
 }
