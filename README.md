@@ -11,14 +11,20 @@ This project is a _Web GUI_ for the very good [Zigbee2Mqtt](https://www.zigbee2m
 * Flexible installation:
   * Available as a _HASS.IO_ add-on (integration into _Home Assistant_). _Ingress_ is supported too.
     note: can be used without Home Assistant.
-  * Published as a docker image (Linux & Windows, both for x64 + ARMv7)
+  * Published as a docker images for following architectures
+    * Linux AMD64 (alpine): `linux-x64`
+    * Linux ARM32 (buster-slim): `linux-arm32`
+    * Linux ARM64 (apline): `linux-arm64`
+    * Windows 64 bits (v10.0.17763+): `win-64`
+    * Windows ARM32 (v10.0.17763+): `win-arm32`
+    * Also published as a multi-arch manifest: `latest` (or `dev` for development version)
 * Operations on devices:
   * Allow network join - no more need to setup virtual switches in HA just for that.
   * Rename devices
   * Remove devices from network
   * Bind device to another one (mostly used for Ikea TRÅDFRI devices - [documentation here](https://www.zigbee2mqtt.io/information/binding.html))
   * Visualize device health
-* Based on _ASP.NET Core_ 2.2.
+* Based on _ASP.NET Core_ 3.0 (LTS).
 
 [![Build Status](https://dev.azure.com/yllibed/Zigbee2MqttAssistant/_apis/build/status/yllibed.Zigbee2MqttAssistant?branchName=master)](https://dev.azure.com/yllibed/Zigbee2MqttAssistant/_build/latest?definitionId=4&branchName=master)
 [![Release Status](https://vsrm.dev.azure.com/yllibed/_apis/public/Release/badge/35f7fc7c-f867-48e4-83b5-3381156a439a/1/1)](https://dev.azure.com/yllibed/Zigbee2MqttAssistant/_release?view=mine&definitionId=1)
@@ -47,6 +53,7 @@ docker run -p 8880:80 -e Z2MA_SETTINGS__MQTTSERVER=<mqttserver> -e Z2MA_SETTINGS
 ```
 > **draft note**: environment variables are currently the easiest way to set those settings.
 > Open an issue if you need it to be in a configuration file/folder.
+
 
 ## OPTION 3 - Installing from sources & compiling using Visual Studio
 1. Compile the solution file
@@ -103,7 +110,8 @@ If you need to change _cron expression_ for other values, you should use a site 
 
 # Requirements
 * You need a running installation of `Zigbee2Mqtt` v1.5.0+
-  * Developped & tested with Zigbee2Mqtt v1.5.1
+  * Also tested on v1.6.0
+  * Should work with next _herdsman_ version too
 * Simple MQTT connection with username/password (TLS supported)
   * Client certificates not supported yet - open an issue if your need it.
 * Zigbee2Mqtt required settings:
