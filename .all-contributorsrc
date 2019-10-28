@@ -141,6 +141,15 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "ciotlosm",
+      "name": "Marius",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/7738048?v=4",
+      "profile": "https://github.com/ciotlosm",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
