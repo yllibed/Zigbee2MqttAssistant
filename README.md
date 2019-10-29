@@ -155,7 +155,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/foXaCe"><img src="https://avatars2.githubusercontent.com/u/290678?v=4" width="100px;" alt="foXaCe"/><br /><sub><b>foXaCe</b></sub></a><br /><a href="#ideas-foXaCe" title="Ideas, Planning, & Feedback">🤔</a></td>
-    <td align="center"><a href="https://github.com/ciotlosm"><img src="https://avatars2.githubusercontent.com/u/7738048?v=4" width="100px;" alt="Marius"/><br /><sub><b>Marius</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/issues?q=author%3Aciotlosm" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/ciotlosm"><img src="https://avatars2.githubusercontent.com/u/7738048?v=4" width="100px;" alt="Marius"/><br /><sub><b>Marius</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/issues?q=author%3Aciotlosm" title="Bug reports">🐛</a> <a href="#ideas-ciotlosm" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 
