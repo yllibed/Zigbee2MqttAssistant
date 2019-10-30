@@ -8,6 +8,7 @@ This project is a _Web GUI_ for the very good [Zigbee2Mqtt](https://www.zigbee2m
 * If you're using zigbee2mqtt for your devices, it's a must.
 * Display zigbee devices and the status of each of them.
 * Display an interactive map of the network
+* Automatically turn off _allow join_ of Zigbee network - no matter how you turned it on (don't need to be turned on from Z2MA). Default is 20 minutes.
 * Flexible installation:
   * Available as a _HASS.IO_ add-on (integration into _Home Assistant_). _Ingress_ is supported too.
     note: can be used without Home Assistant.
@@ -83,6 +84,7 @@ on allowed settings. Here's the important settings:
 | `MqttUsername`                    | `""`              | Username for MQTT server                                |
 | `MqttPassword`                    | `""`              | Password for MQTT server                                |
 | `LowBatteryThreshold`             | `30`              | Threshold for triggering low-battery warning (%)        |
+| `AllowJoinTimeout`                | `20`              | Timeout for turning off _allow join_ of Zigbee network. Set 0 to disable this feature |
 | `AutosetLastSeen`                 | true              | Will turn on `last_Seen` on Zigbee2Mqtt automatically when detected as off. |
 | `DevicesPollingSchedule`          | `*/12 * * * *`    | Schedule (cron expression) for device list refresh. Default value: every 12 minutes. |
 | `NetworkScanSchedule`             | `0 */3 * * *`     | Schedule (cron expression) for device list refresh. Default value: every 3 hours. This network scan can have high cost on your network: [details here](https://github.com/Koenkk/zigbee2mqtt/issues/2118#issuecomment-541339790). |
@@ -105,6 +107,7 @@ If you need to change _cron expression_ for other values, you should use a site 
 * [X] Support _Zigbee Bindings_
 * [X] Support _Docker Manifest_ (support for ARM + Windows)
 * [X] Support mapping of network
+* [X] Allow-join auto-off
 * [ ] Support _Zigbee groups_
 * [ ] Support for device images
 
