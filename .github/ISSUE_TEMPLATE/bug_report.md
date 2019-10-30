@@ -28,6 +28,10 @@ Steps to reproduce the behavior:
  - Version of Zigbee2Mqtt:
  - Version of Zigbee2MqttAssistant:
  - Installation type (HASS.IO, Docker...):
+ - Docker version + CPU type (amd64, arm arm64...):
+
+** Pertinent logs**
+<!-- Add logs here -->
 
 **Additional context**
 <!-- Add any other context about the problem here. -->
