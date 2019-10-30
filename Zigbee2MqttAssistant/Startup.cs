@@ -42,6 +42,8 @@ namespace Zigbee2MqttAssistant
 			services.AddSingleton<MqttConnectionService>();
 			services.AddSingleton<IHostedService, MqttConnectionService>(sp => sp.GetService<MqttConnectionService>());
 
+			services.AddHostedService<AllowJoinTimerService>();
+
 			services.Decorate<IUrlHelperFactory>((previous, _) => new RelativeUrlHelperFactory(previous));
 
 			if(Directory.Exists("/data"))

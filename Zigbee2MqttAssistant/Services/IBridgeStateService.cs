@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using Zigbee2MqttAssistant.Models.Devices;
 using Zigbee2MqttAssistant.Models.Mqtt;
 
@@ -7,6 +8,7 @@ namespace Zigbee2MqttAssistant.Services
 	public interface IBridgeStateService
 	{
 		Bridge CurrentState { get; }
+		event EventHandler<Bridge> StateChanged;
 
 		void Clear();
 		ZigbeeDevice NewDevice(string friendlyName, string zigbeeId, string modelId);

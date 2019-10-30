@@ -56,6 +56,17 @@ namespace Zigbee2MqttAssistant.Models
 		public decimal LowBatteryThreshold { get; } = 30;
 
 		/// <summary>
+		/// Number of minutes before turning off the ALLOW JOIN
+		/// of of the network. 0=disable this feature.
+		/// </summary>
+		/// <remarks>
+		/// If the allow join is turned on at app launch, it will
+		/// wait this time before turning it off, since it's not
+		/// possible to know when it was turned on.
+		/// </remarks>
+		public ushort AllowJoinTimout { get; } = 20;
+
+		/// <summary>
 		/// Let Zigbee2MqttAssistant turn on the last_seen
 		/// feature when detected as not activated.
 		/// </summary>

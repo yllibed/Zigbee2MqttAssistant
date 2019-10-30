@@ -1,6 +1,8 @@
 ﻿@using System.Reflection
 @using Zigbee2MqttAssistant.Models.Mqtt
+@using Zigbee2MqttAssistant.Services
 @model Zigbee2MqttAssistant.Models.Mqtt.Bridge
+@inject ISettingsService settingsService
 @{
     ViewData["Title"] = "Status";
 }
@@ -32,6 +34,11 @@
             Use this feature to allow new devices to join the network.<br />
             <strong>This setting won't be persisted when you reboot Zigbee2Mqtt</strong>.
         </small>
+        @if (settingsService.CurrentSettings.AllowJoinTimout > 0)
+        {
+            <span class="badge badge-secondary">AUTO-OFF IS ENABLE AFTER @settingsService.CurrentSettings.AllowJoinTimout MINUTES</span>
+            <code>AllowJoinTimout</code>
+        }
     </div>
 </div>
 

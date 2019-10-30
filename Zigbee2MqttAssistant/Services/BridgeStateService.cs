@@ -15,6 +15,7 @@ namespace Zigbee2MqttAssistant.Services
 		private Bridge _currentState = Bridge.Default;
 
 		public Bridge CurrentState => _currentState;
+		public event EventHandler<Bridge> StateChanged;
 
 		public BridgeStateService(ILogger<BridgeStateService> logger)
 		{
@@ -24,6 +25,24 @@ namespace Zigbee2MqttAssistant.Services
 		public void Clear()
 		{
 			_currentState = Bridge.Default;
+		}
+
+		private void UpdateState(Func<Bridge, Bridge> updater)
+		{
+			var isChanged = false;
+			var updatedState = default(Bridge);
+
+			Bridge Update(Bridge state)
+			{
+				updatedState = updater(state);
+				isChanged = updatedState != state;
+				return updatedState;
+			}
+
+			if (ImmutableInterlocked.Update(ref _currentState, Update) && isChanged)
+			{
+				StateChanged?.Invoke(this, updatedState);
+			}
 		}
 
 		public ZigbeeDevice NewDevice(string friendlyName, string zigbeeId, string modelId)
@@ -49,7 +68,7 @@ namespace Zigbee2MqttAssistant.Services
 				return state;
 			}
 
-			ImmutableInterlocked.Update(ref _currentState, Update);
+			UpdateState(Update);
 
 			return device;
 		}
@@ -101,7 +120,7 @@ namespace Zigbee2MqttAssistant.Services
 				return state;
 			}
 
-			ImmutableInterlocked.Update(ref _currentState, Update);
+			UpdateState(Update);
 
 			return device;
 		}
@@ -130,7 +149,7 @@ namespace Zigbee2MqttAssistant.Services
 				return state;
 			}
 
-			ImmutableInterlocked.Update(ref _currentState, Update);
+			UpdateState(Update);
 		}
 
 		public void SetBridgeState(bool isOnline)
@@ -146,7 +165,7 @@ namespace Zigbee2MqttAssistant.Services
 				return state.WithOnline(isOnline);
 			}
 
-			ImmutableInterlocked.Update(ref _currentState, Update);
+			UpdateState(Update);
 		}
 
 		public void SetBridgeConfig(string configJson, out bool isJoinAllowed, out MqttLogLevel logLevel)
@@ -190,7 +209,7 @@ namespace Zigbee2MqttAssistant.Services
 				return state;
 			}
 
-			ImmutableInterlocked.Update(ref _currentState, Update);
+			UpdateState(Update);
 		}
 
 		public HomeAssistantEntity SetDeviceEntity(
@@ -296,7 +315,7 @@ namespace Zigbee2MqttAssistant.Services
 				return state;
 			}
 
-			ImmutableInterlocked.Update(ref _currentState, Update);
+			UpdateState(Update);
 
 			return entity;
 		}
@@ -378,7 +397,7 @@ namespace Zigbee2MqttAssistant.Services
 				return state;
 			}
 
-			ImmutableInterlocked.Update(ref _currentState, Update);
+			UpdateState(Update);
 		}
 
 		private bool ParseDateTimeOffset(JToken jtoken, out DateTimeOffset? dateTimeOffset)
@@ -483,7 +502,7 @@ namespace Zigbee2MqttAssistant.Services
 				return state;
 			}
 
-			ImmutableInterlocked.Update(ref _currentState, Update);
+			UpdateState(Update);
 		}
 
 		public void UpdateRenamedDevice(string from, string to)
@@ -505,7 +524,7 @@ namespace Zigbee2MqttAssistant.Services
 				return state;
 			}
 
-			ImmutableInterlocked.Update(ref _currentState, Update);
+			UpdateState(Update);
 		}
 
 		public void RemoveDevice(string removedDeviceFriendlyName)
@@ -523,24 +542,7 @@ namespace Zigbee2MqttAssistant.Services
 				return state;
 			}
 
-			ImmutableInterlocked.Update(ref _currentState, Update);
-		}
-
-		public IReadOnlyCollection<IReadOnlyCollection<ZigbeeDevice>> GetRoutesToCoordinator(ZigbeeDevice forDevice)
-		{
-			var state = _currentState;
-
-			var processedDevices = new List<ZigbeeDevice>(state.Devices.Length -1);
-
-			IEnumerable<IReadOnlyCollection<ZigbeeDevice>> GetRoutes(ZigbeeDevice d)
-			{
-				if (processedDevices.Contains(d))
-				{
-					yield break; // already processed routed through this device
-				}
-			}
-
-			return GetRoutes(forDevice).ToImmutableArray();
+			UpdateState(Update);
 		}
 	}
 }
