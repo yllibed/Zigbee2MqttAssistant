@@ -7,10 +7,10 @@ assignees: ''
 
 ---
 
-**Describe the bug**
+# Describe the bug
 <!-- A clear and concise description of what the bug is. -->
 
-**To Reproduce**
+## To Reproduce
 Steps to reproduce the behavior:
 <!-- change following steps -->
 1. Go to '...'
@@ -21,17 +21,20 @@ Steps to reproduce the behavior:
 **Expected behavior**
 <!-- A clear and concise description of what you expected to happen. -->
 
-**Screenshots**
+## Steps I took to try resolve the problem
+<!-- Did you try with latest version?  Does this problem happend with last "dev" version too? -->
+
+## Screenshots
 <!-- If applicable, add screenshots to help explain your problem. -->
 
-**Installation**
+## Installation
  - Version of Zigbee2Mqtt:
  - Version of Zigbee2MqttAssistant:
  - Installation type (HASS.IO, Docker...):
  - Docker version + CPU type (amd64, arm arm64...):
 
-** Pertinent logs**
+## Pertinent logs
 <!-- Add logs here -->
 
-**Additional context**
+## Additional context
 <!-- Add any other context about the problem here. -->
