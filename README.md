@@ -1,5 +1,5 @@
 # Zigbee2Mqtt Assistant
-[![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-17-orange.svg?style=flat-square)](#contributors)
 
 This project is a _Web GUI_ for the very good [Zigbee2Mqtt](https://www.zigbee2mqtt.io/) software
 ([github sources](https://github.com/Koenkk/zigbee2mqtt)).
@@ -159,6 +159,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="https://github.com/foXaCe"><img src="https://avatars2.githubusercontent.com/u/290678?v=4" width="100px;" alt="foXaCe"/><br /><sub><b>foXaCe</b></sub></a><br /><a href="#ideas-foXaCe" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/ciotlosm"><img src="https://avatars2.githubusercontent.com/u/7738048?v=4" width="100px;" alt="Marius"/><br /><sub><b>Marius</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/issues?q=author%3Aciotlosm" title="Bug reports">🐛</a> <a href="#ideas-ciotlosm" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="http://wol.ph/"><img src="https://avatars0.githubusercontent.com/u/270571?v=4" width="100px;" alt="Rick van Hattem"/><br /><sub><b>Rick van Hattem</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/issues?q=author%3AWoLpH" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 
