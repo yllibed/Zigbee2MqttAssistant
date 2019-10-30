@@ -64,7 +64,7 @@ namespace Zigbee2MqttAssistant.Models
 		/// wait this time before turning it off, since it's not
 		/// possible to know when it was turned on.
 		/// </remarks>
-		public ushort AllowJoinTimout { get; } = 20;
+		public ushort AllowJoinTimeout { get; } = 20;
 
 		/// <summary>
 		/// Let Zigbee2MqttAssistant turn on the last_seen

@@ -34,10 +34,10 @@
             Use this feature to allow new devices to join the network.<br />
             <strong>This setting won't be persisted when you reboot Zigbee2Mqtt</strong>.
         </small>
-        @if (settingsService.CurrentSettings.AllowJoinTimout > 0)
+        @if (settingsService.CurrentSettings.AllowJoinTimeout > 0)
         {
-            <span class="badge badge-secondary">AUTO-OFF IS ENABLE AFTER @settingsService.CurrentSettings.AllowJoinTimout MINUTES</span>
-            <code>AllowJoinTimout</code>
+            <span class="badge badge-secondary">AUTO-OFF IS ENABLE AFTER @settingsService.CurrentSettings.AllowJoinTimeout MINUTES</span>
+            <code>AllowJoinTimeout</code>
         }
     </div>
 </div>

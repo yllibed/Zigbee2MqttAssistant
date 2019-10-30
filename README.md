@@ -84,7 +84,7 @@ on allowed settings. Here's the important settings:
 | `MqttUsername`                    | `""`              | Username for MQTT server                                |
 | `MqttPassword`                    | `""`              | Password for MQTT server                                |
 | `LowBatteryThreshold`             | 30                | Threshold for triggering low-battery warning (%)        |
-| `AllowJoinTimout`                 | 20                | Timeout for turning off _allow join_ of Zigbee network. Set 0 to disable this feature |
+| `AllowJoinTimeout`                | 20                | Timeout for turning off _allow join_ of Zigbee network. Set 0 to disable this feature |
 | `AutosetLastSeen`                 | true              | Will turn on `last_Seen` on Zigbee2Mqtt automatically when detected as off. |
 | `DevicesPollingSchedule`          | `*/12 * * * *`    | Schedule (cron expression) for device list refresh. Default value: every 12 minutes. |
 | `NetworkScanSchedule`             | `0 */3 * * *`     | Schedule (cron expression) for device list refresh. Default value: every 3 hours. This network scan can have high cost on your network: [details here](https://github.com/Koenkk/zigbee2mqtt/issues/2118#issuecomment-541339790). |

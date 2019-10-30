@@ -28,7 +28,7 @@ namespace Zigbee2MqttAssistant.Services
 
 		public async Task StartAsync(CancellationToken ct)
 		{
-			if (_settingsService.CurrentSettings.AllowJoinTimout > 0)
+			if (_settingsService.CurrentSettings.AllowJoinTimeout > 0)
 			{
 				_stateService.StateChanged += OnStateChanged;
 			}
@@ -60,7 +60,7 @@ namespace Zigbee2MqttAssistant.Services
 		private async Task StartTimer(CancellationToken ct)
 		{
 			// Get timeout from config
-			var timeout = TimeSpan.FromMinutes(_settingsService.CurrentSettings.AllowJoinTimout);
+			var timeout = TimeSpan.FromMinutes(_settingsService.CurrentSettings.AllowJoinTimeout);
 			await Task.Delay(timeout, ct);
 
 			// timeout reached here
