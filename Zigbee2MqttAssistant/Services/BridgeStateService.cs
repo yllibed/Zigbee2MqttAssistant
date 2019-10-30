@@ -338,7 +338,7 @@ namespace Zigbee2MqttAssistant.Services
 
 			if (json.Type != JTokenType.Array)
 			{
-				_logger.LogWarning($"Invalid/unknown devices payload received. root element type is {json.Root.Type}: {payload.Substring(0, 40)}... -- will be ignored.");
+				_logger.LogWarning($"Invalid/unknown devices payload received. root element type is {json.Root.Type}: {payload.Substring(0, Math.Min(40, payload.Length))}... -- will be ignored.");
 				return;
 			}
 
