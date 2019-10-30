@@ -151,6 +151,15 @@
         "bug",
         "ideas"
       ]
+    },
+    {
+      "login": "WoLpH",
+      "name": "Rick van Hattem",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/270571?v=4",
+      "profile": "http://wol.ph/",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
