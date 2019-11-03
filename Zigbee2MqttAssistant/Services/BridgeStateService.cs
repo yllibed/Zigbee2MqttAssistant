@@ -177,7 +177,7 @@ namespace Zigbee2MqttAssistant.Services
 			var coordinatorVersion = default(string);
 			var coordinatorType = "zStack";
 
-			switch (coordinator.Type)
+			switch (coordinator?.Type)
 			{
 				case JTokenType.String:
 				{
@@ -243,9 +243,9 @@ namespace Zigbee2MqttAssistant.Services
 				if (device == null)
 				{
 					// no device with this zigbeeId is known, try to find device from payload
-					var topic = json["state_topic"].Value<string>()
-								?? json["json_attributes_topic"].Value<string>()
-								?? json["availability_topic"].Value<string>();
+					var topic = json["state_topic"]?.Value<string>()
+								?? json["json_attributes_topic"]?.Value<string>()
+								?? json["availability_topic"]?.Value<string>();
 
 					if (topic == null)
 					{
