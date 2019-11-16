@@ -113,7 +113,7 @@ If you need to change _cron expression_ for other values, you should use a site 
 
 # Requirements
 * You need a running installation of `Zigbee2Mqtt` v1.5.0+
-  * Also tested on v1.6.0
+  * Also tested on v1.6.0, v1.7.0 and v1.7.1
   * Should work with next _herdsman_ version too
 * Simple MQTT connection with username/password (TLS supported)
   * Client certificates not supported yet - open an issue if your need it.
