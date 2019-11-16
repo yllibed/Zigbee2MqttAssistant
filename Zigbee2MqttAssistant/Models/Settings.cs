@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Uno;
 
 namespace Zigbee2MqttAssistant.Models
@@ -29,7 +29,7 @@ namespace Zigbee2MqttAssistant.Models
 		public string MqttServer { get; } = "mqtt";
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public TlsMode MqttSecure { get; } = TlsMode.False;
 
@@ -75,7 +75,7 @@ namespace Zigbee2MqttAssistant.Models
 		/// Zigbee2MqttAssistant is compatible with other formats,
 		/// it's just this one (epoch) is less parsing to use.
 		/// </remarks>
-		public bool AutosetLastSeen { get; } = true;
+		public bool AutosetLastSeen { get; } = false;
 
 		/// <summary>
 		/// Cron expression for polling for devices.
