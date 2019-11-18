@@ -178,6 +178,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "johntdyer",
+      "name": "John Dyer",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/58234?v=4",
+      "profile": "http://johntdyer.com",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
