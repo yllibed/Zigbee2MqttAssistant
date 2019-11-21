@@ -196,6 +196,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "dystechnic",
+      "name": "dystechnic",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/36402924?v=4",
+      "profile": "https://github.com/dystechnic",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
