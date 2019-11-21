@@ -68,7 +68,20 @@
 
     (function (ctl) {
         const options = {
-            autoResize: true
+            autoResize: true,
+            physics: {
+                enabled: true,
+                minVelocity: 1,
+                maxVelocity: 50,
+                repulsion: {
+                    nodeDistance: 200
+                },
+                stabilization: {
+                    enabled: true,
+                    iterations: 10
+                },
+                solver: 'repulsion'
+            }
         };
 
         const nodes = new vis.DataSet([
