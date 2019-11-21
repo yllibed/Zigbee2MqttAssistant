@@ -1,5 +1,5 @@
 # Zigbee2Mqtt Assistant
-[![All Contributors](https://img.shields.io/badge/all_contributors-20-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-21-orange.svg?style=flat-square)](#contributors)
 
 This project is a _Web GUI_ for the very good [Zigbee2Mqtt](https://www.zigbee2mqtt.io/) software
 ([github sources](https://github.com/Koenkk/zigbee2mqtt)).
@@ -163,6 +163,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="http://godisapj.com"><img src="https://avatars1.githubusercontent.com/u/10796588?v=4" width="100px;" alt="PeeJay"/><br /><sub><b>PeeJay</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/issues?q=author%3Apejotigrek" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/jeromelaban"><img src="https://avatars0.githubusercontent.com/u/5839577?v=4" width="100px;" alt="Jérôme Laban"/><br /><sub><b>Jérôme Laban</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/commits?author=jeromelaban" title="Code">💻</a></td>
     <td align="center"><a href="http://johntdyer.com"><img src="https://avatars3.githubusercontent.com/u/58234?v=4" width="100px;" alt="John Dyer"/><br /><sub><b>John Dyer</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/issues?q=author%3Ajohntdyer" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://www.djc.me"><img src="https://avatars2.githubusercontent.com/u/826556?v=4" width="100px;" alt="Dan Chen"/><br /><sub><b>Dan Chen</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/commits?author=djchen" title="Code">💻</a></td>
   </tr>
 </table>
 
