@@ -169,6 +169,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="https://github.com/dystechnic"><img src="https://avatars0.githubusercontent.com/u/36402924?v=4" width="100px;" alt=""/><br /><sub><b>dystechnic</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/issues?q=author%3Adystechnic" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/FutureCow"><img src="https://avatars3.githubusercontent.com/u/2134193?v=4" width="100px;" alt=""/><br /><sub><b>FutureCow</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/issues?q=author%3AFutureCow" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="http://exeti.co"><img src="https://avatars0.githubusercontent.com/u/3549445?v=4" width="100px;" alt=""/><br /><sub><b>Tobias Nordahl Kristensen</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/commits?author=exetico" title="Code">💻</a> <a href="https://github.com/yllibed/Zigbee2MqttAssistant/commits?author=exetico" title="Documentation">📖</a></td>
   </tr>
 </table>
 
