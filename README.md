@@ -50,10 +50,33 @@ This project is a _Web GUI_ for the very good [Zigbee2Mqtt](https://www.zigbee2m
 ## OPTION 2 - Installing from docker
 Run the following command by replacing `<mqttserver>`, `<mqttusername>`, `<mqttpassword>` with your correct values.
 ```bash
-docker run -p 8880:80 -e Z2MA_SETTINGS__MQTTSERVER=<mqttserver> -e Z2MA_SETTINGS__MQTTUSERNAME=<mqttusername> -e Z2MA_SETTINGS__MQTTPASSWORD=<mqttpassword> --restart always carldebilly/zigbee2mqttassistant
+docker run -p 8880:80 -e Z2MA_SETTINGS__MQTTSERVER=<mqttserver> -e Z2MA_SETTINGS__MQTTUSERNAME=<mqttusername> -e Z2MA_SETTINGS__MQTTPASSWORD=<mqttpassword> --restart unless-stopped carldebilly/zigbee2mqttassistant
 ```
-> **draft note**: environment variables are currently the easiest way to set those settings.
+> **Draft note**: Environment variables are currently the easiest way to set those settings.
 > Open an issue if you need it to be in a configuration file/folder.
+
+### Docker Compose-example
+If you're using Docker Compose, fell free to use this. 8880 is the port where the service will be available, from the outside of the container itself.
+```
+#########################
+# zigbee2mqttAssistant (Interface)
+#########################
+# https://github.com/yllibed/Zigbee2MqttAssistant
+
+  zigbee2mqttAssistant:
+    image: carldebilly/zigbee2mqttassistant
+    container_name: zigbee2mqttAssistant
+    environment:
+      - Z2MA_SETTINGS__MQTTSERVER={IP}
+      - Z2MA_SETTINGS__MQTTUSERNAME={MQTTUSERNAME}
+      - Z2MA_SETTINGS__MQTTPASSWORD={MQTTPASSWORD}
+      - TZ=Europe/Copenhagen
+    ports:
+      - 8880:80
+    restart: unless-stopped
+```
+
+_Accepted for Docker-compose Manifest v.3_
 
 
 ## OPTION 3 - Installing from sources & compiling using Visual Studio
