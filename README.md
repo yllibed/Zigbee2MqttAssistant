@@ -55,12 +55,12 @@ docker run -p 8880:80 -e Z2MA_SETTINGS__MQTTSERVER=<mqttserver> -e Z2MA_SETTINGS
 > **Draft note**: Environment variables are currently the easiest way to set those settings.
 > Open an issue if you need it to be in a configuration file/folder.
 
-### Docker Compose-example
+### Docker Compose example
 If you're using Docker Compose, fell free to use this. 8880 is the port where the service will be available, from the outside of the container itself.
-```
-#########################
-# zigbee2mqttAssistant (Interface)
-#########################
+``` yaml
+######################################
+# Zigbee2MqttAssistant (GUI Interface)
+######################################
 # https://github.com/yllibed/Zigbee2MqttAssistant
 
   zigbee2mqttAssistant:
@@ -70,6 +70,8 @@ If you're using Docker Compose, fell free to use this. 8880 is the port where th
       - Z2MA_SETTINGS__MQTTSERVER={IP_OR_HOSTNAME}
       - Z2MA_SETTINGS__MQTTUSERNAME={MQTTUSERNAME}
       - Z2MA_SETTINGS__MQTTPASSWORD={MQTTPASSWORD}
+      # Set to your TimeZone when using on Linux https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+      # Won't work if you're using the Windows version of the container
       - TZ=Europe/Copenhagen
     ports:
       - 8880:80
