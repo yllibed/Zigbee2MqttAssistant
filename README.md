@@ -67,7 +67,7 @@ If you're using Docker Compose, fell free to use this. 8880 is the port where th
     image: carldebilly/zigbee2mqttassistant
     container_name: zigbee2mqttAssistant
     environment:
-      - Z2MA_SETTINGS__MQTTSERVER={IP}
+      - Z2MA_SETTINGS__MQTTSERVER={IP_OR_HOSTNAME}
       - Z2MA_SETTINGS__MQTTUSERNAME={MQTTUSERNAME}
       - Z2MA_SETTINGS__MQTTPASSWORD={MQTTPASSWORD}
       - TZ=Europe/Copenhagen
