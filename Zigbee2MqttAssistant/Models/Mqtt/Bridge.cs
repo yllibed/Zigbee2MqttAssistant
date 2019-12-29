@@ -17,24 +17,24 @@ namespace Zigbee2MqttAssistant.Models.Mqtt
 		/// <summary>
 		/// Version of running Zigbee2Mqtt
 		/// </summary>
-		public string Zigbee2MqttVersion { get; }
+		public string? Zigbee2MqttVersion { get; }
 
 		/// <summary>
 		/// Version of running Zigbee2Mqtt
 		/// </summary>
 		[EqualityHash]
-		public string CoordinatorVersion { get; }
+		public string? CoordinatorVersion { get; }
 
 		/// <summary>
 		/// Type of coordinator
 		/// </summary>
-		public string CoordinatorType { get; }
+		public string? CoordinatorType { get; }
 
 		/// <summary>
 		/// The hardware address of the bridge
 		/// </summary>
 		[EqualityHash]
-		public string CoordinatorZigbeeId { get; }
+		public string? CoordinatorZigbeeId { get; }
 
 		/// <summary>
 		/// Log level of the bridge
@@ -46,11 +46,10 @@ namespace Zigbee2MqttAssistant.Models.Mqtt
 		/// </summary>
 		public bool PermitJoin { get; } = false;
 
+		[EqualityHash]
 		public ImmutableArray<ZigbeeDevice> Devices { get;  } = ImmutableArray<ZigbeeDevice>.Empty;
 
-		public ImmutableArray<LogEntry> Logs { get; } = ImmutableArray<LogEntry>.Empty;
-
-		public ZigbeeDevice FindDevice(string idOrFriendlyName)
+		public ZigbeeDevice? FindDevice(string? idOrFriendlyName)
 		{
 			if (string.IsNullOrWhiteSpace(idOrFriendlyName))
 			{

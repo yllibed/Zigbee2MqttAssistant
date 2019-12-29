@@ -470,12 +470,32 @@ namespace Zigbee2MqttAssistant.Services
 
 						var parent = link["targetIeeeAddr"]?.Value<string>();
 						var linkQuality = link["lqi"]?.Value<ushort>();
-						var relationship = link["relationship"]?.Value<byte>();
+						var relationshipValue = link["relationship"]?.Value<byte>();
+						var depth = link["depth"]?.Value<byte>();
 
 						if (string.IsNullOrWhiteSpace(parent) || linkQuality == null)
 						{
 							continue; // weird case (payload is invalid?)
 						}
+
+						ZigbeeLinkRelationship relationshipType = ZigbeeLinkRelationship.Other;
+						switch (relationshipValue)
+						{
+							case 0:
+								relationshipType = ZigbeeLinkRelationship.Parent;
+								break;
+							case 1:
+								relationshipType = ZigbeeLinkRelationship.Child;
+								break;
+							case 2:
+								relationshipType = ZigbeeLinkRelationship.Sibling;
+								break;
+							case 4:
+								relationshipType = ZigbeeLinkRelationship.FormerChild;
+								break;
+						}
+
+						var relationship = new ZigbeeLinkRelationship(parent, linkQuality, relationshipType, depth);
 
 						ZigbeeDevice newDevice;
 
@@ -484,12 +504,12 @@ namespace Zigbee2MqttAssistant.Services
 						if (existingParent != default)
 						{
 							newDevice = device
-								.WithParents(parents => parents.Replace(existingParent, (parent, linkQuality.Value, relationship)));
+								.WithParents(parents => parents.Replace(existingParent, (parent, linkQuality.Value, relationshipValue)));
 						}
 						else
 						{
 							newDevice = device
-								.WithParents(parents => parents.Add((parent, linkQuality.Value, relationship)));
+								.WithParents(parents => parents.Add((parent, linkQuality.Value, relationshipValue)));
 						}
 
 						if (device != newDevice)

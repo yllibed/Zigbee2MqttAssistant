@@ -4,7 +4,7 @@ using Uno;
 namespace Zigbee2MqttAssistant.Models.Devices
 {
 	[GeneratedImmutable]
-	[DebuggerDisplay("{Name}")]
+	[DebuggerDisplay("{" + nameof(Name) + "}")]
 	public partial class HomeAssistantEntity
 	{
 		[EqualityHash]

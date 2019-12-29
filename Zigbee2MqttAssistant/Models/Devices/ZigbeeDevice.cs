@@ -16,13 +16,13 @@ namespace Zigbee2MqttAssistant.Models.Devices
 		[EqualityHash]
 		public uint? NetworkAddress { get; }
 
-		public ushort? LinkQuality => Parents
-			.Where(p => p.relationship < 3)
-			.Select(p => (ushort?)p.linkQuality)
+		public ushort LinkQuality => Parents
+			//.Where(p => p.relationship < 3) // TODO fix that following https://github.com/yllibed/Zigbee2MqttAssistant/issues/113#issuecomment-552805477
+			.Select(p => p.LinkQuality)
 			.DefaultIfEmpty()
 			.Max(); // This is a pattern for non-existent .MaxOrDefault()
 
-		public ImmutableArray<(string zigbeeId, ushort linkQuality, byte? relationship)> Parents { get; } = ImmutableArray<(string zigbeeId, ushort linkQuality, byte? relationship)>.Empty;
+		public ImmutableArray<ZigbeeLink> Parents { get; } = ImmutableArray<ZigbeeLink>.Empty;
 
 		public string FriendlyName { get; }
 
