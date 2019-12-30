@@ -265,6 +265,7 @@ namespace Zigbee2MqttAssistant.Services
 			"/bridge/config/remove", // request for a device remove
 			"/bridge/config/force_remove", // request for a device remove
 			"/bridge/config/rename", // request to rename a device
+			"/bridge/configure", // request to configure a device
 		};
 
 		private Regex _setTopicRegex;
@@ -700,6 +701,19 @@ namespace Zigbee2MqttAssistant.Services
 			_stateService.Clear();
 
 			await Connect();
+		}
+
+		public async Task ConfigureDevice(string deviceFriendlyName)
+		{
+			var device = _stateService.FindDeviceById(deviceFriendlyName, out _);
+
+
+			var msg = new MqttApplicationMessageBuilder()
+				.WithTopic($"{_settings.CurrentSettings.BaseTopic}/bridge/configure")
+				.WithPayload(device.FriendlyName)
+				.Build();
+
+			await _client.PublishAsync(msg);
 		}
 
 		private ImmutableDictionary<(string source, string target), TaskCompletionSource<object>> _bindWaitingList = ImmutableDictionary< (string, string), TaskCompletionSource<object>>.Empty;

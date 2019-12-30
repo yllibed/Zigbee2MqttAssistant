@@ -101,6 +101,14 @@ namespace Zigbee2MqttAssistant.Controllers
 		}
 
 		[HttpPost]
+		public async Task<IActionResult> ConfigureDevice(string id)
+		{
+			id = Uri.UnescapeDataString(id);
+			await _operationService.Configure(id);
+			return RedirectToAction("Device", new { id });
+		}
+
+		[HttpPost]
 		public async Task<IActionResult> BindDevice(string id, string targetId)
 		{
 			id = Uri.UnescapeDataString(id);
