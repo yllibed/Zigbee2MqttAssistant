@@ -1,4 +1,5 @@
 ﻿@using System.Collections.Immutable
+@using System.Globalization
 @using Zigbee2MqttAssistant.Models.Devices
 @using Zigbee2MqttAssistant.Services
 
@@ -94,7 +95,7 @@
             @{
             @foreach(var link in links)
             {
-                var length = 1000 / (Math.Pow(link.quality + 1, 1.25)) + 25;
+                var length = (1000 / (Math.Pow(link.quality + 1, 1.25)) + 25).ToString(NumberFormatInfo.InvariantInfo);
                 var color = "{}";
                 if (link.relationship >= 3)
                 {

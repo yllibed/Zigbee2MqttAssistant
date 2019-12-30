@@ -16,7 +16,7 @@ namespace Zigbee2MqttAssistant.Services
 			_stateService = stateService;
 		}
 
-		public async Task<ZigbeeDevice> RemoveDeviceById(string deviceId)
+		public async Task<ZigbeeDevice> RemoveDeviceById(string deviceId, bool forceRemove)
 		{
 			var device = _stateService.FindDeviceById(deviceId, out _);
 			if (device == null)
@@ -24,7 +24,7 @@ namespace Zigbee2MqttAssistant.Services
 				return null;
 			}
 
-			await _mqtt.RemoveDeviceAndWait(device.FriendlyName);
+			await _mqtt.RemoveDeviceAndWait(device.FriendlyName, forceRemove);
 
 			return device;
 		}

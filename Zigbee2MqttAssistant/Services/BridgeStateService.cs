@@ -320,11 +320,11 @@ namespace Zigbee2MqttAssistant.Services
 			return entity;
 		}
 
-		public ZigbeeDevice FindDeviceById(string deviceId, out Bridge state)
+		public ZigbeeDevice FindDeviceById(string deviceIdOrFriendlyName, out Bridge state)
 		{
 			state = _currentState;
 
-			return state.FindDevice(deviceId);
+			return state.FindDevice(deviceIdOrFriendlyName);
 		}
 
 		public void UpdateDevices(string payload)

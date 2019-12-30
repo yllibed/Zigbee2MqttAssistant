@@ -117,10 +117,10 @@ namespace Zigbee2MqttAssistant.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> RemoveDevice(string id)
+		public async Task<IActionResult> RemoveDevice(string id, bool forceRemove)
 		{
 			id = Uri.UnescapeDataString(id);
-			var device = await _operationService.RemoveDeviceById(id);
+			var device = await _operationService.RemoveDeviceById(id, forceRemove);
 
 			if (device == null)
 			{
