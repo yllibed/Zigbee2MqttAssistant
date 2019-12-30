@@ -144,6 +144,22 @@ else
     <div class="card-body">
         <h5 class="card-title">Delete</h5>
         <form asp-action="RemoveDevice" method="post" asp-route-id="@device.FriendlyName">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="forceRemove" value="true" />
+                <label class="form-check-label">Use <strong>Force Remove</strong> mode.</label>
+                <small class="form-text text-secondary">
+                    <strong>Zigbee2Mqtt v1.7.0+</strong>
+                    <br/>
+                    Note that a force remove will only remove the device from the database.
+                    Until this device is factory reset, it will still hold the network encryption
+                    key and thus is still able to communicate over the network!
+                    <br/>
+                    TIP: Like for the Binding operation, it's better if you manipulate the device
+                    during the removal - unless if you're using the <em>force remove</em> mode.
+                    If you get an error during the non-forced mode, it means Zigbee2Mqtt wasn't
+                    able to reach the device.
+                </small>
+            </div>
             <button class="btn bg-danger" type="submit">REMOVE THIS DEVICE</button>
         </form>
         <small class="form-text text-info">

@@ -6,7 +6,7 @@ namespace Zigbee2MqttAssistant.Services
 {
 	public interface IBridgeOperationService
 	{
-		Task<ZigbeeDevice> RemoveDeviceById(string deviceId);
+		Task<ZigbeeDevice> RemoveDeviceById(string deviceId, bool forceRemove);
 		Task<ZigbeeDevice> RenameDeviceById(string deviceId, string newName);
 		Task AllowJoin(bool permitJoin);
 		Task Reset();

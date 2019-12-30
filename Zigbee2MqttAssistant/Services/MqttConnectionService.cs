@@ -263,8 +263,8 @@ namespace Zigbee2MqttAssistant.Services
 			"/bridge/config/log_level", // request to change log level
 			"/bridge/config/permit_join", // setting allow join
 			"/bridge/config/remove", // request for a device remove
+			"/bridge/config/force_remove", // request for a device remove
 			"/bridge/config/rename", // request to rename a device
-			"/bridge/networkmap", // request for a network map
 		};
 
 		private Regex _setTopicRegex;
@@ -341,6 +341,7 @@ namespace Zigbee2MqttAssistant.Services
 		}
 
 		private Regex FriendlyNameExtractor;
+        private static readonly Regex SetRemover = new Regex(@"^(?<friendlyName>.+)(?:(?:\/set\/.+))$", RegexOptions.Compiled | RegexOptions.Singleline);
 
 		private bool DispatchZigbee2MqttMessage(MqttApplicationMessage msg)
 		{
@@ -400,11 +401,37 @@ namespace Zigbee2MqttAssistant.Services
 			}
 			else
 			{
+				var setMatch = SetRemover.Match(friendlyName);
+				var warnSetInName = false;
+				if (setMatch.Success)
+				{
+					if (_stateService.CurrentState.Devices.Length == 0)
+					{
+						return false; // no devices received yet
+					}
+
+					var realFriendlyName = setMatch.Groups["friendlyName"].Value;
+					if (_stateService.FindDeviceById(realFriendlyName, out _) != null)
+					{
+						// It's not the state of a device, it's a /set/<attribute_name> on a device!
+						// (absolutely no interests for that here: it will just generate parsing exceptions)
+						return false;
+					}
+
+                    _logger.LogWarning($"Received a message for topic '{friendlyName}'. It looks like it's setting an attribute on a friendly name '{realFriendlyName}', but no such device is known. If the application is starting, you can safely discard this warning and the following potential parsing error.");
+                    warnSetInName = true;
+				}
+
 				var payload = _utf8.GetString(msg.Payload);
 				_stateService.UpdateDevice(friendlyName: friendlyName, jsonPayload: payload, forceLastSeen: out var setLastSeen);
 				if (setLastSeen && _settings.CurrentSettings.AutosetLastSeen)
 				{
 					var t = SetLastSeen();
+				}
+
+				if (warnSetInName)
+				{
+					_logger.LogWarning($"It look like you actually have a device named '{friendlyName}' after all. THAT'S A BAD NAME: consider changing it!");
 				}
 			}
 
@@ -501,6 +528,9 @@ namespace Zigbee2MqttAssistant.Services
 					}
 
 					case "device_removed":
+					case "device_forced_removed":
+					case "device_removed_failed":
+					case "device_forced_removed_failed":
 					{
 						var removedDevice = message?.Value<string>();
 
@@ -508,7 +538,14 @@ namespace Zigbee2MqttAssistant.Services
 
 						if (ImmutableInterlocked.TryRemove(ref _removeWaitingList, removedDevice, out var tcs))
 						{
-							tcs.TrySetResult(null); // unblock waiting for rename
+							if (type.EndsWith("_failed"))
+							{
+								tcs.TrySetException(new Exception("Remove device failed."));
+							}
+                            else
+							{
+								tcs.TrySetResult(null); // unblock waiting for rename
+							}
 						}
 						break;
 					}
@@ -620,7 +657,7 @@ namespace Zigbee2MqttAssistant.Services
 
 		private ImmutableDictionary<string, TaskCompletionSource<object>> _removeWaitingList = ImmutableDictionary<string, TaskCompletionSource<object>>.Empty;
 
-		public async Task RemoveDeviceAndWait(string deviceFriendlyName)
+		public async Task RemoveDeviceAndWait(string deviceFriendlyName, bool forceRemove)
 		{
 			var tcs = new TaskCompletionSource<object>();
 			if (!ImmutableInterlocked.TryAdd(ref _removeWaitingList, deviceFriendlyName, tcs))
@@ -629,7 +666,7 @@ namespace Zigbee2MqttAssistant.Services
 			}
 
 			var msg = new MqttApplicationMessageBuilder()
-				.WithTopic($"{_settings.CurrentSettings.BaseTopic}/bridge/config/remove")
+				.WithTopic($"{_settings.CurrentSettings.BaseTopic}/bridge/config/{(forceRemove ? "force_remove" : "remove")}")
 				.WithPayload(deviceFriendlyName)
 				.Build();
 
