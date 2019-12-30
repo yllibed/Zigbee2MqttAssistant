@@ -22,10 +22,11 @@ This project is a _Web GUI_ for the very good [Zigbee2Mqtt](https://www.zigbee2m
 * Operations on devices:
   * Allow network join - no more need to setup virtual switches in HA just for that.
   * Rename devices
-  * Remove devices from network
+  * Remove devices from network (+ forced remove)
+  * Configure device (force reconfiguration of device's reportings)
   * Bind device to another one (mostly used for Ikea TRÅDFRI devices - [documentation here](https://www.zigbee2mqtt.io/information/binding.html))
   * Visualize device health
-* Based on _ASP.NET Core_ 3.0 (LTS).
+* Based on _ASP.NET Core_ 3.0.
 
 [![Build Status](https://dev.azure.com/yllibed/Zigbee2MqttAssistant/_apis/build/status/yllibed.Zigbee2MqttAssistant?branchName=master)](https://dev.azure.com/yllibed/Zigbee2MqttAssistant/_build/latest?definitionId=4&branchName=master)
 [![Release Status](https://vsrm.dev.azure.com/yllibed/_apis/public/Release/badge/35f7fc7c-f867-48e4-83b5-3381156a439a/1/1)](https://dev.azure.com/yllibed/Zigbee2MqttAssistant/_release?view=mine&definitionId=1)
@@ -138,13 +139,13 @@ If you need to change _cron expression_ for other values, you should use a site 
 
 # Requirements
 * You need a running installation of `Zigbee2Mqtt` v1.5.0+
-  * Also tested on v1.6.0, v1.7.0 and v1.7.1
-  * Should work with next _herdsman_ version too
+  * Also tested on v1.6.0, v1.7.0, v1.7.1 and v1.8.0
 * Simple MQTT connection with username/password (TLS supported)
   * Client certificates not supported yet - open an issue if your need it.
 * Zigbee2Mqtt required settings:
   * Home Assistant Discovery **MUST** be activated - event if you're not using it.
     This shouldn't have any side effect to your installation.
+    (it will work without this, but you won't see the components of each devices)
 
     **AN ACTUAL INSTALLATION OF HOME ASSISTANT IS NOT REQUIRED**
 
