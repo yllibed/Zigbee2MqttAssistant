@@ -111,6 +111,25 @@ else
 
 <div class="card">
     <div class="card-body">
+        <h5 class="card-title">Configure</h5>
+        <form asp-action="ConfigureDevice" method="post" asp-route-id="@device.FriendlyName">
+            <button class="btn btn-outline-secondary" type="submit">CONFIGURE THIS DEVICE</button>
+        </form>
+        <small class="form-text text-secondary">
+            If the device is not working correctly, this will launch a new <em>Zigbee Configure</em>
+            phase on the device.
+            <br />
+            There will be no feedback here for the outcome of the operation. This could also take
+            few seconds.
+            <br />
+            If it's a battery-powered device, you should manipulate the device to force it to
+            stay awake during the configuration process.
+        </small>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
         <h5 class="card-title">Binding</h5>
         Bind this device (<code>@device.ToString()</code>) to send payloads (instructions) to this
         device:
