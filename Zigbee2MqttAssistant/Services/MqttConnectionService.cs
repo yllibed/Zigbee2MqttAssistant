@@ -177,7 +177,7 @@ namespace Zigbee2MqttAssistant.Services
 			}
 		}
 
-		private bool _waitingForDevicesResponse = false;
+		private DateTimeOffset _lastDevicesRequest = DateTimeOffset.MinValue;
 		private async Task SetLastSeen()
 		{
 			var msg = new MqttApplicationMessageBuilder()
@@ -192,7 +192,7 @@ namespace Zigbee2MqttAssistant.Services
 		{
 			_logger.LogInformation("Launching a request for an updated devices list...");
 
-			if (_waitingForDevicesResponse)
+			if (_lastDevicesRequest > DateTimeOffset.Now.AddSeconds(30))
 			{
 				_logger.LogWarning("Another devices request already in progress.");
 
@@ -203,7 +203,7 @@ namespace Zigbee2MqttAssistant.Services
 				.WithTopic($"{_settings.CurrentSettings.BaseTopic}/bridge/config/devices/get")
 				.Build();
 
-			_waitingForDevicesResponse = true;
+			_lastDevicesRequest = DateTimeOffset.MinValue;
 
 			await _client.PublishAsync(msg);
 		}
@@ -239,7 +239,7 @@ namespace Zigbee2MqttAssistant.Services
 		private void Disconnect()
 		{
 			StopPolling();
-			_waitingForDevicesResponse = false;
+			_lastDevicesRequest = DateTimeOffset.MinValue;
 			_waitingForNetworkScanResponse = false;
 			_connection.Disposable = null;
 		}
@@ -295,7 +295,7 @@ namespace Zigbee2MqttAssistant.Services
 				if (topic.EndsWith("/bridge/config/devices/get"))
 				{
 					// Something elsewhere asked for a devices list
-					_waitingForDevicesResponse = true;
+					_lastDevicesRequest = DateTimeOffset.Now;
 					return Task.CompletedTask;
 				}
 
@@ -484,7 +484,7 @@ namespace Zigbee2MqttAssistant.Services
 				var payload = _utf8.GetString(msg.Payload);
 				_stateService.UpdateDevices(payload);
 
-				_waitingForDevicesResponse = false;
+				_lastDevicesRequest = DateTimeOffset.MinValue;
 
 				return true;
 			}
