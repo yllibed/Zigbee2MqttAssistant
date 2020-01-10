@@ -27,15 +27,18 @@
         @foreach (var device in bridge.Devices.OrderBy(d => d.FriendlyName))
         {
             <tr>
-                <th scope="row">
+                <th scope="row" width="55">
+                    <img src="https://www.zigbee2mqtt.io/images/devices/@(device.ModelId).jpg" alt="@(device.ModelId)" height="50" widht="50" onerror="if (this.src != 'noimg.png') this.src = 'noimg.png';" />
+                </th>
+                <td>
                     <a asp-action="Device" asp-route-id="@device.FriendlyName"><strong>@device.FriendlyName</strong></a>
-                    <br /><code>@device.ZigbeeId</code> @device.Manufacturer
+                    <br/><code>@device.ZigbeeId</code> @device.Manufacturer
 
                     @if (!device.Type?.Equals("EndDevice", StringComparison.CurrentCultureIgnoreCase) ?? false)
                     {
                         <span class="badge badge-dark">@device.Type</span>
                     }
-                    <br />
+                    <br/>
                     @if (device.GetUnresponsiveDelay(out var delaySinceLastResponse) == true)
                     {
                         var unseenPeriod = delaySinceLastResponse.Value.Humanize(1);
@@ -50,8 +53,6 @@
                     {
                         <span class="badge badge-danger">offline</span>
                     }*@
-
-
                     @if (device.LinkQuality.HasValue)
                     {
                         var value = device.LinkQuality.Value;
@@ -73,7 +74,7 @@
                             <span class="badge badge-danger">low battery (@value%)</span>
                         }
                     }
-                </th>
+                </td>
                 <td>
                     @foreach (var entity in device.Entities.OrderBy(e => e.Component))
                     {
