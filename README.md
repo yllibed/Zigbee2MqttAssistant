@@ -197,6 +197,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/FutureCow"><img src="https://avatars3.githubusercontent.com/u/2134193?v=4" width="100px;" alt=""/><br /><sub><b>FutureCow</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/issues?q=author%3AFutureCow" title="Bug reports">🐛</a></td>
     <td align="center"><a href="http://exeti.co"><img src="https://avatars0.githubusercontent.com/u/3549445?v=4" width="100px;" alt=""/><br /><sub><b>Tobias Nordahl Kristensen</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/commits?author=exetico" title="Code">💻</a> <a href="https://github.com/yllibed/Zigbee2MqttAssistant/commits?author=exetico" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/tdn131"><img src="https://avatars2.githubusercontent.com/u/32997056?v=4" width="100px;" alt=""/><br /><sub><b>tdn131</b></sub></a><br /><a href="#ideas-tdn131" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/Edzilla2000"><img src="https://avatars3.githubusercontent.com/u/5339038?v=4" width="100px;" alt=""/><br /><sub><b>Edzilla2000</b></sub></a><br /><a href="#ideas-Edzilla2000" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 
