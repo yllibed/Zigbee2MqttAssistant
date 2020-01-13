@@ -26,9 +26,18 @@
     <tbody>
         @foreach (var device in bridge.Devices.OrderBy(d => d.FriendlyName))
         {
+            var deviceImage = "noimg.png";
+            if (device.Type?.Equals("Coordinator") ?? false)
+            {
+                deviceImage = "coordinator.png";
+            }
+            else if (device.ModelId != null)
+            {
+                deviceImage = $"https://www.zigbee2mqtt.io/images/devices/{device.ModelId.Replace('/', '-')}.jpg";
+            }
             <tr>
                 <th scope="row" width="55">
-                    <img src="https://www.zigbee2mqtt.io/images/devices/@(device.ModelId).jpg" alt="@(device.ModelId)" height="50" widht="50" onerror="if (this.src != 'noimg.png') this.src = 'noimg.png';" />
+                    <img src="@(deviceImage)" alt="@(device.ModelId)" height="50" widht="50" onerror="if (this.src != 'noimg.png') this.src = 'noimg.png';" />
                 </th>
                 <td>
                     <a asp-action="Device" asp-route-id="@device.FriendlyName"><strong>@device.FriendlyName</strong></a>
