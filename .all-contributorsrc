@@ -242,6 +242,15 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "codefinder2",
+      "name": "Adrian Böckenkamp",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/20599588?v=4",
+      "profile": "http://ls7-www.cs.uni-dortmund.de",
+      "contributions": [
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
