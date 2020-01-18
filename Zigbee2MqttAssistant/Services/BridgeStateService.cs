@@ -407,6 +407,9 @@ namespace Zigbee2MqttAssistant.Services
 				case JTokenType.Integer:
 					dateTimeOffset =  DateTimeOffset.FromUnixTimeMilliseconds(jtoken.Value<long>());
 					return true;
+				case JTokenType.Date:
+					dateTimeOffset = jtoken.Value<DateTime>();
+					return true;
 				case JTokenType.String:
 					dateTimeOffset = jtoken.Value<DateTimeOffset>();
 					return true;
