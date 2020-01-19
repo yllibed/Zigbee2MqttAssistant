@@ -19,6 +19,7 @@
 <table class="table table-striped">
     <thead>
         <tr>
+            <th />
             <th scole="col">Name / Id</th>
             <th scole="col">Components</th>
         </tr>
@@ -40,7 +41,7 @@
             }
             <tr>
                 <th scope="row" width="55">
-                    <img src="@(deviceImage)" alt="@(device.ModelId)" height="50" widht="50" onerror="if (this.src != 'noimg.png') this.src = 'noimg.png';" />
+                    <img src="@(deviceImage)" alt="@(device.ModelId)" class="border border-primary p-2" style="background: white"height="60" widht="60" onerror="if (this.src != 'noimg.png') this.src = 'noimg.png';" />
                 </th>
                 <td>
                     <a asp-action="Device" asp-route-id="@device.FriendlyName"><strong>@device.FriendlyName</strong></a>
