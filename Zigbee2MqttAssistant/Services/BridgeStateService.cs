@@ -173,7 +173,7 @@ namespace Zigbee2MqttAssistant.Services
 
 			var version = json["version"]?.Value<string>();
 			var coordinator = json["coordinator"];
-			var coordinatorVersion = default(string);
+			string coordinatorVersion;
 			var coordinatorType = "zStack";
 
 			switch (coordinator?.Type)
@@ -187,6 +187,11 @@ namespace Zigbee2MqttAssistant.Services
 				{
 					coordinatorVersion = coordinator["meta"]?["revision"]?.Value<string>();
 					coordinatorType = coordinator["type"]?.Value<string>();
+					break;
+				}
+				default:
+				{
+					coordinatorVersion = default;
 					break;
 				}
 			}
@@ -298,7 +303,6 @@ namespace Zigbee2MqttAssistant.Services
 					}
 				}
 
-				if (deviceName != null || deviceIds != null)
 				{
 					ZigbeeDevice newDevice = device
 						.WithName(deviceName)
