@@ -14,8 +14,8 @@ This project is a _Web GUI_ for the very good [Zigbee2Mqtt](https://www.zigbee2m
     note: can be used without Home Assistant.
   * Published as a docker images for following architectures
     * Linux AMD64 (alpine): `linux-x64`
-    * Linux ARM32 (buster-slim): `linux-arm32`
-    * Linux ARM64 (apline): `linux-arm64`
+    * Linux ARM32 (buster-slim): `linux-arm32` (`armv7`+ processor required - **Won't work on Raspberry Pi Zero or Zero-W!**)
+    * Linux ARM64 (apline): `linux-arm64` (`armv8`+ processor required)
     * Windows 64 bits (v10.0.17763+): `win-64`
     * Windows ARM32 (v10.0.17763+): `win-arm32`
     * Also published as a multi-arch manifest: `latest` (or `dev` for development version)
@@ -32,14 +32,14 @@ This project is a _Web GUI_ for the very good [Zigbee2Mqtt](https://www.zigbee2m
 [![Release Status](https://vsrm.dev.azure.com/yllibed/_apis/public/Release/badge/35f7fc7c-f867-48e4-83b5-3381156a439a/1/1)](https://dev.azure.com/yllibed/Zigbee2MqttAssistant/_release?view=mine&definitionId=1)
 [![Docker Pulls](https://img.shields.io/docker/pulls/carldebilly/zigbee2mqttassistant)](https://hub.docker.com/r/carldebilly/zigbee2mqttassistant)
 
-# Screenshots
+## Screenshots
 ![](images/devices-list.png)
 ![](images/device-page.png)
 ![](images/status-page.png)
 
-# Installation
+## Installation
 
-## OPTION 1 - Installing as `HASS.IO` Add-on
+### OPTION 1 - Installing as `HASS.IO` Add-on
 1. Add the following repository url in HASS.IO:
    ```
    https://github.com/yllibed/hassio
@@ -48,7 +48,7 @@ This project is a _Web GUI_ for the very good [Zigbee2Mqtt](https://www.zigbee2m
 3. Configure your credentials for your MQTT server
 4. Enjoy!
 
-## OPTION 2 - Installing from docker
+### OPTION 2 - Installing from docker
 Run the following command by replacing `<mqttserver>`, `<mqttusername>`, `<mqttpassword>` with your correct values.
 ```bash
 docker run -p 8880:80 -e "Z2MA_SETTINGS__MQTTSERVER=<mqttserver>" -e "Z2MA_SETTINGS__MQTTUSERNAME=<mqttusername>" -e "Z2MA_SETTINGS__MQTTPASSWORD=<mqttpassword>" --restart unless-stopped carldebilly/zigbee2mqttassistant
@@ -82,20 +82,20 @@ If you're using Docker Compose, fell free to use this. 8880 is the port where th
 _Accepted for Docker-compose Manifest v.3_
 
 
-## OPTION 3 - Installing from sources & compiling using Visual Studio
+### OPTION 3 - Installing from sources & compiling using Visual Studio
 1. Compile the solution file
 2. Adjust settings in `appsettings.json` for your MQTT connection
 
 > Note: it won't compile using the _dotnet core_ build yet. For now, MSBuild is required to build it.
 
-# Branches
-There is 2 branches for Zigbee2MqttAssistant: `dev` and `stable`. When a build version is considered stable enough, it will be pushed from `dev` to `stable` (there's no git branch dedicated to the _stable_ version).
+## Channels
+There is 2 channels for Zigbee2MqttAssistant: `dev` and `stable`. When a build version is considered stable enough, it will be pushed from `dev` to `stable` (there's no git branch dedicated to the _stable_ version).
 
 If you want to try newest features, you can get the `dev` branch in the following way:
 * On HASS.IO, pick `zigbee2mqttassistant-dev` package
 * On Docker, pick the following package/tag: `carldebilly/zigbee2mqttassistant:dev`
 
-# Settings
+## Settings
 
 You can refer to [`Settings.cs` file](Zigbee2MqttAssistant/Models/Settings.cs) for more information
 on allowed settings. Here's the important settings:
@@ -124,7 +124,7 @@ Note: Uppercase is used here as a convention. It's actually case insensitive.
 
 If you need to change _cron expression_ for other values, you should use a site like <https://crontab.guru/> to validate them. Attention: if you specify specific hours, take care of the time offset (timezone) inside the container!
 
-# Roadmap
+## Roadmap
 * [X] Build a CI + publish to docker hub
 * [X] Shorter environment variables + config file (for docker image)
 * [X] Create a `HASS.IO` add-on
@@ -137,22 +137,20 @@ If you need to change _cron expression_ for other values, you should use a site 
 * [ ] Support _Zigbee groups_
 * [ ] Support for device images
 
-# Requirements
+## Requirements
 * You need a running installation of `Zigbee2Mqtt` v1.5.0+
   * Also tested on v1.6.0, v1.7.0, v1.7.1 and v1.8.0
 * Simple MQTT connection with username/password (TLS supported)
   * Client certificates not supported yet - open an issue if your need it.
 * Zigbee2Mqtt required settings:
-  * Home Assistant Discovery **MUST** be activated - event if you're not using it.
-    This shouldn't have any side effect to your installation.
-    (it will work without this, but you won't see the components of each devices)
+  * Home Assistant Discovery should be activated for a better experience (to see components)
 
     **AN ACTUAL INSTALLATION OF HOME ASSISTANT IS NOT REQUIRED**
 
      To activate: `homeassistant: true` in Zigbee2Mqtt configuration
   * `last_seen` should be activated on Zigbee2Mqtt (any format supported). There's an option (`AutosetLastSeen`) to activate it automatically through MQTT.
 
-# Contributing
+## Contributing
 * If you have suggestions or find bugs, don't hesitate to open and issue here, on Github.
 * **PULL REQUESTS** are welcome! Please open an issue first and link it to your PR. If you're
   unsure about how to implement a feature, we should discuss it in the issue first.
