@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 using Zigbee2MqttAssistant.Models.Devices;
 using Zigbee2MqttAssistant.Models.Mqtt;
 

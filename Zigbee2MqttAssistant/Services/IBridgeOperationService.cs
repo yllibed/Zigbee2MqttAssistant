@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Zigbee2MqttAssistant.Models.Devices;
 
 namespace Zigbee2MqttAssistant.Services
