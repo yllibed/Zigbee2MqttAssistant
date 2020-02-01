@@ -10,7 +10,6 @@ using Cronos;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
-using MQTTnet.Client;
 using MQTTnet.Client.Connecting;
 using MQTTnet.Client.Disconnecting;
 using MQTTnet.Client.Options;
@@ -117,8 +116,8 @@ namespace Zigbee2MqttAssistant.Services
 
 			var ct = cancellableDisposable.Token;
 
-			var t1 = PollingDevicesTask();
-			var t2 = PollingNetworkTask();
+			PollingDevicesTask();
+			PollingNetworkTask();
 
 
 			CronExpression ParseCronExpression(string cronExpression)
@@ -134,7 +133,7 @@ namespace Zigbee2MqttAssistant.Services
 				}
 			}
 
-			async Task PollingDevicesTask()
+			async void PollingDevicesTask()
 			{
 				var cron = ParseCronExpression(_settings.CurrentSettings.DevicesPollingSchedule);
 
@@ -142,7 +141,14 @@ namespace Zigbee2MqttAssistant.Services
 
 				while (!ct.IsCancellationRequested)
 				{
-					await SendDevicesRequest();
+					try
+					{
+						await SendDevicesRequest();
+					}
+					catch (Exception ex)
+					{
+						_logger.LogError(ex, "Error sending device request");
+					}
 
 					var now = DateTimeOffset.Now;
 					var next = cron?.GetNextOccurrence(now, TimeZoneInfo.Local) ?? now.AddMinutes(6);
@@ -153,7 +159,7 @@ namespace Zigbee2MqttAssistant.Services
 				}
 			}
 
-			async Task PollingNetworkTask()
+			async void PollingNetworkTask()
 			{
 				var cron = ParseCronExpression(_settings.CurrentSettings.NetworkScanSchedule);
 
@@ -165,7 +171,14 @@ namespace Zigbee2MqttAssistant.Services
 
 				while (!ct.IsCancellationRequested)
 				{
-					await SendNetworkScanRequest();
+					try
+					{
+						await SendNetworkScanRequest();
+					}
+					catch (Exception ex)
+					{
+						_logger.LogError(ex, "Error sending network scan request");
+					}
 
 					var now = DateTimeOffset.Now;
 					var next = (cron?.GetNextOccurrence(now, TimeZoneInfo.Local) ?? now.AddMinutes(20)) + randomOffset;
@@ -587,6 +600,10 @@ namespace Zigbee2MqttAssistant.Services
 						}
 
 						break;
+					}
+					default:
+					{
+						return false;
 					}
 				}
 

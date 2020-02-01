@@ -1,6 +1,5 @@
 ﻿using System.Collections.Immutable;
 using System.Linq;
-using Microsoft.Extensions.Logging;
 using Uno;
 using Zigbee2MqttAssistant.Models.Devices;
 

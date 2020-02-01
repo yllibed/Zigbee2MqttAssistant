@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Zigbee2MqttAssistant.Models;
@@ -53,27 +52,7 @@ namespace Zigbee2MqttAssistant.Controllers
 
 			// find route to coordinator
 			var routeToCoordinator = new List<ZigbeeDevice>();
-			//var parentDevice = device;
 			var reachCoordinator = false;
-			//while (parentDevice != null)
-			//{
-			//	if (routeToCoordinator.Any(d => d.ZigbeeId.Equals(parentDevice.ZigbeeId)))
-			//	{
-			//		break; // cyclic route
-			//	}
-			//	routeToCoordinator.Add(parentDevice);
-			//	if (string.IsNullOrWhiteSpace(parentDevice.ZigbeeId))
-			//	{
-			//		break;
-			//	}
-
-			//	parentDevice = state.Devices.FirstOrDefault(d => d.ZigbeeId?.Equals(parentDevice.ParentZigbeeId) ?? false);
-			//	if (parentDevice?.ZigbeeId.Equals(state.CoordinatorZigbeeId) ?? false)
-			//	{
-			//		reachCoordinator = true;
-			//		break;
-			//	}
-			//}
 
 			DeviceDetailsViewModel vm = new DeviceDetailsViewModel.Builder
 			{

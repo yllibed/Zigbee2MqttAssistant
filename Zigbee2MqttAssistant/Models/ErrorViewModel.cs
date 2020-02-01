@@ -1,5 +1,3 @@
-using System;
-
 namespace Zigbee2MqttAssistant.Models
 {
 	public class ErrorViewModel
