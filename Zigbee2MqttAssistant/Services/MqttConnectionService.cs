@@ -319,6 +319,13 @@ namespace Zigbee2MqttAssistant.Services
 					return Task.CompletedTask;
 				}
 
+				if (topic.EndsWith("/bridge/networkmap/graphviz"))
+				{
+					// Something elsewhere asked for a network scan
+					_waitingForNetworkScanResponse = false;
+					return Task.CompletedTask;
+				}
+
 				if (DispatchHassDiscoveryMessage(msg))
 				{
 					_logger.LogDebug(
@@ -355,7 +362,7 @@ namespace Zigbee2MqttAssistant.Services
 		}
 
 		private Regex FriendlyNameExtractor;
-        private static readonly Regex SetRemover = new Regex(@"^(?<friendlyName>.+)(?:(?:\/set\/.+))$", RegexOptions.Compiled | RegexOptions.Singleline);
+		private static readonly Regex SetRemover = new Regex(@"^(?<friendlyName>.+)(?:(?:\/set\/.+))$", RegexOptions.Compiled | RegexOptions.Singleline);
 
 		private bool DispatchZigbee2MqttMessage(MqttApplicationMessage msg)
 		{
@@ -432,8 +439,8 @@ namespace Zigbee2MqttAssistant.Services
 						return false;
 					}
 
-                    _logger.LogWarning($"Received a message for topic '{friendlyName}'. It looks like it's setting an attribute on a friendly name '{realFriendlyName}', but no such device is known. If the application is starting, you can safely discard this warning and the following potential parsing error.");
-                    warnSetInName = true;
+					_logger.LogWarning($"Received a message for topic '{friendlyName}'. It looks like it's setting an attribute on a friendly name '{realFriendlyName}', but no such device is known. If the application is starting, you can safely discard this warning and the following potential parsing error.");
+					warnSetInName = true;
 				}
 
 				var payload = _utf8.GetString(msg.Payload);
@@ -556,7 +563,7 @@ namespace Zigbee2MqttAssistant.Services
 							{
 								tcs.TrySetException(new Exception("Remove device failed."));
 							}
-                            else
+							else
 							{
 								tcs.TrySetResult(null); // unblock waiting for rename
 							}
@@ -600,10 +607,6 @@ namespace Zigbee2MqttAssistant.Services
 						}
 
 						break;
-					}
-					default:
-					{
-						return false;
 					}
 				}
 
