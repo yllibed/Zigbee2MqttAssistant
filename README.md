@@ -1,4 +1,5 @@
 # Zigbee2Mqtt Assistant
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/431c077a2fe84565849ee9a5ee5fcd62)](https://app.codacy.com/gh/yllibed/Zigbee2MqttAssistant?utm_source=github.com&utm_medium=referral&utm_content=yllibed/Zigbee2MqttAssistant&utm_campaign=Badge_Grade_Dashboard)
 [![All Contributors](https://img.shields.io/badge/all_contributors-22-orange.svg?style=flat-square)](#contributors)
 
 This project is a _Web GUI_ for the very good [Zigbee2Mqtt](https://www.zigbee2mqtt.io/) software
