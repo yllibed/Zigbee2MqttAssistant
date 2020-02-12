@@ -33,7 +33,16 @@ namespace Zigbee2MqttAssistant.Services
 
 			Bridge Update(Bridge state)
 			{
-				updatedState = updater(state);
+				try
+				{
+					updatedState = updater(state);
+				}
+				catch (Exception ex)
+				{
+					_logger.LogError(ex, $"Error while updating state.\nNew State: {state}");
+					throw;
+				}
+
 				isChanged = updatedState != state;
 				return updatedState;
 			}
@@ -487,7 +496,7 @@ namespace Zigbee2MqttAssistant.Services
 
 						var existingParent = device.Parents.FirstOrDefault(p => p.zigbeeId == parent);
 
-						if (existingParent != default)
+						if (existingParent != default) // found existing
 						{
 							newDevice = device
 								.WithParents(parents => parents.Replace(existingParent, (parent, linkQuality.Value, relationship)));
