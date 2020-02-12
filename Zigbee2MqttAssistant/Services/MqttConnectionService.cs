@@ -163,6 +163,7 @@ namespace Zigbee2MqttAssistant.Services
 				}
 				catch (TaskCanceledException)
 				{
+					// Don't crash on this exception
 				}
 				catch (Exception ex)
 				{
@@ -205,6 +206,7 @@ namespace Zigbee2MqttAssistant.Services
 				}
 				catch (TaskCanceledException)
 				{
+					// Don't crash on this exception
 				}
 				catch (Exception ex)
 				{
