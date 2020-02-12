@@ -135,57 +135,80 @@ namespace Zigbee2MqttAssistant.Services
 
 			async void PollingDevicesTask()
 			{
-				var cron = ParseCronExpression(_settings.CurrentSettings.DevicesPollingSchedule);
-
-				await Task.Delay(5000, ct);
-
-				while (!ct.IsCancellationRequested)
+				try
 				{
-					try
-					{
-						await SendDevicesRequest();
-					}
-					catch (Exception ex)
-					{
-						_logger.LogError(ex, "Error sending device request");
-					}
+					var cron = ParseCronExpression(_settings.CurrentSettings.DevicesPollingSchedule);
 
-					var now = DateTimeOffset.Now;
-					var next = cron?.GetNextOccurrence(now, TimeZoneInfo.Local) ?? now.AddMinutes(6);
-					var delay = next - now;
+					await Task.Delay(5000, ct);
 
-					_logger.LogDebug($"PollingDevicesTask: Waiting until {next} (currently is {now}. (cron={cron})");
-					await Task.Delay(delay, ct);
+					while (!ct.IsCancellationRequested)
+					{
+						try
+						{
+							await SendDevicesRequest();
+						}
+						catch (Exception ex)
+						{
+							_logger.LogError(ex, "Error sending device request");
+						}
+
+						var now = DateTimeOffset.Now;
+						var next = cron?.GetNextOccurrence(now, TimeZoneInfo.Local) ?? now.AddMinutes(6);
+						var delay = next - now;
+
+						_logger.LogDebug(
+							$"PollingDevicesTask: Waiting until {next} (currently is {now}. (cron={cron})");
+						await Task.Delay(delay, ct);
+					}
+				}
+				catch (TaskCanceledException)
+				{
+				}
+				catch (Exception ex)
+				{
+					_logger.LogError(ex, "PollingDevicesTask() shutting down because of an exception.");
 				}
 			}
 
 			async void PollingNetworkTask()
 			{
-				var cron = ParseCronExpression(_settings.CurrentSettings.NetworkScanSchedule);
-
-				// A random offset is used to prevent many instances to send the same request
-				// exactly at the same time
-				var randomOffset = TimeSpan.FromSeconds(new Random().NextDouble() * 6);
-
-				await Task.Delay(30000, ct);
-
-				while (!ct.IsCancellationRequested)
+				try
 				{
-					try
-					{
-						await SendNetworkScanRequest();
-					}
-					catch (Exception ex)
-					{
-						_logger.LogError(ex, "Error sending network scan request");
-					}
+					var cron = ParseCronExpression(_settings.CurrentSettings.NetworkScanSchedule);
 
-					var now = DateTimeOffset.Now;
-					var next = (cron?.GetNextOccurrence(now, TimeZoneInfo.Local) ?? now.AddMinutes(20)) + randomOffset;
-					var delay = (next - now);
+					// A random offset is used to prevent many instances to send the same request
+					// exactly at the same time
+					var randomOffset = TimeSpan.FromSeconds(new Random().NextDouble() * 6);
 
-					_logger.LogDebug($"PollingNetworkTask: Waiting until {next} (currently is {now}. (cron={cron})");
-					await Task.Delay(delay, ct);
+					await Task.Delay(30000, ct);
+
+					while (!ct.IsCancellationRequested)
+					{
+						try
+						{
+							await SendNetworkScanRequest();
+						}
+						catch (Exception ex)
+						{
+							_logger.LogError(ex, "Error sending network scan request");
+						}
+
+						var now = DateTimeOffset.Now;
+						var next = (cron?.GetNextOccurrence(now, TimeZoneInfo.Local) ?? now.AddMinutes(20)) +
+						           randomOffset;
+						var delay = (next - now);
+
+						_logger.LogDebug(
+							$"PollingNetworkTask: Waiting until {next} (currently is {now}. (cron={cron})");
+						await Task.Delay(delay, ct);
+					}
+				}
+				catch (TaskCanceledException)
+				{
+				}
+				catch (Exception ex)
+				{
+					_logger.LogError(ex, "PollingDevicesTask() shutting down because of an exception.");
 				}
 			}
 		}

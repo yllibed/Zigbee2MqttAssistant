@@ -59,5 +59,7 @@ namespace Zigbee2MqttAssistant.Models.Mqtt
 			return Devices.FirstOrDefault(device =>
 				device.FriendlyName.Equals(idOrFriendlyName) || (device.ZigbeeId?.Equals(idOrFriendlyName) ?? false));
 		}
+
+		public override string ToString() => $"State-{GetHashCode():X}";
 	}
 }
