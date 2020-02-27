@@ -44,6 +44,10 @@ namespace Zigbee2MqttAssistant.Models.Devices
 
 		public long? HardwareVersion { get; }
 
+		public string FirmwareVersion { get; }
+
+		public bool? IsOtaAvailable { get; }
+
 		public string Type { get; }
 
 		public ImmutableArray<HomeAssistantEntity> Entities { get; } = ImmutableArray<HomeAssistantEntity>.Empty;
