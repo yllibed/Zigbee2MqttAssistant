@@ -69,6 +69,18 @@ namespace Zigbee2MqttAssistant.Services
 			Disconnect();
 		}
 
+		public async Task OtaUpdateDevice(string deviceFriendlyName)
+		{
+			var device = _stateService.FindDeviceById(deviceFriendlyName, out _);
+			
+			var msg = new MqttApplicationMessageBuilder()
+				.WithTopic($"{_settings.CurrentSettings.BaseTopic}/bridge/ota_update/update")
+				.WithPayload(device.FriendlyName)
+				.Build();
+
+			await _client.PublishAsync(msg);
+		}
+
 		private async Task Connect()
 		{
 			Disconnect();
@@ -304,6 +316,7 @@ namespace Zigbee2MqttAssistant.Services
 			"/bridge/config/force_remove", // request for a device remove
 			"/bridge/config/rename", // request to rename a device
 			"/bridge/configure", // request to configure a device
+			"/bridge/ota_update", // request to ota update a device
 		};
 
 		private Regex _setTopicRegex;

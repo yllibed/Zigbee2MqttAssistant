@@ -136,6 +136,15 @@ namespace Zigbee2MqttAssistant.Controllers
 			return RedirectToAction("Status");
 		}
 
+		[HttpPost]
+		public async Task<IActionResult> OtaUpdateDevice(string id)
+		{
+			id = Uri.UnescapeDataString(id);
+			await _operationService.OtaUpdateDevice(id);
+
+			return RedirectToAction("Status");
+		}
+
 		public async Task<IActionResult> SetLogLevel(string level)
 		{
 			await _operationService.SetLogLevel(level);

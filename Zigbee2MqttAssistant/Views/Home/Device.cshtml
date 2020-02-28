@@ -59,29 +59,62 @@ else
         </span>
     }
     Model is <span class="badge badge-primary">@(device.Model ?? "unknown")</span> by <span class="badge badge-secondary">@(device.Manufacturer ?? "unknown")</span>.<br/>
-    Hardware version is <code>@(device.HardwareVersion?.ToString() ?? "unknown")</code>.<br />
+    Hardware version is <code>@(device.HardwareVersion?.ToString() ?? "unknown")</code>.<br />Firmware version is <code>@(device.FirmwareVersion ?? "unknown")</code>.<br/>
     This device type is <span class="badge badge-secondary">@(device.Type ?? "unknown")</span><br/>
 </p>
 
 @*@if (device.ZigbeeId != null)
+    {
+        <p>
+            Route to coordinator...
+            <br />
+            @foreach (var parentDevice in Model.RouteToCoordinator)
+            {
+                <span class="badge badge-dark">@parentDevice.FriendlyName</span>
+            }
+            @if (Model.RouteReachCoordinator)
+            {
+                <span class="badge alert-primary">Coordinator</span>
+            }
+            else
+            {
+                <span class="badge alert-danger">NO KNOWN ROUTE TO COORDINATOR</span>
+            }
+        </p>
+    }*@
+
+@if (device.IsOtaAvailable.HasValue)
 {
-    <p>
-        Route to coordinator...
-        <br />
-        @foreach (var parentDevice in Model.RouteToCoordinator)
-        {
-            <span class="badge badge-dark">@parentDevice.FriendlyName</span>
-        }
-        @if (Model.RouteReachCoordinator)
-        {
-            <span class="badge alert-primary">Coordinator</span>
-        }
-        else
-        {
-            <span class="badge alert-danger">NO KNOWN ROUTE TO COORDINATOR</span>
-        }
-    </p>
-}*@
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">OTA update</h5>
+            @if (device.IsOtaAvailable == true)
+            {
+                <div class="badge badge-secondary">
+                    Firmware update is available
+                </div>
+                <div class="alert-info">
+                    You can Over-The-Air update your device. Use it wisely, it generates a lot of network traffic.
+                </div>
+
+                <form asp-action="OtaUpdateDevice" method="post" asp-route-id="@device.FriendlyName">
+                    <button class="btn btn-outline-secondary" type="submit">Update firmware</button>
+                </form>
+
+                <small class="form-text text-secondary">
+                    Some devices requires a power cycle before the update can be performed. Do not power of the device while updating.
+                </small>
+                <small class="form-text text-danger text-capitalize">You should check Zigbee2Mqtt logs to see if the OTA update is successful.</small>
+            }
+            else
+            {
+                <div class="badge badge-secondary">
+                    This device firmware is up-to-date
+                </div>
+            }
+        </div>
+    </div>
+}
 
 <div class="card">
     <div class="card-body">

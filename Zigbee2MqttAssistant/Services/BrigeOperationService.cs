@@ -95,5 +95,14 @@ namespace Zigbee2MqttAssistant.Services
 		public Task ManualRefreshDevicesList() => _mqtt.SendDevicesRequest();
 
 		public Task ManualRefreshNetworkScan() => _mqtt.SendNetworkScanRequest();
+
+		public async Task OtaUpdateDevice(string deviceId)
+		{
+			var device = _stateService.FindDeviceById(deviceId, out _);
+			if (device != null)
+			{
+				await _mqtt.OtaUpdateDevice(device.FriendlyName);
+			}
+		}
 	}
 }

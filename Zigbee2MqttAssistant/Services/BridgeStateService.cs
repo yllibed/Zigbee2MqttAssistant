@@ -86,7 +86,7 @@ namespace Zigbee2MqttAssistant.Services
 			ZigbeeDevice device = null;
 			var json = JObject.Parse(jsonPayload);
 			var linkQuality = json["linkquality"]?.Value<ushort>();
-			var battery = json["battery"]?.Value<decimal>();
+			
 			forceLastSeen = !ParseDateTimeOffset(json["last_seen"], out var lastSeen);
 
 			Bridge Update(Bridge state)
@@ -103,27 +103,38 @@ namespace Zigbee2MqttAssistant.Services
 					state = state.WithDevices(devices => devices.Add(device));
 				}
 
-				if (lastSeen.HasValue || battery.HasValue)
+				var battery = json["battery"]?.Value<decimal>();
+				var updateAvailable = json["update_available"]?.Value<bool?>();
+				if (!lastSeen.HasValue && !battery.HasValue && !updateAvailable.HasValue)
 				{
-					ZigbeeDevice.Builder builder = device;
-					if (lastSeen.HasValue)
-					{
-						builder.LastSeen = lastSeen;
-					}
-
-					if (battery.HasValue)
-					{
-						builder.BatteryLevel = battery;
-					}
-
-					ZigbeeDevice newDevice = builder;
-
-					if (newDevice != device)
-					{
-						state = state.WithDevices(devices => devices.Replace(device, newDevice));
-						device = newDevice;
-					}
+					return state;
 				}
+
+				ZigbeeDevice.Builder builder = device;
+				if (lastSeen.HasValue)
+				{
+					builder.LastSeen = lastSeen;
+				}
+
+				if (battery.HasValue)
+				{
+					builder.BatteryLevel = battery;
+				}
+
+				if (updateAvailable.HasValue)
+				{
+					builder.IsOtaAvailable = updateAvailable;
+				}
+
+				ZigbeeDevice newDevice = builder;
+
+				if (newDevice == device)
+				{
+					return state;
+				}
+
+				state = state.WithDevices(devices => devices.Replace(device, newDevice));
+				device = newDevice;
 
 				return state;
 			}
@@ -383,6 +394,7 @@ namespace Zigbee2MqttAssistant.Services
 					var modelId = deviceJson["model"]?.Value<string>().Trim().Trim((char)0);
 					var manufacturer = (deviceJson["manufName"] ?? deviceJson["manufacturerName"])?.Value<string>().Trim().Trim((char)0);
 					var hardwareVersion = (deviceJson["hwVersion"] ?? deviceJson["hardwareVersion"])?.Value<long>();
+					var firmwareVersion = (deviceJson["softwareBuildID"])?.Value<string>();
 
 					ZigbeeDevice newDevice = (device ?? new ZigbeeDevice.Builder { FriendlyName = friendlyName })
 						.WithZigbeeId(zigbeeId)
@@ -391,7 +403,8 @@ namespace Zigbee2MqttAssistant.Services
 						.WithModel(model)
 						.WithModelId(modelId)
 						.WithManufacturer(manufacturer)
-						.WithHardwareVersion(hardwareVersion);
+						.WithHardwareVersion(hardwareVersion)
+						.WithFirmwareVersion(firmwareVersion);
 
 					if (ParseDateTimeOffset(deviceJson["lastSeen"], out var lastSeen))
 					{
