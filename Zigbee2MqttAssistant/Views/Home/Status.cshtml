@@ -69,6 +69,23 @@
 
 <div class="card">
     <div class="card-body">
+        <h5 class="card-title">TouchLink Reset</h5>
+        <form method="post" onsubmit="TouchlinkButton.disabled = true; return true;">
+            <button name="TouchlinkButton" value="Submit" class="btn btn-secondary" asp-action="TouchLinkReset">Start reset process</button>
+        </form>
+        <small class="form-text text-info">
+            Zigbee2mqtt allows to factory reset devices through TouchLink.<br />
+            This is especially handy for e.g. Philips Hue bulbs as they cannot be factory resetted by turning them on/off 5 times.<br />
+            To factory reset a device through TouchLink bring the device close (< 10 cm) to your coordinator.<br />
+            Zigbee2mqtt will now start scanning, this can take up to 1 minute and during this scan <b>your network cannot be used</b>.<br />
+            After some time the device will identify itself (e.g. a bulb will start to blink)<br />
+            If successfull, the device is now ready for zigbee inclusion.
+        </small>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
         <h5 class="card-title">Reset Zigbee2Mqtt Assistant</h5>
         <form method="post">
             <button class="btn bg-danger" asp-action="Reset">RESET LOCAL STATE</button>

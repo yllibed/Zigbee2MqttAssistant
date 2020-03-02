@@ -81,6 +81,16 @@ namespace Zigbee2MqttAssistant.Services
 			await _client.PublishAsync(msg);
 		}
 
+		public async Task TouchLinkReset()
+		{
+			var msg = new MqttApplicationMessageBuilder()
+				.WithTopic($"{_settings.CurrentSettings.BaseTopic}/bridge/config/touchlink/factory_reset")
+				.WithPayload(string.Empty)
+				.Build();
+
+			await _client.PublishAsync(msg).ConfigureAwait(false);
+		}
+
 		private async Task Connect()
 		{
 			Disconnect();
