@@ -16,5 +16,6 @@ namespace Zigbee2MqttAssistant.Services
 		Task ManualRefreshDevicesList();
 		Task ManualRefreshNetworkScan();
 		Task OtaUpdateDevice(string deviceId);
+		Task TouchLinkReset();
 	}
 }

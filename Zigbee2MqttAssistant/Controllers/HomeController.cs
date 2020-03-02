@@ -145,6 +145,13 @@ namespace Zigbee2MqttAssistant.Controllers
 			return RedirectToAction("Status");
 		}
 
+		[HttpPost]
+		public async Task<IActionResult> TouchLinkReset()
+		{
+			await _operationService.TouchLinkReset().ConfigureAwait(false);
+			return RedirectToAction("Status");
+		}
+
 		public async Task<IActionResult> SetLogLevel(string level)
 		{
 			await _operationService.SetLogLevel(level);

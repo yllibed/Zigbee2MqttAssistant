@@ -104,5 +104,8 @@ namespace Zigbee2MqttAssistant.Services
 				await _mqtt.OtaUpdateDevice(device.FriendlyName);
 			}
 		}
+
+		public async Task TouchLinkReset() => await _mqtt.TouchLinkReset().ConfigureAwait(false);
+
 	}
 }
