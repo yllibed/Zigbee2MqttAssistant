@@ -78,6 +78,13 @@
                             <span class="badge badge-warning">weak link</span>
                         }
                     }
+                    @if (device.IsOtaAvailable.HasValue)
+                    {
+                        if (device.IsOtaAvailable.Value)
+                        {
+                            <span class="badge badge-secondary">firmware update available</span>
+                        }
+                    }
 
                     @if (device.BatteryLevel.HasValue)
                     {
