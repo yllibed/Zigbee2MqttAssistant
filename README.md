@@ -198,7 +198,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/Edzilla2000"><img src="https://avatars3.githubusercontent.com/u/5339038?v=4" width="100px;" alt=""/><br /><sub><b>Edzilla2000</b></sub></a><br /><a href="#ideas-Edzilla2000" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="http://ls7-www.cs.uni-dortmund.de"><img src="https://avatars0.githubusercontent.com/u/20599588?v=4" width="100px;" alt=""/><br /><sub><b>Adrian Böckenkamp</b></sub></a><br /><a href="#ideas-codefinder2" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/yllibed/Zigbee2MqttAssistant/issues?q=author%3Acodefinder2" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/dr1rrb"><img src="https://avatars3.githubusercontent.com/u/8635919?v=4" width="100px;" alt=""/><br /><sub><b>David</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/commits?author=dr1rrb" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/magpern"><img src="https://avatars0.githubusercontent.com/u/6589760?v=4" width="100px;" alt=""/><br /><sub><b>Magnus Pernemark</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/commits?author=magpern" title="Code">💻</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/magpern"><img src="https://avatars0.githubusercontent.com/u/6589760?v=4" width="100px;" alt=""/><br /><sub><b>Magnus Pernemark</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/commits?author=magpern" title="Code">💻</a> <a href="#question-magpern" title="Answering Questions">💬</a></td>
   </tr>
 </table>
 
