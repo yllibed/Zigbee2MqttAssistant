@@ -9,6 +9,7 @@
 @{
     var bridge = Model.bridge;
     var settings = Model.settings;
+    var excludedComponents = new[] { "update_available" };
 }
 @if (bridge.PermitJoin)
 {
@@ -41,17 +42,17 @@
             }
             <tr>
                 <th scope="row" width="55">
-                    <img src="@(deviceImage)" alt="@(device.ModelId)" class="border border-primary p-2" style="background: white"height="60" widht="60" onerror="if (this.src != 'noimg.png') this.src = 'noimg.png';" />
+                    <img src="@(deviceImage)" alt="@(device.ModelId)" class="border border-primary p-2" style="background: white" height="60" widht="60" onerror="if (this.src != 'noimg.png') this.src = 'noimg.png';" />
                 </th>
                 <td>
                     <a asp-action="Device" asp-route-id="@device.FriendlyName"><strong>@device.FriendlyName</strong></a>
-                    <br/><code>@device.ZigbeeId</code> @device.Manufacturer
+                    <br /><code>@device.ZigbeeId</code> @device.Manufacturer
 
                     @if (!device.Type?.Equals("EndDevice", StringComparison.CurrentCultureIgnoreCase) ?? false)
                     {
                         <span class="badge badge-dark">@device.Type</span>
                     }
-                    <br/>
+                    <br />
                     @if (device.GetUnresponsiveDelay(out var delaySinceLastResponse) == true)
                     {
                         var unseenPeriod = delaySinceLastResponse.Value.Humanize(1);
@@ -63,9 +64,9 @@
                         <span class="badge badge-success">@since</span>
                     }
                     @*else if (device.IsAvailable == false)
-                    {
-                        <span class="badge badge-danger">offline</span>
-                    }*@
+                        {
+                            <span class="badge badge-danger">offline</span>
+                        }*@
                     @if (device.LinkQuality.HasValue)
                     {
                         var value = device.LinkQuality.Value;
@@ -96,7 +97,7 @@
                     }
                 </td>
                 <td>
-                    @foreach (var entity in device.Entities.OrderBy(e => e.Component))
+                    @foreach (var entity in device.Entities.Where(e => !excludedComponents.Contains(e.Component)).OrderBy(e => e.Component))
                     {
                         <span class="badge badge-dark">@entity.Component</span>
                     }
