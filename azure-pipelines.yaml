@@ -73,26 +73,26 @@ jobs:
     parameters:
       target: linux-arm32
       vmImage: 'ubuntu-latest'
-      imageTag: '3.0-buster-slim-arm32v7'
+      imageTag: '3.1-buster-slim-arm32v7'
       osTag: 'armv7'
 
   - template: azure-pipelines.buildimage.yaml
     parameters:
       target: linux-arm64
       vmImage: 'ubuntu-latest'
-      imageTag: '3.0-alpine-arm64v8'
+      imageTag: '3.1-alpine-arm64v8'
       osTag: 'aarch64'
 
   - template: azure-pipelines.buildimage.yaml
     parameters:
       target: win-64
       vmImage: 'windows-2019' # https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azure-devops
-      imageTag: '3.0-nanoserver-1809'
+      imageTag: '3.1-nanoserver-1809'
       osTag: 'win64'
 
   - template: azure-pipelines.buildimage.yaml
     parameters:
       target: win-arm32
       vmImage: 'windows-2019' # https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azure-devops
-      imageTag: '3.0-nanoserver-1809-arm32v7'
+      imageTag: '3.1-nanoserver-1809-arm32v7'
       osTag: 'winarm32'

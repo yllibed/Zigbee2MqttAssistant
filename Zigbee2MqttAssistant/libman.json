@@ -4,7 +4,7 @@
   "libraries": [
     {
       "provider": "unpkg",
-      "library": "vis-network@6.1.1",
+      "library": "vis-network@7.3.6",
       "destination": "wwwroot/lib/vis-network/",
       "files": [
         "dist/img/network/acceptDeleteIcon.png",
