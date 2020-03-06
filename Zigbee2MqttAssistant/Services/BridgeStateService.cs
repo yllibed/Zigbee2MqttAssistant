@@ -374,18 +374,16 @@ namespace Zigbee2MqttAssistant.Services
 
 					var deviceType = deviceJson["type"]?.Value<string>();
 
+					if (deviceType?.Equals("Coordinator", StringComparison.InvariantCultureIgnoreCase) == true)
+					{
+						state = state.WithCoordinatorZigbeeId(zigbeeId);
+						friendlyName = "Coordinator";
+					}
+
 					if (string.IsNullOrWhiteSpace(friendlyName))
 					{
-						if (deviceType?.Equals("Coordinator", StringComparison.InvariantCultureIgnoreCase) ?? false)
-						{
-							state = state.WithCoordinatorZigbeeId(zigbeeId);
-							friendlyName = "Coordinator";
-						}
-						else
-						{
-							_logger.LogWarning($"Unable to understand device with json {deviceJson} -- will be ignored.");
-							continue; // unable to qualify this device
-						}
+						_logger.LogWarning($"Unable to understand device with json {deviceJson} -- will be ignored.");
+						continue; // unable to qualify this device
 					}
 
 					var device = state.Devices.FirstOrDefault(d => d.FriendlyName.Equals(friendlyName) || (d.ZigbeeId?.Equals(zigbeeId) ?? false));

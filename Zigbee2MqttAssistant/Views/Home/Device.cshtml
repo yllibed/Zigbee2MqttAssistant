@@ -49,18 +49,18 @@ else
 }
 
 <p>
-    Zigbee Id is <span class="badge badge-secondary">@(device.ZigbeeId ?? "unknown yet (did you restart recently?)")</span>.<br/>
-    Address on Zigbee Network is <span class="badge badge-secondary">@("0x" + device.NetworkAddress?.ToString("X") ?? "unknown")</span>.<br/>
-    Link quality is <span class="badge badge-secondary">@(device.LinkQuality?.ToString() ?? "unknown")</span>/<code>255</code>.<br/>
+    Zigbee Id is <span class="badge badge-secondary">@(device.ZigbeeId ?? "unknown yet (did you restart recently?)")</span>.<br />
+    Address on Zigbee Network is <span class="badge badge-secondary">@("0x" + device.NetworkAddress?.ToString("X") ?? "unknown")</span>.<br />
+    Link quality is <span class="badge badge-secondary">@(device.LinkQuality?.ToString() ?? "unknown")</span>/<code>255</code>.<br />
     @if (device.BatteryLevel.HasValue)
     {
         <span>
-            Battery level is <span class="badge badge-secondary">@(device.BatteryLevel)</span>%.<br/>
+            Battery level is <span class="badge badge-secondary">@(device.BatteryLevel)</span>%.<br />
         </span>
     }
-    Model is <span class="badge badge-primary">@(device.Model ?? "unknown")</span> by <span class="badge badge-secondary">@(device.Manufacturer ?? "unknown")</span>.<br/>
-    Hardware version is <code>@(device.HardwareVersion?.ToString() ?? "unknown")</code>.<br />Firmware version is <code>@(device.FirmwareVersion ?? "unknown")</code>.<br/>
-    This device type is <span class="badge badge-secondary">@(device.Type ?? "unknown")</span><br/>
+    Model is <span class="badge badge-primary">@(device.Model ?? "unknown")</span> by <span class="badge badge-secondary">@(device.Manufacturer ?? "unknown")</span>.<br />
+    Hardware version is <code>@(device.HardwareVersion?.ToString() ?? "unknown")</code>.<br />Firmware version is <code>@(device.FirmwareVersion ?? "unknown")</code>.<br />
+    This device type is <span class="badge badge-secondary">@(device.Type ?? "unknown")</span><br />
 </p>
 
 @*@if (device.ZigbeeId != null)
@@ -119,25 +119,34 @@ else
 <div class="card">
     <div class="card-body">
         <h5 class="card-title">Rename</h5>
-        @if (device.IsAvailable != true)
+        @if (device.NetworkAddress?.ToString("X") == "0")
         {
             <div class="alert-info">
-                Only online devices can be renamed. You may try anyway, at your risk...
+                You cannot rename the coordinater
             </div>
         }
-        <form asp-action="RenameDevice" method="post" asp-route-id="@device.FriendlyName">
-            <div class="input-group mb-3">
-                <input type="text" class="form-control" value="@device.FriendlyName" name="newName">
-                <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="submit">Rename</button>
+        else
+        {
+            @if (device.IsAvailable != true)
+            {
+                <div class="alert-info">
+                    Only online devices can be renamed. You may try anyway, at your risk...
                 </div>
-            </div>
-        </form>
-        <small class="form-text text-secondary">
-            Warning: After renaming devices, you should restart Zigbee2Mqtt to force it to
-            push new discovery entries. Renamed devices will appear "staled" until this reboot.
-            THIS OPERATION WON'T CHANGE IDS IN HOME-ASSISTANT! Only the display name will change.
-        </small>
+            }
+            <form asp-action="RenameDevice" method="post" asp-route-id="@device.FriendlyName">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" value="@device.FriendlyName" name="newName">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="submit">Rename</button>
+                    </div>
+                </div>
+            </form>
+            <small class="form-text text-secondary">
+                Warning: After renaming devices, you should restart Zigbee2Mqtt to force it to
+                push new discovery entries. Renamed devices will appear "staled" until this reboot.
+                THIS OPERATION WON'T CHANGE IDS IN HOME-ASSISTANT! Only the display name will change.
+            </small>
+        }
     </div>
 </div>
 
@@ -200,11 +209,11 @@ else
                 <label class="form-check-label">Use <strong>Force Remove</strong> mode.</label>
                 <small class="form-text text-secondary">
                     <strong>Zigbee2Mqtt v1.7.0+</strong>
-                    <br/>
+                    <br />
                     Note that a force remove will only remove the device from the database.
                     Until this device is factory reset, it will still hold the network encryption
                     key and thus is still able to communicate over the network!
-                    <br/>
+                    <br />
                     TIP: Like for the Binding operation, it's better if you manipulate the device
                     during the removal - unless if you're using the <em>force remove</em> mode.
                     If you get an error during the non-forced mode, it means Zigbee2Mqtt wasn't
