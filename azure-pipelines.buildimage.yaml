@@ -48,6 +48,13 @@ jobs:
         script: |
           docker save zigbee2mqttassistant:$(Build.BuildId)-$(osTag) -o "$(Build.ArtifactStagingDirectory)/zigbee2mqttassistant-$(Build.BuildId)-$(osTag).tar"
 
+    - task: CmdLine@2
+      displayName: 'test app starts in container'
+      inputs:
+        # Failing version for CI test
+        script: |
+          wget http://localhost:8088/
+
     - task: PublishBuildArtifacts@1
       displayName: 'Publish docker images as build artifacts'
       condition: always()
