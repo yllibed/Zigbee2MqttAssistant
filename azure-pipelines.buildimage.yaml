@@ -11,7 +11,7 @@ jobs:
     dependsOn: compile_on_windows
     pool:
       vmImage: ${{ parameters.vmImage }}
-      demans:
+      demands:
       - RemoteDockerServerArch -equals parameters.dockerArch
     variables:
       osTag: ${{ parameters.target }}
