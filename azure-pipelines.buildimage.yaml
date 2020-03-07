@@ -47,9 +47,16 @@ jobs:
       inputs:
         script: |
           docker save zigbee2mqttassistant:$(Build.BuildId)-$(osTag) -o "$(Build.ArtifactStagingDirectory)/zigbee2mqttassistant-$(Build.BuildId)-$(osTag).tar"
+          
+    - task: CmdLine@2
+      displayName: 'start a container for tests'
+      inputs:
+        # Failing version for CI test
+        script: |
+          docker run -d -p:8088:80 zigbee2mqttassistant:$(Build.BuildId)-$(osTag)
 
     - task: CmdLine@2
-      displayName: 'test app starts in container'
+      displayName: 'http test to container'
       inputs:
         # Failing version for CI test
         script: |
