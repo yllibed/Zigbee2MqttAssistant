@@ -11,6 +11,8 @@ jobs:
     dependsOn: compile_on_windows
     pool:
       vmImage: ${{ parameters.vmImage }}
+      demans:
+      - RemoteDockerServerArch -equals parameters.dockerArch
     variables:
       osTag: ${{ parameters.target }}
       imageTag: ${{ parameters.imageTag }}
@@ -54,7 +56,6 @@ jobs:
         targetType: inline
         # connect to container to ensure it works
         script: |
-          docker run --rm --privileged multiarch/qemu-user-static:register --reset
           docker run -d -p:8088:80 --name z2ma zigbee2mqttassistant:$(Build.BuildId)-$(osTag)
           Start-Sleep -Seconds 5
           docker logs z2ma

@@ -68,6 +68,7 @@ jobs:
       vmImage: 'ubuntu-latest'
       imageTag: '3.1-alpine'
       osTag: 'amd64'
+      dockerArch: `x64`
 
   - template: azure-pipelines.buildimage.yaml
     parameters:
@@ -75,6 +76,7 @@ jobs:
       vmImage: 'ubuntu-latest'
       imageTag: '3.1-buster-slim-arm32v7'
       osTag: 'armv7'
+      dockerArch: `aarch64` #build arm32 using arm64 VM
 
   - template: azure-pipelines.buildimage.yaml
     parameters:
@@ -82,6 +84,7 @@ jobs:
       vmImage: 'ubuntu-latest'
       imageTag: '3.1-alpine-arm64v8'
       osTag: 'aarch64'
+      dockerArch: `aarch64`
 
   - template: azure-pipelines.buildimage.yaml
     parameters:
@@ -89,6 +92,7 @@ jobs:
       vmImage: 'windows-2019' # https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azure-devops
       imageTag: '3.1-nanoserver-1809'
       osTag: 'win64'
+      dockerArch: `x64`
 
   - template: azure-pipelines.buildimage.yaml
     parameters:
@@ -96,3 +100,4 @@ jobs:
       vmImage: 'windows-2019' # https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azure-devops
       imageTag: '3.1-nanoserver-1809-arm32v7'
       osTag: 'winarm32'
+      dockerArch: `arm32`
