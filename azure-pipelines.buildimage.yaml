@@ -51,6 +51,7 @@ jobs:
     - task: PowerShell@2
       displayName: 'http test to container'
       inputs:
+        targetType: inline
         # connect to container to ensure it works
         script: |
           docker run -d -p:8088:80 --name z2ma zigbee2mqttassistant:$(Build.BuildId)-$(osTag)
