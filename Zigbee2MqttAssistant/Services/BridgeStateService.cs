@@ -82,8 +82,9 @@ namespace Zigbee2MqttAssistant.Services
 			return device;
 		}
 
-		private bool IsValidJson(string strInput)
+		private bool TryParseJson(string strInput, out JObject result)
 		{
+			result = null;
 			strInput = strInput.Trim();
 			if ((!strInput.StartsWith("{") || !strInput.EndsWith("}")) &&
 			    (!strInput.StartsWith("[") || !strInput.EndsWith("]")))
@@ -92,10 +93,10 @@ namespace Zigbee2MqttAssistant.Services
 				_logger.LogDebug($"Basic criteria for a JSON object is not met '{strInput}'");
 				return false;
 			}
-
+			
 			try
 			{
-				JToken.Parse(strInput);
+				result = JObject.Parse(strInput);
 				return true;
 			}
 			catch (JsonReaderException ex)
@@ -114,12 +115,12 @@ namespace Zigbee2MqttAssistant.Services
 		public ZigbeeDevice UpdateDevice(string friendlyName, string jsonPayload, out bool forceLastSeen)
 		{
 			ZigbeeDevice device = null;
-			if (!IsValidJson(jsonPayload))
+			if (!TryParseJson(jsonPayload, out var json))
 			{
 				forceLastSeen = false;
 				return null;
 			}
-			var json = JObject.Parse(jsonPayload);
+
 			var linkQuality = json["linkquality"]?.Value<ushort>();
 			
 			forceLastSeen = !ParseDateTimeOffset(json["last_seen"], out var lastSeen);
