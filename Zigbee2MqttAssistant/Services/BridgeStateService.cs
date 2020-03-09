@@ -2,6 +2,7 @@
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Zigbee2MqttAssistant.Models.Devices;
 using Zigbee2MqttAssistant.Models.Mqtt;
@@ -81,9 +82,43 @@ namespace Zigbee2MqttAssistant.Services
 			return device;
 		}
 
+		private bool IsValidJson(string strInput)
+		{
+			strInput = strInput.Trim();
+			if ((!strInput.StartsWith("{") || !strInput.EndsWith("}")) &&
+			    (!strInput.StartsWith("[") || !strInput.EndsWith("]")))
+			{
+				//basic criteria for a JSON string/object not fulfilled
+				_logger.LogDebug($"Basic criteria for a JSON object is not met '{strInput}'");
+				return false;
+			}
+
+			try
+			{
+				JToken.Parse(strInput);
+				return true;
+			}
+			catch (JsonReaderException ex)
+			{
+				//Invalid JSON
+				_logger.LogDebug(ex, $"Invalid JSON payload '{strInput}'");
+				return false;
+			}
+			catch (Exception ex) //some other exception
+			{
+				_logger.LogError(ex, $"Error validating JSON payload '{strInput}'");
+				return false;
+			}
+		}
+
 		public ZigbeeDevice UpdateDevice(string friendlyName, string jsonPayload, out bool forceLastSeen)
 		{
 			ZigbeeDevice device = null;
+			if (!IsValidJson(jsonPayload))
+			{
+				forceLastSeen = false;
+				return null;
+			}
 			var json = JObject.Parse(jsonPayload);
 			var linkQuality = json["linkquality"]?.Value<ushort>();
 			

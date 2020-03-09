@@ -53,7 +53,7 @@ namespace Zigbee2MqttAssistant.Services
 
 			var regexOptions = RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant;
 			FriendlyNameExtractor = new Regex($"^{Regex.Escape(baseTopic)}(?<name>.+?)(?:/(?<state>(availability|state|config|config/devices|attributes)))?$", regexOptions);
-			HassDiscoveryExtractor = new Regex($"^{Regex.Escape(baseHassTopic)}(?<class>[^/]+)/(?<deviceId>[^/]+)/(?<component>[^/]+)/(?<config>config)?$", regexOptions);
+			_hassDiscoveryExtractor = new Regex($"^{Regex.Escape(baseHassTopic)}(?<class>[^/]+)/(?<deviceId>[^/]+)/(?<component>[^/]+)/(?<config>config)?$", regexOptions);
 			_setTopicRegex = new Regex($"^{Regex.Escape(baseTopic)}.+/set$", regexOptions);
 		}
 
@@ -136,10 +136,10 @@ namespace Zigbee2MqttAssistant.Services
 			var cancellableDisposable = new CancellationDisposable();
 			_devicePolling.Disposable = cancellableDisposable;
 
-			var ct = cancellableDisposable.Token;
+			var cct = cancellableDisposable.Token;
 
-			PollingDevicesTask();
-			PollingNetworkTask();
+			PollingDevicesTask(cct);
+			PollingNetworkTask(cct);
 
 
 			CronExpression ParseCronExpression(string cronExpression)
@@ -155,7 +155,7 @@ namespace Zigbee2MqttAssistant.Services
 				}
 			}
 
-			async void PollingDevicesTask()
+			async void PollingDevicesTask(CancellationToken ct)
 			{
 				try
 				{
@@ -193,7 +193,7 @@ namespace Zigbee2MqttAssistant.Services
 				}
 			}
 
-			async void PollingNetworkTask()
+			async void PollingNetworkTask(CancellationToken ct)
 			{
 				try
 				{
@@ -268,7 +268,7 @@ namespace Zigbee2MqttAssistant.Services
 			await _client.PublishAsync(msg);
 		}
 
-		private bool _waitingForNetworkScanResponse = false;
+		private bool _waitingForNetworkScanResponse;
 
 		public async Task SendNetworkScanRequest()
 		{
@@ -291,10 +291,7 @@ namespace Zigbee2MqttAssistant.Services
 			await _client.PublishAsync(msg);
 		}
 
-		private void StopPolling()
-		{
-			_devicePolling.Disposable = null;
-		}
+		private void StopPolling() => _devicePolling.Disposable = null;
 
 		private void Disconnect()
 		{
@@ -317,7 +314,7 @@ namespace Zigbee2MqttAssistant.Services
 			_connection.Dispose();
 		}
 
-		private static readonly string[] _topicsToIgnore =
+		private static readonly string[] TopicsToIgnore =
 		{
 			"/bridge/config/last_seen", // request to set "last_seen"
 			"/bridge/config/log_level", // request to change log level
@@ -326,7 +323,7 @@ namespace Zigbee2MqttAssistant.Services
 			"/bridge/config/force_remove", // request for a device remove
 			"/bridge/config/rename", // request to rename a device
 			"/bridge/configure", // request to configure a device
-			"/bridge/ota_update", // request to ota update a device
+			"/bridge/ota_update" // request to ota update a device
 		};
 
 		private Regex _setTopicRegex;
@@ -341,7 +338,7 @@ namespace Zigbee2MqttAssistant.Services
 			{
 				_logger.LogDebug($"Received MQTT message on topic '{topic}'");
 
-				if (_topicsToIgnore.Any(s => topic.EndsWith(s)))
+				if (TopicsToIgnore.Any(s => topic.EndsWith(s)))
 				{
 					_logger.LogDebug($"MQTT message on topic '{topic}' is on ignored list.");
 					return Task.CompletedTask; // this topic could be safely ignored
@@ -463,7 +460,8 @@ namespace Zigbee2MqttAssistant.Services
 			{
 				return true;
 			}
-			else if (match.Groups["state"].Success)
+
+			if (match.Groups["state"].Success)
 			{
 				var payload = _utf8.GetString(msg.Payload);
 				_stateService.SetDeviceAvailability(friendlyName, payload.Equals("online"));
@@ -492,10 +490,10 @@ namespace Zigbee2MqttAssistant.Services
 				}
 
 				var payload = _utf8.GetString(msg.Payload);
-				_stateService.UpdateDevice(friendlyName: friendlyName, jsonPayload: payload, forceLastSeen: out var setLastSeen);
-				if (setLastSeen && _settings.CurrentSettings.AutosetLastSeen)
+				if (_stateService.UpdateDevice(friendlyName: friendlyName, jsonPayload: payload,
+					    forceLastSeen: out var setLastSeen) != null && setLastSeen && _settings.CurrentSettings.AutosetLastSeen)
 				{
-					var t = SetLastSeen();
+					_ = SetLastSeen();
 				}
 
 				if (warnSetInName)
@@ -507,11 +505,11 @@ namespace Zigbee2MqttAssistant.Services
 			return true;
 		}
 
-		private Regex HassDiscoveryExtractor;
+		private Regex _hassDiscoveryExtractor;
 
 		private bool DispatchHassDiscoveryMessage(MqttApplicationMessage msg)
 		{
-			var match = HassDiscoveryExtractor.Match(msg.Topic);
+			var match = _hassDiscoveryExtractor.Match(msg.Topic);
 
 			if (!match.Success)
 			{
@@ -669,26 +667,26 @@ namespace Zigbee2MqttAssistant.Services
 			_logger.LogInformation($"Successfully connected to MQTT server {_settings.CurrentSettings.MqttServer}.");
 
 			_stateService.Clear();
-			disconnectWarned = false;
+			_disconnectWarned = false;
 
 			return Task.CompletedTask;
 
 		}
 
-		private bool disconnectWarned = false;
+		private bool _disconnectWarned;
 
 		public Task HandleDisconnectedAsync(MqttClientDisconnectedEventArgs eventArgs)
 		{
 
 			StopPolling();
 
-			if (disconnectWarned)
+			if (_disconnectWarned)
 			{
 				_logger.LogDebug(eventArgs.Exception, $"Error connecting to MQTT server {_settings.CurrentSettings.MqttServer}.");
 				return Task.CompletedTask;
 			}
 
-			disconnectWarned = true;
+			_disconnectWarned = true;
 			if (eventArgs.ClientWasConnected)
 			{
 				_logger.LogWarning(eventArgs.Exception, $"Disconnected from MQTT server {_settings.CurrentSettings.MqttServer}.");
