@@ -16,10 +16,12 @@ jobs:
 
     steps:
 
-    - task: GitVersion@4
+    - task: GitVersion@5
       displayName: 'Generate a version number using GitVersion'
       inputs:
         updateAssemblyInfo: true
+        configFilePath: gitversion.yml
+        
 
     - task: NuGetToolInstaller@1
       displayName: 'Use NuGet 4.4.1'
