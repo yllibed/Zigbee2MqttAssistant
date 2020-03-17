@@ -16,7 +16,7 @@ jobs:
 
     steps:
 
-    - task: GitVersion@4
+    - task: GitVersion@5
       displayName: 'Generate a version number using GitVersion'
       inputs:
         updateAssemblyInfo: true
