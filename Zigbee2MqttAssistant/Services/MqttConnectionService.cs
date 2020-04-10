@@ -408,6 +408,7 @@ namespace Zigbee2MqttAssistant.Services
 
 		private Regex FriendlyNameExtractor;
 		private static readonly Regex SetRemover = new Regex(@"^(?<friendlyName>.+)(?:(?:\/set\/.+))$", RegexOptions.Compiled | RegexOptions.Singleline);
+		private static readonly Regex GetRemover = new Regex(@"^(?<friendlyName>.+)(?:(?:\/get))$", RegexOptions.Compiled | RegexOptions.Singleline);
 
 		private bool DispatchZigbee2MqttMessage(MqttApplicationMessage msg)
 		{
@@ -487,6 +488,17 @@ namespace Zigbee2MqttAssistant.Services
 
 					_logger.LogWarning($"Received a message for topic '{friendlyName}'. It looks like it's setting an attribute on a friendly name '{realFriendlyName}', but no such device is known. If the application is starting, you can safely discard this warning and the following potential parsing error.");
 					warnSetInName = true;
+				}
+
+				var getMatch = GetRemover.Match(friendlyName);
+				if (getMatch.Success)
+				{
+					var realFriendlyName = getMatch.Groups["friendlyName"].Value;
+					if (_stateService.FindDeviceById(realFriendlyName, out _) != null)
+					{
+						// It's a /get request on a device - won't contain any information useful for updating
+						return false;
+					}
 				}
 
 				var payload = _utf8.GetString(msg.Payload);
