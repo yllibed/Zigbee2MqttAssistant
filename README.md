@@ -12,6 +12,7 @@ This project is a _Web GUI_ for the very good [Zigbee2Mqtt](https://www.zigbee2m
 * If you're using zigbee2mqtt for your devices, it's a must.
 * Display zigbee devices and the status of each of them.
 * Display an interactive map of the network
+* Touchlink support
 * Automatically turn off _allow join_ of Zigbee network - no matter how you turned it on (don't need to be turned on from Z2MA). Default is 20 minutes.
 * Flexible installation:
   * Available as a _HASS.IO_ add-on (integration into _Home Assistant_). _Ingress_ is supported too.
@@ -30,7 +31,8 @@ This project is a _Web GUI_ for the very good [Zigbee2Mqtt](https://www.zigbee2m
   * Configure device (force reconfiguration of device's reportings)
   * Bind device to another one (mostly used for Ikea TRÅDFRI devices - [documentation here](https://www.zigbee2mqtt.io/information/binding.html))
   * Visualize device health
-* Based on _ASP.NET Core_ 3.1.
+  * OTA Upgrades
+* Based on _ASP.NET Core_ 3.1 LTS.
 
 ## Screenshots
 ![](images/devices-list.png)
@@ -57,6 +59,7 @@ docker run -p 8880:80 -e "Z2MA_SETTINGS__MQTTSERVER=<mqttserver>" -e "Z2MA_SETTI
 > Open an issue if you need it to be in a configuration file/folder.
 
 ### Docker Compose example
+
 If you're using Docker Compose, fell free to use this. 8880 is the port where the service will be available, from the outside of the container itself.
 ``` yaml
 ######################################
@@ -87,8 +90,10 @@ _Accepted for Docker-compose Manifest v.3_
 2. Adjust settings in `appsettings.json` for your MQTT connection
 
 > Note: it won't compile using the _dotnet core_ build yet. For now, MSBuild is required to build it.
+>
+> **This method is not recommended because any change to dependencies will require you to update your development/deployment environment.**
 
-## Channels
+## Release Channels
 There is 2 channels for Zigbee2MqttAssistant: `dev` and `stable`. When a build version is considered stable enough, it will be pushed from `dev` to `stable` (there's no git branch dedicated to the _stable_ version).
 
 If you want to try newest features, you can get the `dev` branch in the following way:
@@ -124,7 +129,32 @@ Note: Uppercase is used here as a convention. It's actually case insensitive.
 
 If you need to change _cron expression_ for other values, you should use a site like <https://crontab.guru/> to validate them. Attention: if you specify specific hours, take care of the time offset (timezone) inside the container!
 
+## Listening to Alternate Port / Linux Security
+
+When running this container on Linux, it's a best practice to run containers with a non-root account. To achieve that with _Zigbee2MqttAssistant_, it's required to change the listening port to something else than `80`, because ports number under `1024` are restricted to priviledged users.
+
+Since it's using ASPNET Core, it's possible to change the listening port in the container to something else by using one of the following method:
+
+* Set the `--urls` parameter on the command line:
+
+  ``` shell
+  # Command line to set alternate listening port in the container
+  # using the --urls parameter
+  docker run carldebilly/zigbee2mqttassistant --urls http://*:8888
+  ```
+
+* Use the `ASPNETCORE_URLS` environment variable:
+
+  ``` shell
+  # Command line to set alternate listening port in the container
+  # using the ASPNETCORE_URLS environment variable
+  docker run -e "ASPNETCORE_URLS=http://*:8888" carldebilly/zigbee2mqttassistant
+  ```
+
+This method can also be used to set another scheme (`https://`), a specific ip address or many ports at the same time. [Microsoft ASPNET Core documentation](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel?view=aspnetcore-3.1#endpoint-configuration).
+
 ## Roadmap
+
 * [X] Build a CI + publish to docker hub
 * [X] Shorter environment variables + config file (for docker image)
 * [X] Create a `HASS.IO` add-on
@@ -139,8 +169,10 @@ If you need to change _cron expression_ for other values, you should use a site 
 
 ## Requirements
 * You need a running installation of `Zigbee2Mqtt` v1.5.0+
+  
   * Also tested on v1.6.0, v1.7.0, v1.7.1 and v1.8.0, v1.11 (needed for firmware update feature)
 * Simple MQTT connection with username/password (TLS supported)
+  
   * Client certificates not supported yet - open an issue if your need it.
 * Zigbee2Mqtt required settings:
   * Home Assistant Discovery should be activated for a better experience (to see components)
