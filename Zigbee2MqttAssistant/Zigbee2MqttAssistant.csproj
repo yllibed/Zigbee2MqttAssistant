@@ -14,7 +14,7 @@
 		</PackageReference>
 		<PackageReference Include="MQTTnet" Version="3.0.9" />
 		<PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="3.0.9" />
-		<PackageReference Include="Scrutor" Version="3.2.0" />
+		<PackageReference Include="Scrutor" Version="3.2.1" />
 		<PackageReference Include="System.Reactive" Version="4.4.1" />
 		<PackageReference Include="Uno.CodeGen" Version="1.32.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.10" />
