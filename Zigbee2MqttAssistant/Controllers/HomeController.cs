@@ -31,6 +31,13 @@ namespace Zigbee2MqttAssistant.Controllers
 			return View((state, _settings.CurrentSettings));
 		}
 
+		public IActionResult Devices()
+		{
+			var state = _stateService.CurrentState;
+
+			return PartialView("_PartialDevices", (state, _settings.CurrentSettings));
+		}
+
 		[HttpPost]
 		public async Task<IActionResult> Reset()
 		{
