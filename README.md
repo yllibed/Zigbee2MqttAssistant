@@ -234,6 +234,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="https://github.com/magpern"><img src="https://avatars0.githubusercontent.com/u/6589760?v=4" width="100px;" alt=""/><br /><sub><b>Magnus Pernemark</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/commits?author=magpern" title="Code">💻</a> <a href="#question-magpern" title="Answering Questions">💬</a></td>
     <td align="center"><a href="https://github.com/diveflo"><img src="https://avatars2.githubusercontent.com/u/11045082?v=4" width="100px;" alt=""/><br /><sub><b>Florian Gabsteiger</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/commits?author=diveflo" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/vaital3000"><img src="https://avatars2.githubusercontent.com/u/15158048?v=4" width="100px;" alt=""/><br /><sub><b>Помозов Виталий</b></sub></a><br /><a href="https://github.com/yllibed/Zigbee2MqttAssistant/commits?author=vaital3000" title="Code">💻</a></td>
   </tr>
 </table>
 
