@@ -1,0 +1,111 @@
+﻿@using Humanizer
+@model (Zigbee2MqttAssistant.Models.Mqtt.Bridge bridge, Zigbee2MqttAssistant.Models.Settings settings)
+
+@{
+    var bridge = Model.bridge;
+    var settings = Model.settings;
+    var excludedComponents = new[] { "update_available" };
+}
+@if (bridge.PermitJoin)
+{
+    <span class="badge badge-danger">DEVICES ARE CURRENTLY ALLOWED TO JOIN NETWORK.</span>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th />
+            <th scole="col">Name / Id</th>
+            <th scole="col">Components</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var device in bridge.Devices.OrderBy(d => d.FriendlyName))
+        {
+            var deviceImage = "noimg.png";
+            if (device.Type?.Equals("Coordinator") ?? false)
+            {
+                deviceImage = "coordinator.png";
+            }
+            else if (device.ModelId != null)
+            {
+                var imageFileName = device.ModelId
+                    .Replace('/', '-')
+                    .Replace(' ', '-');
+                deviceImage = $"https://www.zigbee2mqtt.io/images/devices/{imageFileName}.jpg";
+            }
+            <tr>
+                <th scope="row" width="55">
+                    <img src="@(deviceImage)" alt="@(device.ModelId)" class="border border-primary p-2" style="background: white" height="60" widht="60" onerror="if (this.src != 'noimg.png') this.src = 'noimg.png';" />
+                </th>
+                <td>
+                    <a asp-action="Device" asp-route-id="@device.FriendlyName"><strong>@device.FriendlyName</strong></a>
+                    <br /><code>@device.ZigbeeId</code> @device.Manufacturer
+
+                    @if (!device.Type?.Equals("EndDevice", StringComparison.CurrentCultureIgnoreCase) ?? false)
+                    {
+                        <span class="badge badge-dark">@device.Type</span>
+                    }
+                    <br />
+                    @if (device.GetUnresponsiveDelay(out var delaySinceLastResponse) == true)
+                    {
+                        var unseenPeriod = delaySinceLastResponse.Value.Humanize(1);
+                        <span class="badge badge-warning">unresponsive s. @unseenPeriod</span>
+                    }
+                    else if (delaySinceLastResponse.HasValue)
+                    {
+                        var since = delaySinceLastResponse.Value.Humanize(1);
+                        <span class="badge badge-success">@since</span>
+                    }
+                    @*else if (device.IsAvailable == false)
+                        {
+                            <span class="badge badge-danger">offline</span>
+                        }*@
+                    @if (device.LinkQuality.HasValue)
+                    {
+                        var value = device.LinkQuality.Value;
+                        if (value < 5)
+                        {
+                            <span class="badge badge-danger">very weak link</span>
+                        }
+                        else if (value < 15)
+                        {
+                            <span class="badge badge-warning">weak link</span>
+                        }
+                    }
+                    @if (device.IsOtaAvailable.HasValue)
+                    {
+                        if (device.IsOtaAvailable.Value)
+                        {
+                            <span class="badge badge-secondary">firmware update available</span>
+                        }
+                    }
+
+                    @if (device.BatteryLevel.HasValue)
+                    {
+                        var value = device.BatteryLevel.Value;
+                        if (value <= settings.LowBatteryThreshold)
+                        {
+                            <span class="badge badge-danger">low battery (@value%)</span>
+                        }
+                    }
+                </td>
+                <td>
+                    @foreach (var entity in device.Entities.Where(e => !excludedComponents.Contains(e.Component)).OrderBy(e => e.Component))
+                    {
+                        <span class="badge badge-dark">@entity.Component</span>
+                    }
+                    @if (device.Type?.Equals("Coordinator", StringComparison.CurrentCultureIgnoreCase) ?? false)
+                    {
+                        <span class="badge badge-dark">@device.Type</span>
+                    }
+                    else if (device.Entities.Length == 0)
+                    {
+                        <span class="badge badge-danger">NO COMPONENTS</span>
+                        <span>Maybe this device is not (yet) supported by Zigbee2Mqtt?</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
