@@ -18,7 +18,7 @@
 		<PackageReference Include="System.Reactive" Version="4.4.1" />
 		<PackageReference Include="Uno.CodeGen" Version="1.32.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8" />
-		<PackageReference Include="Uno.SourceGenerationTasks" Version="2.0.0-dev.16" />
+		<PackageReference Include="Uno.SourceGenerationTasks" Version="2.0.6" />
 	</ItemGroup>
 
 </Project>
