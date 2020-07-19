@@ -45,5 +45,6 @@ LABEL io.hass.version="172" io.hass.type="addon" io.hass.arch=$OSTAG
 
 # copy file to runtime image
 WORKDIR /app
+RUN mkdir -p /app/certs
 COPY --from=dotnet-build-env /app/publish .
 ENTRYPOINT ["dotnet", "Zigbee2MqttAssistant.dll"]
