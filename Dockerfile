@@ -29,7 +29,7 @@ RUN dotnet publish "Zigbee2MqttAssistant.csproj" -c Release -o /app/publish
 #  <dotnettag> is the tag of the dotnet aspnet runtime image
 #  <ostag> is the tag of the runtime for hass.io (amd64, armv7, aarch64...)
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
-EXPOSE 80
+EXPOSE 443
 
 ENV DOTNET_CLI_TELEMETRY_OPTOUT 1
 ENV DOTNET_SKIP_FIRST_TIME_EXPERIENCE 1
