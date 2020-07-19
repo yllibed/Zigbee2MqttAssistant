@@ -32,6 +32,8 @@ namespace Zigbee2MqttAssistant.Services
 			{
 				_stateService.StateChanged += OnStateChanged;
 			}
+
+			await Task.CompletedTask;
 		}
 
 		private void OnStateChanged(object sender, Bridge e)
@@ -75,6 +77,8 @@ namespace Zigbee2MqttAssistant.Services
 
 			// Terminate any ongoing timer
 			_disposable.Disposable = null;
+
+			await Task.CompletedTask;
 		}
 
 		public void Dispose() => _disposable.Dispose();
