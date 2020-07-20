@@ -1,7 +1,7 @@
 # ----------- Build stage (ASP .NET Core) -----------
 # This file should be run after compiling the solution with the following command:
 # msbuild /r /p:Configuration=Release /p:OutputPath=app /t:Publish
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS dotnet-build-env
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1-alpine AS dotnet-build-env
 WORKDIR /src
 
 ENV DOTNET_CLI_TELEMETRY_OPTOUT 1
@@ -28,7 +28,7 @@ RUN dotnet publish "Zigbee2MqttAssistant.csproj" -c Release -o /app/publish
 # where:
 #  <dotnettag> is the tag of the dotnet aspnet runtime image
 #  <ostag> is the tag of the runtime for hass.io (amd64, armv7, aarch64...)
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-alpine
 EXPOSE 443
 
 ENV DOTNET_CLI_TELEMETRY_OPTOUT 1

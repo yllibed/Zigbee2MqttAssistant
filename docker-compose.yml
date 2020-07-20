@@ -1,0 +1,31 @@
+version: '3.7'
+
+services:
+
+  zigbee2mqttAssistant:
+    image: moerchel/zigbee2mqtt_assistant
+    container_name: zigbee2mqttAssistant
+    environment:
+      - Z2MA_SETTINGS__MQTTSERVER=${MQTTSERVER}
+      - Z2MA_SETTINGS__MQTTPORT=${MQTTPORT}
+      - Z2MA_SETTINGS__MQTTSECURE=${MQTTSECURE}
+      - Z2MA_SETTINGS__MQTTUSERNAME=${MQTTUSERNAME}
+      - Z2MA_SETTINGS__MQTTPASSWORD=${MQTTPASSWORD}
+      - TZ=Europe/Berlin
+      - ASPNETCORE_URLS=https://+:443
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${PFX_PASSWORD}
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/certs/certificate.pfx
+      - Logging__Console__LogLevel__Default=Warning
+    networks:
+      - zigbeenet
+    ports:
+      - 4433:443
+    volumes:
+      - /tmp/certs:/app/certs:ro
+    restart: unless-stopped
+
+
+networks:
+  zigbeenet:
+    name: zigbeenet
+    driver: bridge
