@@ -38,7 +38,7 @@ namespace Zigbee2MqttAssistant
 			services.AddHttpsRedirection(options =>
 			{
 				options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
-				options.HttpsPort = 443;
+				options.HttpsPort = Configuration.GetValue<int?>("SETTINGS:HTTPSPORT", 443);
 			});
 
 			services.AddSingleton<IBridgeStateService, BridgeStateService>();
@@ -71,7 +71,10 @@ namespace Zigbee2MqttAssistant
 				app.UseExceptionHandler("/Home/Error");
 			}
 
-			app.UseHttpsRedirection();
+			if (Configuration.GetValue("SETTINGS:HTTPSREDIRECT", false))
+			{
+				app.UseHttpsRedirection();
+			}
 
 			app.UseStaticFiles();
 
