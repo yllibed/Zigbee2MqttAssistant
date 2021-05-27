@@ -6,7 +6,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-        <PackageReference Include="Cronos" Version="0.7.0" />
+        <PackageReference Include="Cronos" Version="0.7.1" />
 		<PackageReference Include="Humanizer.Core" Version="2.8.26" />
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.0.2">
 			<PrivateAssets>all</PrivateAssets>
