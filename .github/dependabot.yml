@@ -1,0 +1,25 @@
+version: 2
+updates:
+- package-ecosystem: nuget
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: Humanizer.Core
+    versions:
+    - 2.9.7
+  - dependency-name: Microsoft.TypeScript.MSBuild
+    versions:
+    - 4.1.2
+    - 4.1.4
+    - 4.2.2
+    - 4.2.3
+  - dependency-name: MQTTnet.Extensions.ManagedClient
+    versions:
+    - 3.0.13
+    - 3.0.14
+  - dependency-name: MQTTnet
+    versions:
+    - 3.0.13
+    - 3.0.14
