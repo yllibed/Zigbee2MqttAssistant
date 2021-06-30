@@ -105,6 +105,7 @@ namespace Zigbee2MqttAssistant.Services
 				{
 					x.UseTls = settings.MqttSecure != TlsMode.False;
 					x.AllowUntrustedCertificates = settings.MqttSecure == TlsMode.Insecure;
+					x.IgnoreCertificateRevocationErrors = true;
 				})
 				.WithCredentials(settings.MqttUsername, settings.MqttPassword)
 				.Build();

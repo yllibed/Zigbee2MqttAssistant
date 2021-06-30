@@ -1,3 +1,4 @@
+  
 # This file should be run after compiling the solution with the following command:
 # msbuild /r /p:Configuration=Release /p:OutputPath=app /t:Publish
 
